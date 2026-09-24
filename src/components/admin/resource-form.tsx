@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { deleteResource, saveResource } from "@/app/admin/actions";
 import { uploadMediaFile } from "@/app/admin/upload";
+import { BlocksField, QuizField } from "@/components/admin/lesson-editors";
 import { resources, type AdminField, type ResourceKey } from "@/lib/admin/resources";
 import type { AdminOption } from "@/lib/services/admin";
 import { adminSchemas, type ActionState } from "@/lib/validations/admin";
@@ -37,13 +38,17 @@ export function AdminResourceForm({resource,id,initialValues={},options,created=
   return <form className="admin-form" onSubmit={handleSubmit(submit)} noValidate>
     {feedback&&<div className={`admin-feedback ${feedback.ok?"success":"error"}`} role={feedback.ok?"status":"alert"}>{feedback.ok?<CheckCircle2 aria-hidden="true"/>:<AlertCircle aria-hidden="true"/>}<div><span>{feedback.message}</span>{feedback.fieldErrors&&<ul>{Object.entries(feedback.fieldErrors).flatMap(([field,messages])=>messages.map(message=><li key={`${field}-${message}`}>{resources[resource].fields.find(item=>item.name===field)?.label||field}: {message}</li>))}</ul>}</div></div>}
     <div className="admin-form-grid">{config.fields.map(field=><Field key={field.name} field={field} resource={resource} register={register} errors={errors} watched={watched} setValue={setValue} options={options}/>)}</div>
-    <label className="admin-check"><input type="checkbox" {...register("isDemo")}/><span>ข้อมูลสาธิต / ยังไม่ใช่ข้อมูลภาคสนามจริง</span></label>
+    {/* A lesson has no demo flag of its own — it is demo because its course is — so the
+        checkbox is hidden rather than left there doing nothing. */}
+    {resource!=="lessons"&&<label className="admin-check"><input type="checkbox" {...register("isDemo")}/><span>ข้อมูลสาธิต / ยังไม่ใช่ข้อมูลภาคสนามจริง</span></label>}
     <footer className="admin-form-actions">{recordId&&<button className="admin-danger" type="button" onClick={remove} disabled={pending}><Trash2 aria-hidden="true"/>ลบรายการ</button>}<button className="admin-save" type="submit" disabled={pending}><Save aria-hidden="true"/>{pending?"กำลังบันทึก…":"บันทึกข้อมูล"}</button></footer>
   </form>;
 }
 
 function Field({field,resource,register,errors,watched,setValue,options}:{field:AdminField;resource:ResourceKey;register:ReturnType<typeof useForm<Values>>["register"];errors:ReturnType<typeof useForm<Values>>["formState"]["errors"];watched:Values;setValue:ReturnType<typeof useForm<Values>>["setValue"];options:OptionMap}) {
   if(field.type==="upload") return <UploadField setValue={setValue} url={String(watched.url||"")} alt={String(watched.alt||"")} help={field.help}/>;
+  if(field.type==="blocks") return <BlocksField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} mediaOptions={options.media||[]} stepOptions={options.stepSlugs||[]} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
+  if(field.type==="quiz") return <QuizField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
   if(field.type==="relations") return <RelationField field={field} value={(watched[field.name] as string[]|undefined)??[]} options={options[field.optionSource||""]||[]} setValue={setValue}/>;
   if(field.type==="hotspot") return <HotspotEditor key="hotspot" boatId={String(watched.boatId||"")} x={Number(watched.x)||0} y={Number(watched.y)||0} boats={options.boats||[]} onChange={(x,y)=>{setValue("x",x,{shouldDirty:true,shouldValidate:true});setValue("y",y,{shouldDirty:true,shouldValidate:true});}}/>;
   let fieldOptions=field.name==="status"?statuses:(field.options||options[field.optionSource||""]||[]);

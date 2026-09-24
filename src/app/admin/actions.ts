@@ -7,6 +7,7 @@ import { getDb } from "@/lib/db";
 import { isResourceKey, type ResourceKey } from "@/lib/admin/resources";
 import { adminSchemas, type ActionState } from "@/lib/validations/admin";
 import { relationsFor } from "@/lib/admin/relations";
+import { lessonBlocks, lessonQuiz, parseJsonField } from "@/lib/learning/authoring";
 
 async function adminUser() {
   const session = await auth();
@@ -25,7 +26,7 @@ function failure(error: unknown): ActionState {
   return { ok: false, message: "บันทึกไม่สำเร็จ กรุณาตรวจสอบข้อมูลแล้วลองอีกครั้ง" };
 }
 
-async function setVerification(target: "boat"|"story"|"section"|"pattern"|"master"|"process"|"step"|"source", id: string, status: string, userId: string) {
+async function setVerification(target: "boat"|"story"|"section"|"pattern"|"master"|"process"|"step"|"source"|"lesson", id: string, status: string, userId: string) {
   const reviewed = status === "VERIFIED" || status === "PUBLISHED";
   const relation = `${target}Id`;
   await getDb().contentVerification.upsert({
@@ -134,6 +135,43 @@ export async function saveResource(resource: ResourceKey, id: string | null, val
       case "tools": { const data=adminSchemas.tools.parse(values);const row=id?await db.tool.update({where:{id},data}):await db.tool.create({data});savedId=row.id;break; }
       case "techniques": { const data=adminSchemas.techniques.parse(values);const row=id?await db.technique.update({where:{id},data}):await db.technique.create({data});savedId=row.id;break; }
       case "sources": { const {status,...raw}=adminSchemas.sources.parse(values); const data={...raw,interviewDate:raw.interviewDate?new Date(`${raw.interviewDate}T00:00:00Z`):null};const row=id?await db.knowledgeSource.update({where:{id},data}):await db.knowledgeSource.create({data});savedId=row.id;await setVerification("source",row.id,status,user.id);break; }
+      case "courses": { const data=adminSchemas.courses.parse(values); const row=id?await db.course.update({where:{id},data}):await db.course.create({data}); savedId=row.id; break; }
+      case "lessons": {
+        // Lesson has no isDemo column of its own — a lesson is demo because its course is.
+        const { status, contentsJson, quizJson, isDemo: _isDemo, ...data } = adminSchemas.lessons.parse(values);
+        const blocks = lessonBlocks.safeParse(parseJsonField(contentsJson) ?? []);
+        if (!blocks.success) return { ok: false, message: "เนื้อหาบทเรียนยังไม่ถูกต้อง", fieldErrors: { contentsJson: blocks.error.issues.map(i=>i.message) } };
+        const quizRaw = parseJsonField(quizJson);
+        const quiz = lessonQuiz.safeParse(quizRaw ?? null);
+        if (!quiz.success) return { ok: false, message: "แบบฝึกหัดยังไม่ถูกต้อง", fieldErrors: { quizJson: quiz.error.issues.map(i=>i.message) } };
+
+        const row = id ? await db.lesson.update({where:{id},data}) : await db.lesson.create({data});
+        savedId = row.id;
+
+        // Blocks and questions have no identity of their own that an editor ever sees, so
+        // they are replaced wholesale. Progress and attempts hang off the lesson, not these,
+        // so nothing a learner did is lost by rewriting them.
+        await db.lessonContent.deleteMany({ where: { lessonId: row.id } });
+        if (blocks.data.length > 0) {
+          await db.lessonContent.createMany({
+            data: blocks.data.map((block, index) => ({ lessonId: row.id, kind: block.kind, body: block.body, position: index + 1 })),
+          });
+        }
+        await db.quiz.deleteMany({ where: { lessonId: row.id } });
+        if (quiz.data) {
+          const createdQuiz = await db.quiz.create({ data: { lessonId: row.id, title: quiz.data.title } });
+          for (const [index, question] of quiz.data.questions.entries()) {
+            await db.question.create({
+              data: {
+                quizId: createdQuiz.id, type: question.type, prompt: question.prompt, position: index + 1,
+                choices: { create: question.choices.map((choice) => ({ text: choice.text, correct: choice.correct })) },
+              },
+            });
+          }
+        }
+        await setVerification("lesson", row.id, status, user.id);
+        break;
+      }
       case "qr-codes": {
         const raw=adminSchemas["qr-codes"].parse(values);
         const target = { boatId:null,patternId:null,masterId:null,processId:null,stepId:null };
@@ -143,7 +181,7 @@ export async function saveResource(resource: ResourceKey, id: string | null, val
       }
     }
     if (savedId) await syncRelations(resource, savedId, parsed.data as Record<string, unknown>);
-    revalidatePath("/admin"); revalidatePath(`/admin/${resource}`); revalidatePath("/", "page"); revalidatePath("/boats", "layout"); revalidatePath("/craft", "layout");
+    revalidatePath("/admin"); revalidatePath(`/admin/${resource}`); revalidatePath("/", "page"); revalidatePath("/boats", "layout"); revalidatePath("/craft", "layout"); revalidatePath("/learn", "layout");
     return { ok: true, message: id ? "บันทึกการแก้ไขแล้ว" : "สร้างรายการแล้ว", id: savedId ?? undefined };
   } catch (error) { console.error("Admin save failed", error); return failure(error); }
 }
@@ -160,6 +198,7 @@ export async function deleteResource(resource: ResourceKey, id: string): Promise
       case "steps":await db.processStep.delete({where:{id}});break; case "materials":await db.material.delete({where:{id}});break;
       case "tools":await db.tool.delete({where:{id}});break; case "techniques":await db.technique.delete({where:{id}});break;
       case "sources":await db.knowledgeSource.delete({where:{id}});break; case "qr-codes":await db.qRCode.delete({where:{id}});break;
+      case "courses":await db.course.delete({where:{id}});break; case "lessons":await db.lesson.delete({where:{id}});break;
     }
     revalidatePath(`/admin/${resource}`); return {ok:true,message:"ลบรายการแล้ว"};
   } catch(error) { console.error("Admin delete failed",error); return failure(error); }

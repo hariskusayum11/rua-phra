@@ -43,6 +43,11 @@ export const adminSchemas = {
   tools: z.object({ name:text,slug,description:text,...commonDemo }),
   techniques: z.object({ name:text,slug,description:text,...commonDemo }),
   sources: z.object({ title:text,kind:z.enum(["FIELD_INTERVIEW","FIELD_OBSERVATION","PUBLICATION","ARCHIVAL_DOCUMENT","DEMO"]),informant:optionalText,interviewDate:z.preprocess(emptyToUndefined,z.string().optional()),fieldNote:optionalText,citation:optionalText,status,...commonDemo }),
+  courses: z.object({ title:text, slug, description:text, ...commonDemo }),
+  // The two JSON fields arrive as strings from hidden inputs; their contents are checked
+  // against the block and quiz schemas in the save action, where a failure can be reported
+  // against the field the editor was actually looking at.
+  lessons: z.object({ courseId:uuid, title:text, slug, position:positiveInt, status, contentsJson:z.string().default(""), quizJson:z.string().default(""), ...commonDemo }),
   "qr-codes": z.object({ code:z.string().trim().min(1).max(80).regex(/^[a-zA-Z0-9-]+$/),label:text,targetKind:z.enum(["BOAT","PATTERN","MASTER","PROCESS","STEP"]),targetId:uuid,active:z.boolean().default(false),...commonDemo }),
 } satisfies Record<ResourceKey, z.ZodType>;
 

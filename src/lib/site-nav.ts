@@ -8,7 +8,7 @@ export const primaryNav: NavItem[] = [
   { href: "/#boats", label: "เรื่องเล่าเรือพระ" },
   { href: "/craft", label: "จากกระดาษสู่เรือพระ" },
   { href: "/#patterns", label: "คลังลวดลาย" },
-  { href: "/#learning", label: "เรียนรู้" },
+  { href: "/learn", label: "เรียนรู้" },
 ];
 
 export const secondaryNav: NavItem[] = [

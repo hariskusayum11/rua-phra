@@ -1,13 +1,13 @@
-export const resourceKeys = ["media", "temples", "boats", "stories", "sections", "patterns", "masters", "processes", "steps", "materials", "tools", "techniques", "sources", "qr-codes"] as const;
+export const resourceKeys = ["media", "temples", "boats", "stories", "sections", "patterns", "masters", "processes", "steps", "materials", "tools", "techniques", "sources", "courses", "lessons", "qr-codes"] as const;
 export type ResourceKey = (typeof resourceKeys)[number];
 
 export type AdminField = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "date" | "media" | "hotspot" | "upload" | "relations";
+  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "date" | "media" | "hotspot" | "upload" | "relations" | "blocks" | "quiz";
   required?: boolean;
   help?: string;
-  optionSource?: "temples" | "boats" | "media" | "processes" | "patterns" | "masters" | "steps" | "materials" | "tools" | "techniques";
+  optionSource?: "temples" | "boats" | "media" | "processes" | "patterns" | "masters" | "steps" | "materials" | "tools" | "techniques" | "courses";
   options?: Array<{ value: string; label: string }>;
 };
 
@@ -89,6 +89,18 @@ export const resources: Record<ResourceKey, { label: string; singular: string; f
   sources: { label: "แหล่งองค์ความรู้", singular: "แหล่งข้อมูล", fields: [
     {name:"title",label:"ชื่อแหล่งข้อมูล",required:true},{name:"kind",label:"ประเภท",type:"select",options:[{value:"FIELD_INTERVIEW",label:"สัมภาษณ์ภาคสนาม"},{value:"FIELD_OBSERVATION",label:"สังเกตการณ์"},{value:"PUBLICATION",label:"สิ่งพิมพ์"},{value:"ARCHIVAL_DOCUMENT",label:"เอกสารจดหมายเหตุ"},{value:"DEMO",label:"ข้อมูลสาธิต"}]},
     {name:"informant",label:"ผู้ให้ข้อมูล"},{name:"interviewDate",label:"วันที่สัมภาษณ์",type:"date"},{name:"fieldNote",label:"บันทึกภาคสนาม",type:"textarea"},{name:"citation",label:"การอ้างอิง",type:"textarea"},{name:"status",label:"สถานะเนื้อหา",type:"select",options:[]},
+  ] },
+  courses: { label: "ชุดบทเรียน", singular: "ชุดบทเรียน", fields: [
+    {name:"title",label:"ชื่อชุดบทเรียน",required:true},{name:"slug",label:"Slug",required:true},
+    {name:"description",label:"คำอธิบาย",type:"textarea",required:true},
+  ] },
+  lessons: { label: "บทเรียน", singular: "บทเรียน", fields: [
+    {name:"courseId",label:"ชุดบทเรียน",type:"select",optionSource:"courses",required:true},
+    {name:"title",label:"ชื่อบท",required:true},{name:"slug",label:"Slug",required:true},
+    {name:"position",label:"ลำดับบท",type:"number",required:true},
+    {name:"status",label:"สถานะเนื้อหา",type:"select",options:[]},
+    {name:"contentsJson",label:"เนื้อหาบทเรียน",type:"blocks",help:"เรียงจากบนลงล่างตามที่ผู้เรียนจะเห็น"},
+    {name:"quizJson",label:"แบบฝึกหัดท้ายบท",type:"quiz",help:"เว้นว่างไว้ได้ถ้าบทนี้ไม่มีแบบฝึกหัด"},
   ] },
   "qr-codes": { label: "QR Codes", singular: "QR Code", fields: [
     {name:"code",label:"รหัสสั้น",required:true},{name:"label",label:"ชื่อกำกับ",required:true},{name:"targetKind",label:"ประเภทปลายทาง",type:"select",options:[{value:"BOAT",label:"เรือพระ"},{value:"PATTERN",label:"ลวดลาย"},{value:"MASTER",label:"ช่าง"},{value:"PROCESS",label:"กระบวนการ"},{value:"STEP",label:"ขั้นตอน"}]},

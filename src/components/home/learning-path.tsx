@@ -18,6 +18,9 @@ const journey = [
  */
 export function LearningPath({ course, stepCount }: { course: HomeContent["course"]; stepCount: number }) {
   const lessonCount = course?.lessonCount ?? 0;
+  // Send the reader to the course only when there is one. Otherwise the recorded process
+  // is the real learning material, and the card says so instead of promising lessons.
+  const href = course ? `/learn/${course.slug}` : "/craft";
 
   return (
     <section className="home-learning" id="learning" aria-labelledby="learning-title">
@@ -64,7 +67,7 @@ export function LearningPath({ course, stepCount }: { course: HomeContent["cours
               <p className="home-learning-card-count">{stepCount} ขั้นตอน · เรียนตามจังหวะของคุณ</p>
             </>
           )}
-          <Link className="button-solid" href="/craft">
+          <Link className="button-solid" href={href}>
             เริ่มเรียนรู้
             <ArrowRight aria-hidden="true" />
           </Link>

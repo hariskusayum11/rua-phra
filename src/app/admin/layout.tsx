@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Archive, BookOpenText, Boxes, DraftingCompass, Image as ImageIcon, Landmark, LayoutDashboard, MapPin, QrCode, ScrollText, Ship, Users, Wrench } from "lucide-react";
+import { Archive, BookOpenText, Boxes, DraftingCompass, GraduationCap, Image as ImageIcon, Landmark, LayoutDashboard, MapPin, NotebookPen, QrCode, ScrollText, Ship, Users, Wrench } from "lucide-react";
 import { auth } from "@/auth";
 import { logoutAction } from "@/app/admin/actions";
 import { resources } from "@/lib/admin/resources";
@@ -8,7 +8,7 @@ import { resources } from "@/lib/admin/resources";
 const nav = [
   ["media", ImageIcon], ["temples", Landmark], ["boats", Ship], ["stories", BookOpenText], ["sections", MapPin], ["patterns", DraftingCompass], ["masters", Users],
   ["processes", Archive], ["steps", ScrollText], ["materials", Boxes], ["tools", Wrench], ["techniques", DraftingCompass],
-  ["sources", BookOpenText], ["qr-codes", QrCode],
+  ["sources", BookOpenText], ["courses", GraduationCap], ["lessons", NotebookPen], ["qr-codes", QrCode],
 ] as const;
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

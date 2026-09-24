@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./home.css";
 @import "./archive.css";
+@import "./learn.css";
 
 /* ---------------------------------------------------------------------------
    Design tokens — Contemporary Southern Thai Cultural Archive
@@ -579,3 +580,43 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
   .qr-print-card { border-color: #999; }
   @page { margin: 12mm; }
 }
+
+/* ===========================================================================
+   Lesson editors — content blocks and the end-of-lesson quiz.
+
+   Both edit a list that gets reordered and trimmed, so each entry is a boxed
+   unit with its own controls rather than a row in a long flat form.
+   =========================================================================== */
+.lesson-editor { margin:0; padding:1rem; border:1px solid var(--admin-line); border-radius:.35rem; }
+.lesson-editor legend { padding-inline:.35rem; font-weight:500; }
+.lesson-editor > p { color:var(--admin-muted); font-size:.75rem; }
+.lesson-editor-empty { margin-top:.75rem; padding:1.25rem; border:1px dashed #bfc9c4; color:var(--admin-muted); text-align:center; }
+
+.lesson-editor-list { display:grid; gap:1rem; margin:1rem 0 0; padding:0; list-style:none; }
+.lesson-editor-block { padding:1rem; border:1px solid var(--admin-line); border-radius:.3rem; background:#fbfaf8; }
+.lesson-editor-block header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.75rem; }
+.lesson-editor-block header strong { font-size:.8125rem; letter-spacing:.04em; color:var(--admin-muted); }
+.lesson-editor-block header div { display:flex; gap:.25rem; }
+.lesson-editor-block header button {
+  display:grid; place-items:center; inline-size:2rem; block-size:2rem;
+  border:1px solid var(--admin-line); border-radius:.25rem; background:#fff; color:var(--admin-muted);
+}
+.lesson-editor-block header button:hover:not(:disabled) { border-color:#17634f; color:#17634f; }
+.lesson-editor-block header button:disabled { opacity:.4; cursor:not-allowed; }
+.lesson-editor-block header button svg { width:.9rem; height:.9rem; }
+.lesson-editor-block .admin-field + .admin-field { margin-top:.75rem; }
+
+.lesson-editor-choices { margin-top:1rem; }
+.lesson-editor-choices > p { margin-bottom:.5rem; color:var(--admin-muted); font-size:.75rem; }
+.lesson-editor-choice { display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; }
+.lesson-editor-choice input[type="radio"] { flex:none; inline-size:1.1rem; block-size:1.1rem; accent-color:#17634f; }
+.lesson-editor-choice input[type="text"] { flex:1; min-height:2.5rem; padding:.4rem .6rem; border:1px solid var(--admin-line); border-radius:.25rem; font:inherit; }
+.lesson-editor-choice button {
+  display:grid; place-items:center; inline-size:2.25rem; block-size:2.25rem;
+  border:1px solid var(--admin-line); border-radius:.25rem; background:#fff; color:var(--admin-muted);
+}
+.lesson-editor-choice button:disabled { opacity:.4; cursor:not-allowed; }
+.lesson-editor-choice button svg { width:.9rem; height:.9rem; }
+
+.lesson-editor-add { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin-top:1rem; }
+.lesson-editor-add select { min-height:2.75rem; padding:.4rem .6rem; border:1px solid var(--admin-line); border-radius:.25rem; font:inherit; }

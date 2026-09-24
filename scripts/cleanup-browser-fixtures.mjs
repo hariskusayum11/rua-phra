@@ -8,5 +8,7 @@ try {
   const processes=await client.query(`DELETE FROM "KnowledgeProcess" WHERE slug LIKE 'browser-process-%'`);
   const temples=await client.query(`DELETE FROM "Temple" WHERE slug LIKE 'browser-temple-%'`);
   const media=await client.query(`DELETE FROM "Media" WHERE alt LIKE 'ภาพทดสอบการอัปโหลด%'`);
-  console.log({sections:sections.rowCount,materials:materials.rowCount,processes:processes.rowCount,temples:temples.rowCount,media:media.rowCount});
+  // Lesson contents, quizzes and verification rows cascade from the lesson itself.
+  const lessons=await client.query(`DELETE FROM "Lesson" WHERE slug LIKE 'browser-lesson-%'`);
+  console.log({sections:sections.rowCount,materials:materials.rowCount,processes:processes.rowCount,temples:temples.rowCount,media:media.rowCount,lessons:lessons.rowCount});
 } finally { await client.end(); }
