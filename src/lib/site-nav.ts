@@ -15,5 +15,6 @@ export const secondaryNav: NavItem[] = [
   { href: "/#reader", label: "อ่านเรือพระ" },
   { href: "/#master", label: "ช่างผู้สืบสาน" },
   { href: "/#next-generation", label: "ผลงานคนรุ่นใหม่" },
+  { href: "/about", label: "เกี่ยวกับโครงการ" },
   { href: "/login", label: "ผู้ดูแลระบบ" },
 ];

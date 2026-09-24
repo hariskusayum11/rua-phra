@@ -300,6 +300,19 @@ body:has(.home-page) .header-spacer { display: none; }
 }
 
 .page-shell { width: min(100% - (var(--gutter) * 2), var(--max-w)); margin-inline: auto; min-height: 60svh; padding-block: clamp(3rem, 9vw, 8rem); }
+
+/* Where a scanned sticker lands when it cannot go straight through. Read on a phone held
+   at arm's length in daylight, so the type is large and the page is short. */
+.qr-landing { display: grid; place-items: center; min-height: 70svh; padding-block: clamp(3rem, 9vw, 7rem); }
+.qr-landing-inner { max-width: 34rem; text-align: center; }
+.qr-landing-mark { width: 2.5rem; height: 2.5rem; margin-inline: auto; color: var(--accent-text); }
+.qr-landing-inner .eyebrow { margin-top: 1.5rem; }
+.qr-landing-inner h1 { margin-top: .75rem; font-size: clamp(1.75rem, 5vw, 2.75rem); }
+.qr-landing-inner .lead { max-width: none; margin-top: 1rem; }
+.qr-landing-actions {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: 1rem 2rem; margin-top: 2.5rem;
+}
 .status-note { max-width: var(--measure); margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
 .status-note p { color: var(--muted); margin-top: .75rem; }
 
@@ -485,6 +498,10 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .admin-workspace { min-width:0; }.admin-topbar { min-height:3.75rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem clamp(1rem,3vw,2.5rem); border-bottom:1px solid var(--admin-line); background:var(--admin-panel); color:var(--admin-muted); font-size:.78rem; }
 .admin-main { width:min(100% - 2rem,78rem); margin-inline:auto; padding-block:clamp(1.75rem,4vw,3.5rem); }
 .admin-page-head { display:flex; align-items:end; justify-content:space-between; gap:2rem; margin-bottom:2rem; }
+.admin-head-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; }
+.admin-secondary { display:inline-flex; min-height:2.75rem; align-items:center; justify-content:center; gap:.5rem; padding:.55rem 1rem; border:1px solid #17634f; border-radius:.35rem; background:transparent; color:#17634f; text-decoration:none; font-weight:500; }
+.admin-secondary svg { width:1rem; }
+.admin-secondary:hover { background:#eaf1ee; }
 .admin-page-head h1 { font-family:"Noto Sans Thai",sans-serif; font-size:clamp(1.7rem,3vw,2.35rem); font-weight:500; line-height:1.35; }.admin-page-head p { color:var(--admin-muted); }
 .admin-kicker { color:#35705f !important; font-size:.68rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; }
 .admin-primary,.admin-save { display:inline-flex; min-height:2.75rem; align-items:center; justify-content:center; gap:.5rem; padding:.55rem 1rem; border:0; border-radius:.35rem; background:#17634f; color:#fff; text-decoration:none; font-weight:500; }.admin-primary svg,.admin-save svg,.admin-danger svg { width:1rem; }
@@ -511,3 +528,54 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 @media (max-width:900px) { .admin-shell { grid-template-columns:1fr; }.admin-sidebar { position:static;height:auto; }.admin-sidebar nav { grid-template-columns:repeat(3,minmax(0,1fr)); }.admin-sidebar nav a { justify-content:center;text-align:center; }.admin-sidebar form { margin-top:1rem; }.admin-topbar { display:none; }.admin-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:600px) { .admin-sidebar nav { grid-template-columns:repeat(2,minmax(0,1fr)); }.admin-page-head { align-items:start;flex-direction:column;gap:1rem; }.admin-primary { width:100%; }.admin-form-grid { grid-template-columns:1fr;padding:1rem; }.admin-field-wide { grid-column:auto; }.admin-stats { grid-template-columns:1fr 1fr; }.admin-form-actions { flex-direction:column-reverse; }.admin-form-actions button { width:100%; }.hotspot-editor { grid-column:auto; }.admin-table { min-width:42rem; } }
+
+/* ===========================================================================
+   QR print sheet — screen view and the printed page.
+
+   Stickers are cut out by hand, so each card carries a cut line and the code in
+   readable text under the square. Anyone who cannot get a camera to focus in the
+   sun can still type the short code.
+   =========================================================================== */
+.qr-print-controls { max-width: 46rem; }
+.qr-print-controls h1 { margin-top: .75rem; font-family: "Noto Sans Thai", sans-serif; font-size: 1.5rem; }
+.qr-print-controls > p { margin-top: .5rem; color: var(--admin-muted); font-size: .875rem; line-height: 1.7; }
+/* The chip inherits the muted grey otherwise, which lands at 4.25:1 on its own
+   background — readable-looking, and still a failure at this size. */
+.qr-print-controls code { padding: .1rem .3rem; background: #e3e0d8; border-radius: .2rem; color: #14312b; font-size: .8125rem; }
+.qr-print-warning {
+  display: flex; gap: .65rem; align-items: start;
+  margin-top: 1rem; padding: .85rem 1rem;
+  border: 1px solid #9a3412; border-radius: .35rem; background: #fdf3ee;
+  color: #7c2d12; font-size: .875rem; line-height: 1.65;
+}
+.qr-print-warning svg { flex: none; width: 1.15rem; height: 1.15rem; margin-top: .15rem; }
+.qr-print-warning code { background: #f7e3d8; color: #7c2d12; }
+.qr-print-note { margin-top: 1rem; color: var(--admin-muted); font-size: .8125rem; }
+
+.qr-print-sheet {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 1rem; margin: 2rem 0 0; padding: 0; list-style: none;
+}
+.qr-print-card {
+  display: grid; justify-items: center; gap: .3rem;
+  padding: 1rem .85rem 1.1rem;
+  border: 1px dashed #b4bdb8; border-radius: .35rem;
+  background: #fff; text-align: center;
+  break-inside: avoid;
+}
+.qr-print-image { width: 100%; max-width: 10rem; }
+.qr-print-image svg { display: block; width: 100%; height: auto; }
+.qr-print-label { margin-top: .6rem; font-family: "Noto Sans Thai", sans-serif; font-size: .95rem; line-height: 1.5; }
+.qr-print-target { color: var(--admin-muted); font-size: .75rem; }
+.qr-print-url { margin-top: .35rem; font-size: .75rem; color: #173b34; word-break: break-all; }
+.qr-print-url strong { font-weight: 600; }
+.qr-print-scans { color: var(--admin-muted); font-size: .6875rem; }
+
+@media print {
+  /* Nothing on the page but the stickers. */
+  .admin-sidebar, .admin-topbar, .qr-print-controls, .qr-print-scans { display: none; }
+  body, .admin-shell, .admin-workspace, .admin-main { display: block; width: auto; margin: 0; padding: 0; background: #fff; }
+  .qr-print-sheet { grid-template-columns: repeat(3, 1fr); gap: .5rem; margin: 0; }
+  .qr-print-card { border-color: #999; }
+  @page { margin: 12mm; }
+}
