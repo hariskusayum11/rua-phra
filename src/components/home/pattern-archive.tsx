@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
 import { Reveal } from "@/components/motion/reveal";
+import { Tilt } from "@/components/motion/tilt";
 import type { HomePattern } from "@/lib/services/home";
 
 const categoryLabels: Record<string, string> = {
@@ -47,12 +48,18 @@ export function PatternArchive({ patterns }: { patterns: HomePattern[] }) {
                   delay={(index % 3) * 90}
                 >
                   <figure>
-                    <MediaFrame
-                      image={pattern.imageMedia}
-                      ratio={dominant ? "4/5" : "1/1"}
-                      sizes={dominant ? "(max-width: 63.99rem) 100vw, 46vw" : "(max-width: 47.99rem) 50vw, 26vw"}
-                      emptyLabel="ภาพลวดลายอยู่ระหว่างการบันทึก"
-                    />
+                    {/* The dominant image tips further and catches the light; the
+                        supporting ones move just enough to sit in the same space. A wall
+                        of equally tilting thumbnails would read as a toy. */}
+                    <Tilt max={dominant ? 5 : 2.5} sheen={dominant}>
+                      <MediaFrame
+                        image={pattern.imageMedia}
+                        ratio={dominant ? "4/5" : "1/1"}
+                        sizes={dominant ? "(max-width: 63.99rem) 100vw, 46vw" : "(max-width: 47.99rem) 50vw, 26vw"}
+                        className={dominant ? "push" : undefined}
+                        emptyLabel="ภาพลวดลายอยู่ระหว่างการบันทึก"
+                      />
+                    </Tilt>
                     <figcaption>
                       <h3>{pattern.localName || pattern.name}</h3>
                       <p className="home-pattern-meta">

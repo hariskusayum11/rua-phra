@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
 import { Reveal } from "@/components/motion/reveal";
+import { Tilt } from "@/components/motion/tilt";
 import type { HomeContent } from "@/lib/services/home";
 
 /** Section 03 — the thing this archive exists to preserve, at macro focal length. */
@@ -10,13 +11,16 @@ export function UniqueCraft({ image, step }: { image: HomeContent["craftImage"];
     <section className="home-craft" id="craft" aria-labelledby="craft-title">
       <div className="shell home-craft-inner">
         <Reveal as="figure" className="home-craft-figure">
-          <MediaFrame
-            image={image}
-            ratio="4/5"
-            sizes="(max-width: 63.99rem) 100vw, 46vw"
-            focalY={45}
-            emptyLabel="ภาพงานกระดาษระยะใกล้อยู่ระหว่างการบันทึก"
-          />
+          <Tilt>
+            <MediaFrame
+              image={image}
+              ratio="4/5"
+              sizes="(max-width: 63.99rem) 100vw, 46vw"
+              focalY={45}
+              className="push"
+              emptyLabel="ภาพงานกระดาษระยะใกล้อยู่ระหว่างการบันทึก"
+            />
+          </Tilt>
           {image?.credit && <figcaption className="caption">{image.credit}</figcaption>}
         </Reveal>
 

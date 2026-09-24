@@ -1,0 +1,190 @@
+/* ===========================================================================
+   Depth and movement.
+
+   A rua phra is a large gilded object that people walk around and look up at.
+   A flat rectangle on a screen loses all of that, so the page borrows two
+   honest substitutes: layers that move at different speeds as the reader
+   scrolls, and photographs that tip toward the pointer as though they were
+   objects rather than pictures.
+
+   Nothing here invents Thai ornament or draws a boat that nobody modelled —
+   every moving thing is a real photograph from the archive.
+
+   Two rules hold throughout:
+
+   1. Transform and opacity only. Nothing in this file may change a box's size
+      or position in flow, because the homepage has a test asserting CLS stays
+      under 0.1 and a reader arriving mid-scroll must not watch the page jump.
+
+   2. Everything is opt-in twice: behind `prefers-reduced-motion: no-preference`
+      and behind `@supports (animation-timeline: view())`. A browser without
+      scroll-driven animations renders exactly the page that existed before —
+      which was already finished. Motion is the enhancement, never the content.
+   =========================================================================== */
+
+/* --------------------------- pointer tilt -------------------------------- */
+
+.tilt {
+  /* The perspective lives on the wrapper so the child rotates in its own space
+     without dragging the rest of the section into a 3D context. The wrapper is a
+     plain block that takes its parent's width, so inserting it around a media
+     frame changes nothing about where that frame sits. */
+  display: block;
+  perspective: 1200px;
+  transform-style: flat;
+}
+.tilt > * {
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-origin: center;
+  transition: transform 520ms var(--ease);
+  will-change: transform;
+}
+/* While the pointer is moving the transition is short, so the photograph tracks
+   the hand; on release the long transition eases it back level. */
+.tilt[data-tilting="true"] > * { transition-duration: 120ms; }
+
+/* Light travelling over gilt. Sits above the photograph, never over any text —
+   the tilt is only ever applied to a bare media frame. */
+.tilt[data-sheen="true"] > *::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    38rem circle at var(--sheen-x, 50%) var(--sheen-y, 50%),
+    rgba(255, 246, 226, .30),
+    rgba(255, 246, 226, .06) 42%,
+    transparent 68%
+  );
+  transition: opacity 420ms var(--ease);
+}
+.tilt[data-tilting="true"][data-sheen="true"] > *::after { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt > * { transform: none; transition: none; will-change: auto; }
+  .tilt[data-sheen="true"] > *::after { display: none; }
+}
+/* A coarse pointer never produces the mousemove this depends on, and a finger
+   resting on the picture should not leave it tipped. */
+@media (pointer: coarse) {
+  .tilt > * { transform: none; }
+  .tilt[data-sheen="true"] > *::after { display: none; }
+}
+
+/* ----------------------- scroll-driven depth ----------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* The hero photograph lags the page. The frame is already oversized by the
+       settle animation, so the travel never exposes an edge. */
+    .home-hero-media .media-frame {
+      animation: hero-drift linear both;
+      animation-timeline: view();
+      /* The hero fills the viewport, so `contain` never resolves — the parallax is
+         measured across the whole time any part of it is on screen. */
+      animation-range: cover 0% cover 100%;
+      will-change: transform;
+    }
+    @keyframes hero-drift {
+      from { transform: scale(1.06) translate3d(0, -1.5%, 0); }
+      to   { transform: scale(1.06) translate3d(0, 5.5%, 0); }
+    }
+
+    /* The words leave slightly faster than the picture behind them, which is
+       what reads as distance. */
+    /* Only while the words are actually leaving. Fading them earlier left the
+       tagline sitting at half opacity over a bright photograph, which is both
+       ugly and hard to read at exactly the moment someone is still reading it. */
+    .home-hero-copy {
+      animation: hero-copy-drift linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    @keyframes hero-copy-drift {
+      from { transform: translate3d(0, 0, 0); opacity: 1; }
+      to   { transform: translate3d(0, -2.5rem, 0); opacity: 0; }
+    }
+
+    /* Anything marked as a depth layer arrives from behind the page rather than
+       simply fading, so entering a section feels like stepping toward it. */
+    .depth {
+      animation: depth-in linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 34%;
+      transform-origin: center bottom;
+    }
+    /* Transform only, no fade. A depth layer can contain text — the procession
+       caption does — and an element resting at opacity .25 before it scrolls into
+       view is text at 1.77:1 as far as an accessibility check, or a reader, is
+       concerned. The distance reads from the translation alone. */
+    @keyframes depth-in {
+      from { transform: perspective(1400px) translate3d(0, 2.5rem, -9rem) rotateX(3.2deg); }
+      to   { transform: perspective(1400px) translate3d(0, 0, 0) rotateX(0deg); }
+    }
+
+    /* A long, slow push across the whole time a photograph is on screen. Used on
+       the one dominant image in a section, never on several at once. */
+    .push {
+      animation: slow-push linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+      will-change: transform;
+    }
+    @keyframes slow-push {
+      from { transform: scale(1.005); }
+      to   { transform: scale(1.055); }
+    }
+
+    /* Parallax layers. `--lift` is how far the element travels against the
+       scroll: larger reads as nearer the reader. */
+    .layer {
+      animation: layer-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes layer-drift {
+      from { transform: translate3d(0, calc(var(--lift, 1.5rem) * 1), 0); }
+      to   { transform: translate3d(0, calc(var(--lift, 1.5rem) * -1), 0); }
+    }
+
+
+    /* The artisan section is nearly full-screen, so a slow push across the whole
+       scroll reads as the room breathing rather than as an effect. */
+    .home-master-portrait .media-frame {
+      animation: slow-push linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* The three process photographs sit at different depths, so the rail reads as
+       a sequence in space rather than three pictures in a column. */
+    .home-process-stop:nth-child(1) .media-frame { --lift: 2.25rem; }
+    .home-process-stop:nth-child(2) .media-frame { --lift: 1.25rem; }
+    .home-process-stop:nth-child(3) .media-frame { --lift: 2rem; }
+    .home-process-stop .media-frame {
+      animation: layer-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* The procession stage holds a video player, so it comes forward and stops.
+       An earlier version pulled it sideways across the scroll — the right metaphor
+       for a boat being hauled, and the wrong thing to do to a play button, which
+       a reader has to hit while it drifts. Interactive targets hold still. */
+    .home-procession-stage {
+      animation: depth-in linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+  }
+}
+
+/* The reveal already handles the no-JS and reduced-motion cases; this keeps a
+   depth layer from being animated twice when it is also a Reveal. */
+.reveal.depth { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .depth, .push, .layer, .home-procession-stage { transform: none; opacity: 1; }
+}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
+import { Tilt } from "@/components/motion/tilt";
 import type { HomeBoat } from "@/lib/services/home";
 
 /**
@@ -58,13 +59,17 @@ export function FeaturedBoats({ boats }: { boats: HomeBoat[] }) {
           {`เรือลำที่ ${index + 1} จาก ${total}: ${boat.name}`}
         </p>
         <article className="home-featured-spread">
-          <MediaFrame
-            key={boat.slug}
-            image={boat.coverMedia}
-            ratio="16/9"
-            sizes="(max-width: 63.99rem) 100vw, 1280px"
-            className="home-featured-image"
-          />
+          {/* A smaller angle than the other frames: this photograph is the widest thing on
+              the page, and the same rotation on it reads as the picture coming loose. */}
+          <Tilt className="home-featured-tilt depth" max={3.5}>
+            <MediaFrame
+              key={boat.slug}
+              image={boat.coverMedia}
+              ratio="16/9"
+              sizes="(max-width: 63.99rem) 100vw, 1280px"
+              className="home-featured-image"
+            />
+          </Tilt>
 
           <div className="home-featured-body">
             <div className="home-featured-story">
