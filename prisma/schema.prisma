@@ -1,0 +1,897 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VerificationStatus {
+  DRAFT
+  PENDING_REVIEW
+  REVISION_REQUIRED
+  VERIFIED
+  PUBLISHED
+}
+
+enum Role {
+  LEARNER
+  EDITOR
+  REVIEWER
+  ADMIN
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  ORDERING
+  MATCHING
+  IMAGE_HOTSPOT
+}
+
+enum BoatStoryKind {
+  MAIN
+  INSPIRATION
+  DESIGN_CONCEPT
+  COMMUNITY
+  CULTURAL_CONTEXT
+}
+
+enum PatternCategory {
+  FLORAL
+  FOLIAGE
+  GEOMETRIC
+  MYTHICAL
+  OTHER
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+}
+
+enum MediaProvider {
+  LOCAL
+  CLOUDINARY
+  OBJECT_STORAGE
+  PLACEHOLDER
+}
+
+enum SourceKind {
+  FIELD_INTERVIEW
+  FIELD_OBSERVATION
+  PUBLICATION
+  ARCHIVAL_DOCUMENT
+  DEMO
+}
+
+enum QRTargetKind {
+  BOAT
+  PATTERN
+  MASTER
+  PROCESS
+  STEP
+  LESSON
+}
+
+enum StepMediaRole {
+  INSTRUCTION
+  BEFORE
+  AFTER
+}
+
+model Temple {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String   @unique @db.VarChar(160)
+  name        String   @db.VarChar(200)
+  community   String
+  description String?  @db.Text
+  isDemo      Boolean  @default(false)
+  boats       Boat[]
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([name])
+}
+
+model Boat {
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String                @unique @db.VarChar(160)
+  name         String                @db.VarChar(200)
+  /// Buddhist calendar year, stored directly without duplicating a Gregorian year.
+  year         Int
+  concept      String
+  summary      String                @db.Text
+  competition  String?
+  isDemo       Boolean               @default(false)
+  templeId     String                @db.Uuid
+  temple       Temple                @relation(fields: [templeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  coverMediaId String?               @db.Uuid
+  coverMedia   Media?                @relation("BoatCover", fields: [coverMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// Footage of this boat on procession day — the moment the work leaves the shed.
+  processionMediaId String?          @db.Uuid
+  processionMedia   Media?           @relation("BoatProcession", fields: [processionMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stories      BoatStory[]
+  sections     BoatSection[]
+  patterns     BoatPattern[]
+  masters      MasterBoat[]
+  qrCodes      QRCode[]
+  sourceLinks  KnowledgeSourceLink[]
+  verification ContentVerification?
+  createdAt    DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([year, templeId])
+  @@index([templeId, year])
+  @@index([coverMediaId])
+  @@index([processionMediaId])
+}
+
+model BoatStory {
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  boatId       String                @db.Uuid
+  boat         Boat                  @relation(fields: [boatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  title        String
+  body         String                @db.Text
+  kind         BoatStoryKind
+  position     Int
+  isDemo       Boolean               @default(false)
+  sourceLinks  KnowledgeSourceLink[]
+  verification ContentVerification?
+  createdAt    DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([boatId, position])
+}
+
+model BoatSection {
+  id             String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  boatId         String                @db.Uuid
+  boat           Boat                  @relation(fields: [boatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  slug           String                @db.VarChar(160)
+  name           String
+  /// Coordinates are percentages within the full, uncropped boat image.
+  x              Float
+  y              Float
+  position       Int
+  description    String                @db.Text
+  meaning        String?               @db.Text
+  isDemo         Boolean               @default(false)
+  closeupMediaId String?               @db.Uuid
+  closeupMedia   Media?                @relation("SectionCloseup", fields: [closeupMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  patterns       BoatSectionPattern[]
+  sourceLinks    KnowledgeSourceLink[]
+  verification   ContentVerification?
+  createdAt      DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([boatId, slug])
+  @@unique([boatId, position])
+  @@index([closeupMediaId])
+}
+
+model Pattern {
+  id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug            String                @unique @db.VarChar(160)
+  name            String
+  localName       String?
+  category        PatternCategory
+  characteristics String                @db.Text
+  meaning         String?               @db.Text
+  historicalNote  String?               @db.Text
+  isDemo          Boolean               @default(false)
+  imageMediaId    String?               @db.Uuid
+  imageMedia      Media?                @relation("PatternImage", fields: [imageMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  boats           BoatPattern[]
+  sections        BoatSectionPattern[]
+  masters         MasterPattern[]
+  steps           PatternStep[]
+  works           StudentWork[]
+  qrCodes         QRCode[]
+  sourceLinks     KnowledgeSourceLink[]
+  verification    ContentVerification?
+  createdAt       DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([category, name])
+  @@index([imageMediaId])
+}
+
+model Master {
+  id                String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug              String                @unique @db.VarChar(160)
+  name              String
+  biography         String                @db.Text
+  quote             String?               @db.Text
+  /// Start year is stable as time passes; years of experience can be calculated.
+  practiceSinceYear Int?
+  isDemo            Boolean               @default(false)
+  portraitMediaId   String?               @db.Uuid
+  portraitMedia     Media?                @relation("MasterPortrait", fields: [portraitMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  interviewMediaId  String?               @db.Uuid
+  interviewMedia    Media?                @relation("MasterInterview", fields: [interviewMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  patterns          MasterPattern[]
+  boats             MasterBoat[]
+  expertise         MasterExpertise[]
+  steps             MasterStep[]
+  qrCodes           QRCode[]
+  sourceLinks       KnowledgeSourceLink[]
+  verification      ContentVerification?
+  createdAt         DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([name])
+  @@index([portraitMediaId])
+  @@index([interviewMediaId])
+}
+
+model MasterExpertise {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  masterId  String   @db.Uuid
+  master    Master   @relation(fields: [masterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  title     String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([masterId, title])
+}
+
+model KnowledgeProcess {
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String                @unique @db.VarChar(160)
+  title        String
+  description  String                @db.Text
+  isDemo       Boolean               @default(false)
+  steps        ProcessStep[]
+  qrCodes      QRCode[]
+  sourceLinks  KnowledgeSourceLink[]
+  verification ContentVerification?
+  createdAt    DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+}
+
+model ProcessStep {
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String                @unique @db.VarChar(160)
+  processId    String                @db.Uuid
+  process      KnowledgeProcess      @relation(fields: [processId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  title        String
+  description  String                @db.Text
+  importance   String                @db.Text
+  /// Ordered instruction blocks; no material/tool/master IDs are stored in JSON.
+  instructions Json                  @default("[]")
+  tips         String?               @db.Text
+  warnings     String?               @db.Text
+  position     Int
+  isDemo       Boolean               @default(false)
+  coverMediaId String?               @db.Uuid
+  coverMedia   Media?                @relation("StepCover", fields: [coverMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  videoMediaId String?               @db.Uuid
+  videoMedia   Media?                @relation("StepVideo", fields: [videoMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  media        StepMedia[]
+  materials    StepMaterial[]
+  tools        StepTool[]
+  techniques   StepTechnique[]
+  patterns     PatternStep[]
+  masters      MasterStep[]
+  qrCodes      QRCode[]
+  sourceLinks  KnowledgeSourceLink[]
+  verification ContentVerification?
+  createdAt    DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([processId, position])
+  @@index([coverMediaId])
+  @@index([videoMediaId])
+}
+
+model Material {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String         @unique @db.VarChar(160)
+  name        String
+  description String         @db.Text
+  isDemo      Boolean        @default(false)
+  steps       StepMaterial[]
+  createdAt   DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime       @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([name])
+}
+
+model Tool {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String     @unique @db.VarChar(160)
+  name        String
+  description String     @db.Text
+  isDemo      Boolean    @default(false)
+  steps       StepTool[]
+  createdAt   DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime   @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([name])
+}
+
+model Technique {
+  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String          @unique @db.VarChar(160)
+  name        String
+  description String          @db.Text
+  isDemo      Boolean         @default(false)
+  steps       StepTechnique[]
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([name])
+}
+
+model BoatPattern {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  boatId    String   @db.Uuid
+  patternId String   @db.Uuid
+  boat      Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pattern   Pattern  @relation(fields: [patternId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([boatId, patternId])
+  @@index([patternId])
+}
+
+model BoatSectionPattern {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sectionId String      @db.Uuid
+  patternId String      @db.Uuid
+  section   BoatSection @relation(fields: [sectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pattern   Pattern     @relation(fields: [patternId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([sectionId, patternId])
+  @@index([patternId])
+}
+
+model MasterPattern {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  masterId  String   @db.Uuid
+  patternId String   @db.Uuid
+  master    Master   @relation(fields: [masterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pattern   Pattern  @relation(fields: [patternId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([masterId, patternId])
+  @@index([patternId])
+}
+
+model MasterBoat {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  masterId     String   @db.Uuid
+  boatId       String   @db.Uuid
+  master       Master   @relation(fields: [masterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  boat         Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contribution String?
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([masterId, boatId])
+  @@index([boatId])
+}
+
+model StepMaterial {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  stepId       String      @db.Uuid
+  materialId   String      @db.Uuid
+  step         ProcessStep @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  material     Material    @relation(fields: [materialId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  quantityNote String?
+  createdAt    DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([stepId, materialId])
+  @@index([materialId])
+}
+
+model StepTool {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  stepId    String      @db.Uuid
+  toolId    String      @db.Uuid
+  step      ProcessStep @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tool      Tool        @relation(fields: [toolId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  usageNote String?
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([stepId, toolId])
+  @@index([toolId])
+}
+
+model StepTechnique {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  stepId      String      @db.Uuid
+  techniqueId String      @db.Uuid
+  step        ProcessStep @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  technique   Technique   @relation(fields: [techniqueId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  note        String?
+  createdAt   DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([stepId, techniqueId])
+  @@index([techniqueId])
+}
+
+model PatternStep {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patternId String      @db.Uuid
+  stepId    String      @db.Uuid
+  pattern   Pattern     @relation(fields: [patternId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  step      ProcessStep @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([patternId, stepId])
+  @@index([stepId])
+}
+
+model MasterStep {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  masterId     String      @db.Uuid
+  stepId       String      @db.Uuid
+  master       Master      @relation(fields: [masterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  step         ProcessStep @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contribution String?
+  createdAt    DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([masterId, stepId])
+  @@index([stepId])
+}
+
+model Media {
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  kind             MediaKind
+  provider         MediaProvider
+  /// Null for intentionally unavailable demo placeholders.
+  url              String?       @db.Text
+  storageKey       String?
+  alt              String
+  mimeType         String
+  width            Int?
+  height           Int?
+  durationSeconds  Float?
+  credit           String?
+  /// Field provenance, filled when a real photograph replaces a placeholder.
+  photographer     String?
+  takenAt          DateTime?     @db.Date
+  location         String?
+  /// Percentage focal point kept in frame when a layout crops this image.
+  /// Null means centre; the homepage and detail pages read these directly.
+  focalX           Float?
+  focalY           Float?
+  isDemo           Boolean       @default(false)
+  consentId        String?       @db.Uuid
+  consent          Consent?      @relation(fields: [consentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// A still frame that stands in for a video before it is played.
+  posterMediaId    String?       @db.Uuid
+  posterMedia      Media?        @relation("MediaPoster", fields: [posterMediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  posterFor        Media[]       @relation("MediaPoster")
+  boatCovers       Boat[]        @relation("BoatCover")
+  boatProcessions  Boat[]        @relation("BoatProcession")
+  sectionCloseups  BoatSection[] @relation("SectionCloseup")
+  patternImages    Pattern[]     @relation("PatternImage")
+  masterPortraits  Master[]      @relation("MasterPortrait")
+  masterInterviews Master[]      @relation("MasterInterview")
+  stepCovers       ProcessStep[] @relation("StepCover")
+  stepVideos       ProcessStep[] @relation("StepVideo")
+  stepMedia        StepMedia[]
+  createdAt        DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime      @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([provider, storageKey])
+  @@index([kind, createdAt])
+  @@index([consentId])
+  @@index([posterMediaId])
+}
+
+model StepMedia {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  stepId    String        @db.Uuid
+  step      ProcessStep   @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  mediaId   String        @db.Uuid
+  media     Media         @relation(fields: [mediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  role      StepMediaRole
+  position  Int
+  caption   String?
+  createdAt DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime      @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([stepId, position])
+  @@unique([stepId, mediaId, role])
+  @@index([mediaId])
+}
+
+model KnowledgeSource {
+  id            String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  kind          SourceKind
+  informant     String?
+  interviewDate DateTime?             @db.Date
+  fieldNote     String?               @db.Text
+  citation      String?               @db.Text
+  isDemo        Boolean               @default(false)
+  links         KnowledgeSourceLink[]
+  consent       Consent?
+  verification  ContentVerification?
+  createdAt     DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([kind, interviewDate])
+}
+
+model Consent {
+  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId    String          @unique @db.Uuid
+  source      KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  scope       String          @db.Text
+  grantedAt   DateTime?       @db.Timestamptz(3)
+  revokedAt   DateTime?       @db.Timestamptz(3)
+  evidenceUrl String?
+  isDemo      Boolean         @default(false)
+  media       Media[]
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @default(now()) @updatedAt @db.Timestamptz(3)
+}
+
+model KnowledgeSourceLink {
+  id        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId  String            @db.Uuid
+  source    KnowledgeSource   @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  boatId    String?           @db.Uuid
+  boat      Boat?             @relation(fields: [boatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storyId   String?           @db.Uuid
+  story     BoatStory?        @relation(fields: [storyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sectionId String?           @db.Uuid
+  section   BoatSection?      @relation(fields: [sectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  patternId String?           @db.Uuid
+  pattern   Pattern?          @relation(fields: [patternId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  masterId  String?           @db.Uuid
+  master    Master?           @relation(fields: [masterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  processId String?           @db.Uuid
+  process   KnowledgeProcess? @relation(fields: [processId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stepId    String?           @db.Uuid
+  step      ProcessStep?      @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessonId  String?           @db.Uuid
+  lesson    Lesson?           @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  workId    String?           @db.Uuid
+  work      StudentWork?      @relation(fields: [workId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime          @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([sourceId, boatId])
+  @@unique([sourceId, storyId])
+  @@unique([sourceId, sectionId])
+  @@unique([sourceId, patternId])
+  @@unique([sourceId, masterId])
+  @@unique([sourceId, processId])
+  @@unique([sourceId, stepId])
+  @@unique([sourceId, lessonId])
+  @@unique([sourceId, workId])
+  @@index([boatId])
+  @@index([storyId])
+  @@index([sectionId])
+  @@index([patternId])
+  @@index([masterId])
+  @@index([processId])
+  @@index([stepId])
+  @@index([lessonId])
+  @@index([workId])
+}
+
+model ContentVerification {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status       VerificationStatus @default(DRAFT)
+  boatId       String?            @unique @db.Uuid
+  boat         Boat?              @relation(fields: [boatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  storyId      String?            @unique @db.Uuid
+  story        BoatStory?         @relation(fields: [storyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sectionId    String?            @unique @db.Uuid
+  section      BoatSection?       @relation(fields: [sectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  patternId    String?            @unique @db.Uuid
+  pattern      Pattern?           @relation(fields: [patternId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  masterId     String?            @unique @db.Uuid
+  master       Master?            @relation(fields: [masterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  processId    String?            @unique @db.Uuid
+  process      KnowledgeProcess?  @relation(fields: [processId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stepId       String?            @unique @db.Uuid
+  step         ProcessStep?       @relation(fields: [stepId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessonId     String?            @unique @db.Uuid
+  lesson       Lesson?            @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  workId       String?            @unique @db.Uuid
+  work         StudentWork?       @relation(fields: [workId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sourceId     String?            @unique @db.Uuid
+  source       KnowledgeSource?   @relation(fields: [sourceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  verifiedById String?            @db.Uuid
+  verifiedBy   User?              @relation(fields: [verifiedById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  verifiedAt   DateTime?          @db.Timestamptz(3)
+  note         String?            @db.Text
+  createdAt    DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime           @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([status, updatedAt])
+  @@index([verifiedById])
+}
+
+model QRCode {
+  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code       String            @unique @db.VarChar(80)
+  label      String
+  targetKind QRTargetKind
+  boatId     String?           @db.Uuid
+  boat       Boat?             @relation(fields: [boatId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  patternId  String?           @db.Uuid
+  pattern    Pattern?          @relation(fields: [patternId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  masterId   String?           @db.Uuid
+  master     Master?           @relation(fields: [masterId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  processId  String?           @db.Uuid
+  process    KnowledgeProcess? @relation(fields: [processId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  stepId     String?           @db.Uuid
+  step       ProcessStep?      @relation(fields: [stepId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  lessonId   String?           @db.Uuid
+  lesson     Lesson?           @relation(fields: [lessonId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  scanCount  Int               @default(0)
+  active     Boolean           @default(true)
+  isDemo     Boolean           @default(false)
+  createdAt  DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime          @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([active, targetKind])
+  @@index([boatId])
+  @@index([patternId])
+  @@index([masterId])
+  @@index([processId])
+  @@index([stepId])
+  @@index([lessonId])
+}
+
+model User {
+  id            String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String?
+  email         String                @unique
+  role          Role                  @default(LEARNER)
+  profile       UserProfile?
+  enrollments   Enrollment[]
+  progress      LessonProgress[]
+  attempts      QuizAttempt[]
+  works         StudentWork[]
+  feedback      WorkFeedback[]
+  assessments   AssessmentResponse[]
+  verifications ContentVerification[]
+  createdAt     DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+}
+
+model UserProfile {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @unique @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bio       String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+}
+
+model Course {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String       @unique
+  title       String
+  description String
+  isDemo      Boolean      @default(false)
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  createdAt   DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime     @default(now()) @updatedAt @db.Timestamptz(3)
+}
+
+model Lesson {
+  sourceLinks  KnowledgeSourceLink[]
+  verification ContentVerification?
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String
+  title        String
+  position     Int
+  courseId     String                @db.Uuid
+  course       Course                @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contents     LessonContent[]
+  quizzes      Quiz[]
+  progress     LessonProgress[]
+  qrCodes      QRCode[]
+  createdAt    DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([courseId, slug])
+}
+
+model LessonContent {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lessonId  String   @db.Uuid
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  kind      String
+  body      Json
+  position  Int
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([lessonId])
+}
+
+model Quiz {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  lessonId  String        @db.Uuid
+  lesson    Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  questions Question[]
+  attempts  QuizAttempt[]
+  createdAt DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime      @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([lessonId])
+}
+
+model Question {
+  id            String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quizId        String       @db.Uuid
+  quiz          Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  type          QuestionType
+  prompt        String
+  position      Int
+  configuration Json?
+  choices       Choice[]
+  createdAt     DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime     @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([quizId])
+}
+
+model Choice {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionId String   @db.Uuid
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  text       String
+  correct    Boolean  @default(false)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([questionId])
+}
+
+model Enrollment {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  userId    String   @db.Uuid
+  courseId  String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model LessonProgress {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  userId      String    @db.Uuid
+  lessonId    String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  completedAt DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([userId, lessonId])
+  @@index([lessonId])
+}
+
+model QuizAttempt {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @db.Uuid
+  quizId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  answers   Json
+  score     Float
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([userId])
+  @@index([quizId])
+}
+
+model StudentWork {
+  sourceLinks  KnowledgeSourceLink[]
+  verification ContentVerification?
+  id           String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug         String                @unique
+  title        String
+  userId       String                @db.Uuid
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  patternId    String?               @db.Uuid
+  pattern      Pattern?              @relation(fields: [patternId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  inspiration  String
+  concept      String
+  reflection   String
+  isDemo       Boolean               @default(false)
+  published    Boolean               @default(false)
+  media        StudentWorkMedia[]
+  feedback     WorkFeedback[]
+  createdAt    DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([userId])
+  @@index([patternId])
+}
+
+model StudentWorkMedia {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workId    String      @db.Uuid
+  work      StudentWork @relation(fields: [workId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  stage     String
+  url       String
+  alt       String
+  position  Int
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([workId])
+}
+
+model WorkFeedback {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workId    String      @db.Uuid
+  userId    String      @db.Uuid
+  work      StudentWork @relation(fields: [workId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  body      String
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([workId])
+  @@index([userId])
+}
+
+model Assessment {
+  id        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  questions AssessmentQuestion[]
+  createdAt DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime             @default(now()) @updatedAt @db.Timestamptz(3)
+}
+
+model AssessmentQuestion {
+  id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  assessmentId String               @db.Uuid
+  assessment   Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  prompt       String
+  position     Int
+  responses    AssessmentResponse[]
+  createdAt    DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime             @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([assessmentId])
+}
+
+model AssessmentResponse {
+  id         String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionId String             @db.Uuid
+  userId     String             @db.Uuid
+  question   AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  answer     Json
+  createdAt  DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime           @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([questionId])
+  @@index([userId])
+}

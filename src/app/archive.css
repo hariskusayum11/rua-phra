@@ -1,0 +1,113 @@
+/* ===========================================================================
+   Archive detail pages — one pattern, one artisan.
+
+   Both are the same shape: a lede, one large photograph, the written record,
+   then the connections. They read as catalogue entries rather than as landing
+   pages, so the type is quieter than the homepage and the measure is narrower.
+   =========================================================================== */
+
+.archive-page { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 9vw, 8rem); }
+.archive-page > * + * { margin-top: clamp(2.5rem, 6vw, 4.5rem); }
+
+.archive-lede > * { max-width: var(--measure); }
+.archive-lede h1 { margin-top: 1rem; font-size: clamp(2.25rem, 5vw, 4rem); }
+.archive-alt-name { margin-top: .85rem; color: var(--muted); font-size: .9375rem; }
+.archive-lede-text { margin-top: 1.5rem; }
+.archive-lede .demo-notice { margin-top: 1.5rem; }
+
+.archive-figure { margin: 0; }
+.archive-figure figcaption { margin-top: .85rem; }
+
+.archive-body > * { max-width: var(--measure); }
+.archive-body h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.archive-body p { margin-top: 1.25rem; color: var(--muted); }
+
+.archive-quote-block { max-width: 46rem; }
+.archive-quote {
+  margin: 0; padding: 0;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.5rem, 3.6vw, 2.5rem);
+  font-weight: 500; line-height: 1.45; letter-spacing: -.015em;
+  color: var(--foreground); text-wrap: balance;
+}
+.archive-quote::before { content: "“"; }
+.archive-quote::after { content: "”"; }
+.archive-quote-source { margin-top: 1.25rem; color: var(--accent-text); font-size: .9375rem; }
+
+.archive-tags {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  margin: 1.75rem 0 0; padding: 0; list-style: none;
+}
+.archive-tags li {
+  padding: .35rem .75rem; border: 1px solid var(--rule);
+  color: var(--muted); font-size: .8125rem;
+}
+
+.archive-audio { margin: 2rem 0 0; }
+.archive-audio figcaption { margin-bottom: .6rem; color: var(--accent-text); font-size: .8125rem; }
+.archive-audio audio { width: min(100%, 26rem); }
+.archive-audio .caption { margin-top: .5rem; }
+.archive-body .upcoming-link { margin-top: 2rem; }
+
+.archive-connections h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.archive-group { margin-top: clamp(2rem, 4vw, 3rem); }
+.archive-group h3 {
+  padding-bottom: .75rem; border-bottom: 1px solid var(--rule);
+  font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  font-size: .8125rem; font-weight: 500; letter-spacing: .14em; color: var(--muted);
+}
+.archive-group .empty-note { margin-top: 1.25rem; }
+
+.archive-card-list {
+  display: grid; gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin: 1.5rem 0 0; padding: 0; list-style: none;
+}
+.archive-card-list a { display: grid; gap: .75rem; text-decoration: none; }
+.archive-card-list .media-frame { transition: transform var(--ui) var(--ease); }
+.archive-card-list a:hover .media-frame { transform: scale(1.015); }
+.archive-card-title { font-family: "Noto Serif Thai", serif; font-size: 1.25rem; font-weight: 500; }
+.archive-card-meta { color: var(--accent-text); font-size: .8125rem; }
+.archive-card-note { color: var(--muted); font-size: .875rem; }
+
+.archive-link-list { margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.archive-link-list a {
+  display: grid; grid-template-columns: 1fr auto; align-items: center;
+  gap: .25rem 1rem; min-height: 56px; padding-block: .85rem;
+  border-bottom: 1px solid var(--rule); text-decoration: none;
+}
+.archive-link-list span { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; }
+.archive-link-list small { grid-column: 1; color: var(--muted); font-size: .8125rem; }
+.archive-link-list svg {
+  grid-column: 2; grid-row: 1 / -1; width: 1rem; height: 1rem;
+  color: var(--accent-text); transition: transform var(--micro) var(--ease);
+}
+.archive-link-list a:hover { color: var(--accent-text); }
+.archive-link-list a:hover svg { transform: translate(.15rem, -.15rem); }
+
+.archive-back { padding-top: clamp(1rem, 3vw, 2rem); border-top: 1px solid var(--rule); }
+
+@media (min-width: 48rem) {
+  .archive-card-list { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+}
+@media (min-width: 64rem) {
+  /* The photograph sits beside the lede rather than under it, so the entry opens with
+     both the name and the thing it names. The grid itself takes the shell's width, so
+     every row keeps the page gutter instead of running to the viewport edge. */
+  .archive-page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 5.5rem);
+    align-items: start;
+    width: min(100% - (var(--gutter) * 2), var(--max-w));
+    margin-inline: auto;
+  }
+  .archive-page > * { margin-top: 0; }
+  .archive-page > .shell { width: 100%; }
+  .archive-lede { grid-column: 1; grid-row: 1; }
+  .archive-figure { grid-column: 2; grid-row: 1 / span 2; }
+  .archive-quote-block,
+  .archive-body,
+  .archive-connections,
+  .archive-back { grid-column: 1 / -1; margin-top: clamp(3rem, 6vw, 5rem); }
+  .archive-connections .archive-card-list { grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); }
+}

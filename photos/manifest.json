@@ -1,0 +1,345 @@
+{
+  "_readme": "เขียนโดย Claude หลังเปิดดูภาพทุกใบ แก้ไขได้ตามต้องการแล้วรัน npm run photos:import ซ้ำ — สคริปต์เป็น upsert จึงรันซ้ำได้ปลอดภัย",
+  "location": "อำเภอปากพะยูน จังหวัดพัทลุง",
+  "credit": "ภาพบันทึกภาคสนาม โครงการจัดการองค์ความรู้เรือพระ อำเภอปากพะยูน",
+  "images": [
+    {
+      "file": "P1708814 เตรียมวัสดุ.JPG",
+      "key": "field-step-prepare-materials",
+      "slot": "process-step",
+      "target": "prepare-materials-demo",
+      "alt": "เหล็กตอกลายจำนวนมากเรียงอยู่ในกล่องพลาสติกสามใบ ข้างหลังเป็นค้อนไม้วางบนแถบกระดาษที่เขียนลายกระหนกไว้แล้ว",
+      "focalX": 50,
+      "focalY": 46,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1708793 ออกแบบลวดลาย.JPG",
+      "key": "field-step-pattern-design",
+      "slot": "process-step",
+      "target": "pattern-design-demo",
+      "alt": "แบบร่างดินสอบนกระดาษ เป็นรูปหัวเรือพระที่มีดวงอาทิตย์รัศมีอยู่กลางลำ และมีแบบร่างชิ้นเล็กอีกชิ้นอยู่ด้านขวา",
+      "focalX": 45,
+      "focalY": 52,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1708807 กระดาษเปล่าเห็นผิวและเนื้อ.JPG",
+      "key": "field-step-template-making",
+      "slot": "process-step",
+      "target": "template-making-demo",
+      "alt": "แม่แบบลายกระหนกที่เขียนเส้นไว้บนกระดาษ วางซ้อนกันเป็นตั้งบนแผ่นรองตัดสีเขียว มีแม่แบบอีกชิ้นวางพาดอยู่ด้านหลัง",
+      "focalX": 45,
+      "focalY": 55,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1708812 ลายที่ตอกเสร็จแล้ว.JPG",
+      "key": "field-step-paper-cutting",
+      "slot": "process-step",
+      "target": "paper-cutting-demo",
+      "alt": "แผ่นลายกระหนกสีขาวที่ตอกฉลุเสร็จแล้วสองแผ่น วางอยู่บนโต๊ะทำงานที่เปื้อนสี เห็นช่องโปร่งของลายชัดเจน",
+      "focalX": 45,
+      "focalY": 55,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1708834 เครื่องมือของช่าง.JPG",
+      "key": "field-craft-tools",
+      "slot": "process-closeup",
+      "target": "prepare-materials-demo",
+      "caption": "เครื่องมือของช่าง: เหล็กตอกพันด้ามและค้อนไม้",
+      "alt": "ค้อนไม้ด้ามแดงวางอยู่ข้างแถบกระดาษที่เขียนลายกระหนก ล้อมด้วยกล่องเหล็กตอกลายที่พันด้ามด้วยเชือก",
+      "focalX": 45,
+      "focalY": 45,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1718867 อัดดอก.JPG",
+      "key": "field-craft-macro-embossing",
+      "slot": "process-closeup",
+      "target": "paper-cutting-demo",
+      "crop": {
+        "left": 420,
+        "top": 520,
+        "width": 1720,
+        "height": 2150
+      },
+      "caption": "มือช่างกำลังประกอบแถบลายสีบนกระดาษ",
+      "alt": "มือช่างถือเครื่องมือทำงานอยู่บนแถบลายกระดาษพื้นแดง ที่ประดับด้วยดอกกลมสีเขียวมะนาว ส้ม และชมพู เรียงเป็นจังหวะ",
+      "consent": "not-required"
+    },
+    {
+      "file": "P1718899 ลายที่เสร็จแล้ว.JPG",
+      "key": "field-step-embossing",
+      "slot": "process-step",
+      "target": "embossing-demo",
+      "alt": "แถบลายกระดาษสองแถบวางคู่กันบนโต๊ะ แถบซ้ายพื้นสีน้ำเงิน แถบขวาพื้นสีแดง ทั้งสองแถบประดับลายดอกและลายเปลวสีสด",
+      "focalX": 50,
+      "focalY": 50,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1718873 ลายที่ดอกเสร็จแล้วตากให้แห้ง.JPG",
+      "key": "field-step-detail-finishing",
+      "slot": "process-step",
+      "target": "detail-finishing-demo",
+      "alt": "แถบลายกระดาษหลายแถบแขวนตากบนราวด้วยไม้หนีบสีสด แต่ละแถบมีลายดอกและลายเปลวสีส้ม เหลือง เขียว และชมพู",
+      "focalX": 50,
+      "focalY": 50,
+      "consent": "not-required"
+    },
+    {
+      "file": "เรือพระ ลวดลาย.jpg",
+      "key": "field-step-boat-installation",
+      "slot": "process-step",
+      "target": "boat-installation-demo",
+      "alt": "แถบลวดลายหลายชั้นที่ประดับบนลำเรือพระ มีลายดอกสี่กลีบ ลายใบ และลายฉลุสีขาวเรียงสลับกันเป็นชั้น ๆ",
+      "focalX": 50,
+      "focalY": 55,
+      "consent": "not-required"
+    },
+    {
+      "file": "ชักพระ เฟรมจากคลิปมุมสูง.jpg",
+      "key": "field-procession-wide",
+      "slot": "process-closeup",
+      "target": "boat-installation-demo",
+      "caption": "เรือพระเคลื่อนไปตามถนนในวันชักพระ",
+      "alt": "ภาพมุมสูงของเรือพระสีทองที่เคลื่อนไปตามถนนสายเล็กกลางทุ่ง มีผู้คนเดินตามและยืนอยู่สองข้างทาง",
+      "focalX": 45,
+      "focalY": 55,
+      "consent": "not-required"
+    },
+    {
+      "file": "เรือพระ 45 องศา วัดรัตนาราม 2567.jpg",
+      "key": "field-boat-rattanaram-2567-cover",
+      "slot": "boat-cover",
+      "target": "rua-phra-wat-rattanaram-2567",
+      "alt": "เรือพระวัดรัตนารามจอดอยู่ในโรงเรือน มีผู้คนยืนชมอยู่ด้านหน้า ด้านซ้ายเป็นป้ายศูนย์การเรียนรู้เรือพระ",
+      "focalX": 52,
+      "focalY": 48,
+      "consent": "granted"
+    },
+    {
+      "file": "เกล็ดพญานาค 6000 เกล็ด วัดรัตนาราม 2567.jpg",
+      "key": "field-pattern-naga-scales",
+      "slot": "pattern",
+      "target": "kled-phaya-nak-rattanaram",
+      "alt": "ภาพระยะใกล้ของเกล็ดพญานาคที่ซ้อนเหลื่อมกันเป็นชั้น แต่ละเกล็ดมีขอบโลหะเงิน ภายในเป็นใบไม้สานและฟอยล์สีบานเย็นกับสีทอง",
+      "focalX": 55,
+      "focalY": 50,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1708812 ลายที่ตอกเสร็จแล้ว.JPG",
+      "key": "field-pattern-chalu",
+      "slot": "pattern",
+      "target": "lai-chalu-kradat-rattanaram",
+      "alt": "แผ่นลายกระหนกสีขาวที่ตอกฉลุจนเป็นช่องโปร่ง วางอยู่บนโต๊ะทำงานของช่าง",
+      "focalX": 45,
+      "focalY": 66,
+      "consent": "not-required"
+    },
+    {
+      "file": "เรือพระ ลวดลาย.jpg",
+      "key": "field-pattern-boat-bands",
+      "slot": "pattern",
+      "target": "lai-thaeb-si-lam-ruea",
+      "alt": "แถบลายดอกและลายใบสีแดง เหลือง ส้ม และเขียว เรียงซ้อนกันเป็นชั้นบนลำเรือพระ",
+      "focalX": 50,
+      "focalY": 50,
+      "consent": "not-required"
+    },
+    {
+      "file": "P1718873 ลายที่ดอกเสร็จแล้วตากให้แห้ง.JPG",
+      "key": "field-pattern-paper-band-flowers",
+      "slot": "pattern",
+      "target": "lai-dok-bon-thaeb-kradat",
+      "alt": "แถบลายกระดาษที่ประดับดอกกลางแถบ ล้อมด้วยกลีบและลายเปลวไล่สี แขวนตากอยู่บนราว",
+      "focalX": 58,
+      "focalY": 68,
+      "consent": "not-required"
+    },
+    {
+      "file": "ชักพระ เฟรมริมถนน.jpg",
+      "key": "library-procession-roadside",
+      "slot": "library",
+      "alt": "ภาพมุมสูงของขบวนชักพระที่กำลังเคลื่อนไปตามถนน มีผู้คนเดินตามเรือพระทั้งสองข้างทาง",
+      "consent": "not-required"
+    },
+    {
+      "file": "เรือพระ 2567 1.jpg",
+      "key": "library-boat-night-unidentified",
+      "slot": "library",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 2048,
+        "height": 1560
+      },
+      "alt": "เรือพระในเวลากลางคืน ประดับด้วยพญานาคหลายเศียรและลวดลายสีสดทั่วทั้งลำ ยังไม่ได้ระบุว่าเป็นเรือของวัดใด",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระ 2567 ส่วนหัวพยานาค.jpg",
+      "key": "library-boat-hua-khuan-naga",
+      "slot": "library",
+      "alt": "หัวพญานาคหลายเศียรของเรือพระวัดหัวควน สีสดตัดกันชัดเจน มีป้ายชื่อวัดติดอยู่ด้านบน",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-boat-rattanaram-2568-cover",
+      "slot": "boat-cover",
+      "target": "rua-phra-wat-rattanaram-2568",
+      "photographer": "bangpopfarm photography",
+      "alt": "เรือพระวัดรัตนารามเต็มลำ มองจากด้านข้าง เห็นหัวพญานาคหลายเศียรทางซ้าย บุษบกอยู่กลางลำ และหางพญานาคสะบัดขึ้นทางขวา",
+      "focalX": 50,
+      "focalY": 52,
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-section-2568-hua-phaya-nak",
+      "slot": "boat-section",
+      "target": "rua-phra-wat-rattanaram-2568/hua-phaya-nak",
+      "photographer": "bangpopfarm photography",
+      "crop": {
+        "left": 150,
+        "top": 470,
+        "width": 700,
+        "height": 394
+      },
+      "alt": "ภาพระยะใกล้ของหัวพญานาคหลายเศียรที่หัวเรือ แต่ละเศียรมีหงอน เกล็ด และเปลวไฟล้อมรอบ",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-section-2568-yot",
+      "slot": "boat-section",
+      "target": "rua-phra-wat-rattanaram-2568/yot",
+      "photographer": "bangpopfarm photography",
+      "crop": {
+        "left": 830,
+        "top": 400,
+        "width": 560,
+        "height": 315
+      },
+      "alt": "ภาพระยะใกล้ของยอดเรือนที่ไล่ขนาดขึ้นไปเป็นชั้นจนถึงปลายยอด",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-section-2568-busabok",
+      "slot": "boat-section",
+      "target": "rua-phra-wat-rattanaram-2568/busabok",
+      "photographer": "bangpopfarm photography",
+      "crop": {
+        "left": 800,
+        "top": 540,
+        "width": 620,
+        "height": 349
+      },
+      "alt": "ภาพระยะใกล้ของบุษบกกลางลำเรือ เรือนยอดที่ใช้ประดิษฐานพระพุทธรูป",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-section-2568-ruean-kaeo",
+      "slot": "boat-section",
+      "target": "rua-phra-wat-rattanaram-2568/ruean-kaeo",
+      "photographer": "bangpopfarm photography",
+      "crop": {
+        "left": 1060,
+        "top": 520,
+        "width": 560,
+        "height": 315
+      },
+      "alt": "ภาพระยะใกล้ของเรือนแก้ว กรอบซุ้มพื้นสีแดงที่ล้อมองค์พระ ตกแต่งด้วยลายกระหนกสีทอง",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-section-2568-hang-phaya-nak",
+      "slot": "boat-section",
+      "target": "rua-phra-wat-rattanaram-2568/hang-phaya-nak",
+      "photographer": "bangpopfarm photography",
+      "crop": {
+        "left": 1350,
+        "top": 450,
+        "width": 698,
+        "height": 393
+      },
+      "alt": "ภาพระยะใกล้ของหางพญานาคที่สะบัดขึ้นเป็นพุ่ม ปลายหางม้วนเป็นเปลวไฟไล่สี",
+      "consent": "granted"
+    },
+    {
+      "file": "เรือพระด้านข้าง วัดรัตนาราม 2568.jpg",
+      "key": "field-section-2568-tua-ruea",
+      "slot": "boat-section",
+      "target": "rua-phra-wat-rattanaram-2568/tua-ruea",
+      "photographer": "bangpopfarm photography",
+      "crop": {
+        "left": 620,
+        "top": 800,
+        "width": 760,
+        "height": 353
+      },
+      "alt": "ภาพระยะใกล้ของลำตัวเรือ เห็นแถบลวดลายต่อเนื่องและป้ายชื่อวัดรัตนารามอยู่กลางลำ",
+      "consent": "granted"
+    },
+    {
+      "file": "P1708823 ขณะตอกลาย.JPG",
+      "key": "field-step-paper-cutting-artisan",
+      "slot": "process-step",
+      "target": "paper-cutting-demo",
+      "alt": "ช่างนั่งตอกลายบนกระดาษด้วยเหล็กตอก มีกล่องเหล็กตอกหลายขนาดวางเรียงอยู่บนโต๊ะด้านหน้า",
+      "focalX": 45,
+      "focalY": 32,
+      "consent": "granted"
+    },
+    {
+      "file": "P1708823 ขณะตอกลาย.JPG",
+      "key": "field-master-portrait-rattanaram",
+      "slot": "master-portrait",
+      "target": "chang-lai-kradat-rattanaram",
+      "crop": {
+        "left": 900,
+        "top": 0,
+        "width": 2765,
+        "height": 3456
+      },
+      "alt": "ช่างนั่งตอกลายบนกระดาษที่โต๊ะทำงาน มือถือเหล็กตอก มีกล่องเครื่องมือวางเรียงอยู่ด้านหน้า",
+      "focalX": 50,
+      "focalY": 24,
+      "consent": "granted"
+    }
+  ],
+  "videos": [
+    {
+      "file": "Screen Recording 2026-09-22 172111.mp4",
+      "key": "field-procession-rattanaram",
+      "slot": "boat-procession",
+      "target": "rua-phra-wat-rattanaram-2567",
+      "posterAt": 40,
+      "alt": "บันทึกภาพมุมสูงของขบวนชักพระ เรือพระถูกลากไปตามถนนโดยผู้คนในชุมชน แล้วเคลื่อนผ่านย่านตลาด",
+      "posterAlt": "ภาพนิ่งจากคลิปวันชักพระ เรือพระสีทองอยู่กลางถนนโดยมีผู้คนอยู่รอบ ๆ",
+      "credit": "บันทึกภาพวันชักพระ อำเภอปากพะยูน — ยังไม่ได้ยืนยันว่าเป็นเรือลำเดียวกับที่บันทึกไว้ในหน้านี้",
+      "consent": "not-required"
+    },
+    {
+      "file": "Screen Recording 2026-09-22 171751.mp4",
+      "key": "library-procession-shed",
+      "slot": "video-library",
+      "alt": "คลิปสั้นตอนเข็นเรือพระออกจากโรงเรือน และผู้คนช่วยกันชักเชือกลากเรือไปตามถนน",
+      "consent": "granted"
+    },
+    {
+      "file": "Screen Recording 2026-08-19 182748.mp4",
+      "key": "library-procession-street",
+      "slot": "video-library",
+      "alt": "คลิปสั้นตอนเรือพระเคลื่อนผ่านถนนในชุมชน มีผู้คนยืนชมอยู่ริมทาง",
+      "consent": "granted"
+    }
+  ]
+}

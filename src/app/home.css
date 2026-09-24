@@ -1,0 +1,617 @@
+/* ===========================================================================
+   Homepage — a narrative museum sequence.
+
+   The rhythm is deliberate and uneven: a big visual moment, then quiet
+   information, then a big cultural moment, then a small discovery. Sections of
+   equal weight are what made the page read as a project report.
+
+   Written mobile-first. Breakpoints: 48rem (tablet), 64rem (desktop).
+   =========================================================================== */
+
+/* ------------------------------ media frames ----------------------------- */
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-warm);
+}
+.media-frame-fill { position: absolute; inset: 0; }
+.media-frame img { object-fit: cover; object-position: var(--focal-x, 50%) var(--focal-y, 50%); }
+.media-frame-empty {
+  position: absolute; inset: 0;
+  display: grid; place-content: center; justify-items: center; gap: .6rem;
+  padding: 1.5rem; text-align: center;
+  color: var(--muted); font-size: .8125rem; line-height: 1.6;
+}
+.media-frame-empty svg { width: 1.5rem; height: 1.5rem; }
+.on-dark .media-frame { background: var(--dark-raised); }
+.on-dark .media-frame-empty { color: var(--on-dark-muted); }
+
+/* ------------------------------ scroll reveal ---------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--reveal) var(--ease), transform var(--reveal) var(--ease);
+}
+.reveal[data-shown="true"] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ------------------------------- page shell ------------------------------ */
+.home-page { display: block; overflow-x: clip; }
+.home-page > section { position: relative; }
+.home-rule { width: 4.5rem; height: 1px; margin: 2rem 0; border: 0; background: var(--rule-strong); }
+
+/* ========================= 01 · CINEMATIC HERO ========================== */
+.home-hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  background: var(--dark);
+  color: var(--on-dark);
+}
+.home-hero-media {
+  --focal-y: 58%;
+  position: absolute; inset: 0; z-index: -2; overflow: hidden;
+  animation: hero-settle var(--entrance) var(--ease) both;
+}
+@keyframes hero-settle { from { transform: scale(1.03); } to { transform: scale(1); } }
+.home-hero-veil {
+  position: absolute; inset: 0; z-index: -1;
+  /* Dark enough for the words, and only where the words are — the rest of the frame
+     keeps the photograph's colour, which is the reason anyone stays on the page. */
+  background:
+    /* A band down the left, where the words are, at full height — the title sits at
+       mid-height, so a corner-anchored wash never reaches it. The right two-thirds of
+       the frame keep the photograph's colour untouched. */
+    linear-gradient(to right, rgba(10, 24, 21, .86) 0%, rgba(10, 24, 21, .68) 22%, rgba(10, 24, 21, .46) 38%, rgba(10, 24, 21, .18) 52%, rgba(10, 24, 21, 0) 68%),
+    linear-gradient(to top, rgba(10, 24, 21, .68) 0%, rgba(10, 24, 21, .24) 24%, rgba(10, 24, 21, 0) 52%);
+}
+.home-hero-inner {
+  display: grid; gap: 2rem;
+  padding-block: clamp(3.5rem, 10vh, 7rem);
+}
+.home-hero-copy > * {
+  animation: hero-rise var(--entrance) var(--ease) both;
+  text-shadow: 0 1px 18px rgba(10, 24, 21, .6);
+}
+.home-hero-copy > .button-solid { text-shadow: none; }
+@keyframes hero-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.home-hero-title {
+  font-size: clamp(2.875rem, 9.5vw, 6rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -.03em;
+  animation-delay: 120ms;
+}
+.home-hero-tagline {
+  margin-top: 1.5rem;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.375rem, 4.6vw, 2.125rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -.01em;
+  animation-delay: 270ms;
+}
+.home-hero-sub {
+  max-width: 32rem;
+  margin-top: 1.5rem;
+  color: var(--on-dark-muted);
+  font-size: clamp(.9375rem, 2.4vw, 1.0625rem);
+  line-height: 1.8;
+  animation-delay: 380ms;
+}
+.home-hero-copy .button-solid { margin-top: 2.5rem; animation-delay: 500ms; }
+.home-hero-scroll {
+  display: inline-flex; min-height: 44px; align-items: center; gap: .6rem;
+  color: var(--on-dark-muted); font-size: .8125rem; letter-spacing: .1em;
+  text-decoration: none;
+  animation: hero-rise var(--entrance) var(--ease) 640ms both;
+}
+.home-hero-scroll svg { width: 1rem; height: 1rem; animation: scroll-hint 2.4s var(--ease) infinite; }
+@keyframes scroll-hint { 0%, 70%, 100% { transform: translateY(0); } 85% { transform: translateY(.3rem); } }
+.home-hero-scroll:hover { color: var(--craft); }
+
+@media (min-width: 48rem) {
+  .home-hero-media { --focal-y: 50%; }
+}
+@media (min-width: 64rem) {
+  .home-hero-inner { grid-template-columns: minmax(0, 1fr) auto; align-items: flex-end; }
+  .home-hero-scroll { justify-self: end; }
+}
+
+/* ========================= 02 · INTRODUCTION ============================ */
+/* Quiet by design: this is the breath between the hero and the craft. */
+.home-introduction { padding-block: clamp(5rem, 12vw, 13rem); }
+.home-introduction-inner { display: grid; gap: 2rem; }
+.home-introduction-body h2 { max-width: 14ch; }
+.home-introduction-lead { margin-top: 2rem; }
+
+.home-pillars {
+  display: grid; gap: clamp(1.5rem, 4vw, 3rem);
+  margin: clamp(4rem, 10vw, 8rem) 0 0; padding: 0; list-style: none;
+}
+.home-pillars span {
+  display: block;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(2rem, 9vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  color: var(--foreground);
+}
+.home-pillars li[data-lane="mid"] span { color: var(--primary); }
+.home-pillars li[data-lane="wide"] span { color: var(--accent-text); }
+
+@media (min-width: 64rem) {
+  .home-introduction-inner { grid-template-columns: 14rem minmax(0, 1fr); gap: clamp(3rem, 8vw, 9rem); }
+  .home-introduction-index { padding-top: 1rem; }
+  /* Four words placed across a twelve-column field rather than lined up in a row. */
+  .home-pillars { grid-template-columns: repeat(12, 1fr); row-gap: clamp(2rem, 5vw, 4rem); }
+  .home-pillars li[data-lane="start"] { grid-column: 1 / span 4; }
+  .home-pillars li[data-lane="mid"] { grid-column: 6 / span 4; }
+  .home-pillars li[data-lane="wide"] { grid-column: 3 / span 5; }
+  .home-pillars li[data-lane="end"] { grid-column: 8 / span 5; text-align: right; }
+}
+
+/* ========================= 03 · UNIQUE CRAFT =========================== */
+/* A big cultural moment: the photograph takes most of the width. */
+.home-craft { padding-block: var(--section-y); background-color: var(--surface-warm); background-image: var(--paper-grain); }
+.home-craft-inner { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+.home-craft-figure { margin: 0; }
+.home-craft-figure figcaption { margin-top: .85rem; }
+/* Sized to the column it sits in, so "สู่ศิลปะบนเรือพระ" stays on one line. */
+.home-craft-copy h2 { margin-top: 1.25rem; font-size: clamp(1.875rem, 3.3vw, 3rem); text-wrap: balance; }
+.home-craft-text { max-width: 30rem; margin-top: 1.75rem; color: var(--muted); }
+.home-craft-note {
+  max-width: 30rem; margin-top: 1.75rem; padding-left: 1.1rem;
+  border-left: 2px solid var(--accent); color: var(--muted); font-size: .9375rem;
+}
+.home-craft-note strong { color: var(--foreground); font-weight: 600; }
+.home-craft-copy .editorial-link { margin-top: 1.75rem; }
+
+@media (min-width: 64rem) {
+  /* Image ~57% of the content width. */
+  .home-craft-inner { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: clamp(3rem, 6vw, 5.5rem); }
+}
+
+/* ========================= 04 · FEATURED BOAT ========================== */
+.home-featured {
+  padding-block: var(--section-y);
+  background: var(--dark);
+  color: var(--on-dark);
+}
+.home-featured-head {
+  display: grid; gap: 1.5rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+.home-featured-head .section-index { color: var(--craft); }
+.home-featured-title { margin-top: 1rem; color: var(--on-dark); }
+.home-featured-controls { display: flex; align-items: center; gap: 1rem; }
+.home-featured-controls button {
+  display: grid; place-items: center;
+  width: 3.25rem; height: 3.25rem;
+  border: 1px solid var(--rule-dark); background: transparent; color: var(--on-dark);
+  transition: background var(--micro) var(--ease), border-color var(--micro) var(--ease);
+}
+.home-featured-controls button:hover { background: rgba(247, 245, 240, .1); border-color: var(--craft); }
+.home-featured-controls button svg { width: 1.1rem; height: 1.1rem; }
+.home-featured-controls p { color: var(--on-dark-muted); font-size: .875rem; letter-spacing: .12em; }
+.home-featured-controls p span { color: var(--craft); }
+
+.home-featured-spread { display: grid; gap: clamp(1.75rem, 4vw, 3rem); }
+.home-featured-image { animation: soft-in var(--ui) var(--ease) both; }
+@keyframes soft-in { from { opacity: .35; } to { opacity: 1; } }
+.home-featured-body { display: grid; gap: 2rem; }
+.home-featured-story h3 { color: var(--on-dark); font-size: clamp(1.625rem, 3vw, 2.5rem); }
+.home-featured-year {
+  display: inline-block; margin-left: .5rem;
+  font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  font-size: .45em; font-weight: 400; color: var(--craft);
+  letter-spacing: .06em; vertical-align: middle;
+}
+.home-featured-concept span {
+  display: block; margin-bottom: .4rem;
+  font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  font-size: .75rem; letter-spacing: .14em; color: var(--on-dark-muted);
+}
+.home-featured-concept {
+  margin-top: 1.25rem;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  line-height: 1.6;
+  color: var(--craft);
+}
+.home-featured-summary { max-width: 34rem; margin-top: 1.25rem; color: var(--on-dark-muted); font-size: .9375rem; }
+.home-featured-story .demo-flag { margin-top: 1rem; }
+.home-featured-story .editorial-link { color: var(--on-dark); }
+
+.home-featured-meta { display: grid; gap: 0; align-content: start; border-top: 1px solid var(--rule-dark); }
+.home-featured-meta > div {
+  display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: 1rem;
+  padding-block: .85rem; border-bottom: 1px solid var(--rule-dark);
+}
+.home-featured-meta dt { color: var(--craft); font-size: .8125rem; }
+.home-featured-meta dd { color: var(--on-dark-muted); font-size: .9375rem; }
+
+@media (min-width: 64rem) {
+  .home-featured-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .home-featured-body { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: clamp(2.5rem, 5vw, 4.5rem); }
+}
+
+/* ========================= 05 · BOAT READER ============================ */
+.home-reader { padding-block: var(--section-y); }
+.home-reader-head > * { max-width: var(--measure); }
+.home-reader-head h2 { margin-top: 1rem; }
+.home-reader-head .lead { margin-top: 1.5rem; }
+.home-reader-stage-wrap { position: relative; margin-top: clamp(2.5rem, 5vw, 4rem); }
+.home-reader-stage { position: relative; }
+.home-reader-image { background: var(--dark); }
+
+.home-reader-hotspots { position: absolute; inset: 0; }
+.home-hotspot {
+  position: absolute;
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  transform: translate(-50%, -50%);
+  padding: 0; border: 0; background: transparent;
+  animation: hotspot-pulse 3.4s var(--ease) infinite;
+}
+.home-hotspot-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--background);
+  box-shadow: 0 0 0 4px rgba(195, 106, 61, .7), 0 0 0 1px rgba(10, 24, 21, .4);
+  transition: transform var(--micro) var(--ease), background var(--micro) var(--ease);
+}
+.home-hotspot-index {
+  position: absolute; top: 50%; left: calc(100% - .25rem);
+  transform: translateY(-50%);
+  padding: .15rem .4rem;
+  background: var(--dark); color: var(--background);
+  font-size: .6875rem; letter-spacing: .08em;
+  opacity: 0; transition: opacity var(--micro) var(--ease);
+}
+.home-hotspot:hover .home-hotspot-dot,
+.home-hotspot:focus-visible .home-hotspot-dot,
+.home-hotspot[data-active="true"] .home-hotspot-dot {
+  transform: scale(1.35); background: var(--accent);
+}
+.home-hotspot:hover .home-hotspot-index,
+.home-hotspot:focus-visible .home-hotspot-index,
+.home-hotspot[data-active="true"] .home-hotspot-index { opacity: 1; }
+.home-hotspot[data-active="true"] { animation: none; }
+@keyframes hotspot-pulse {
+  0%, 82%, 100% { box-shadow: 0 0 0 0 rgba(195, 106, 61, 0); }
+  88% { box-shadow: 0 0 0 .9rem rgba(195, 106, 61, .3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hotspot { animation: none; }
+}
+
+/* Narrow screens: the panel rises as a sheet. */
+.home-reader-panel {
+  position: fixed; z-index: 55; inset: auto 0 0 0;
+  max-height: 82svh; overflow-y: auto;
+  padding: 1.25rem var(--gutter) 2rem;
+  background: var(--surface);
+  border-top: 2px solid var(--accent);
+}
+.home-reader-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.home-reader-close {
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  border: 1px solid var(--rule); background: transparent; color: var(--foreground);
+}
+.home-reader-close svg { width: 1.1rem; height: 1.1rem; }
+.home-reader-panel .media-frame { margin-bottom: 1.25rem; }
+.home-reader-panel-text { color: var(--muted); font-size: .9375rem; }
+.home-reader-panel-meaning {
+  margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--accent);
+  color: var(--foreground); font-family: "Noto Serif Thai", serif; font-size: 1rem; line-height: 1.75;
+}
+.home-reader-panel-patterns { margin-top: 1.25rem; color: var(--muted); font-size: .875rem; }
+.home-reader-panel-patterns span {
+  display: block; margin-bottom: .25rem;
+  color: var(--accent-text); font-size: .75rem; letter-spacing: .12em;
+}
+.home-reader-foot { display: block; margin-top: 1.25rem; }
+
+@media (min-width: 64rem) {
+  .home-reader-stage-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 23rem; gap: 2rem; align-items: start; }
+  .home-reader-panel {
+    position: sticky; z-index: 1; inset: auto; top: calc(var(--header-h) + 2rem);
+    max-height: none; padding: 1.5rem;
+    border: 1px solid var(--rule); border-top: 2px solid var(--accent);
+    animation: panel-in var(--ui) var(--ease) both;
+  }
+  @keyframes panel-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  /* Without a panel the stage keeps the whole width rather than leaving a gap. */
+  .home-reader-stage-wrap:not(:has(.home-reader-panel)) { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ========================= 06 · CRAFT PROCESS ========================== */
+.home-process { padding-block: var(--section-y); background-color: var(--surface-warm); background-image: var(--paper-grain); }
+.home-process-head > * { max-width: var(--measure); }
+.home-process-head h2 { margin-top: 1rem; }
+.home-process-head .lead { margin-top: 1.5rem; }
+.home-process-layout { margin-top: clamp(3rem, 7vw, 5rem); }
+.home-process-rail { display: none; }
+
+.home-process-track { position: relative; margin: 0; padding: 0 0 0 2.25rem; list-style: none; }
+.home-process-track::before {
+  content: ""; position: absolute; top: .5rem; bottom: 2rem; left: .45rem;
+  width: 1px; background: var(--rule-strong);
+}
+.home-process-stop { position: relative; padding-bottom: clamp(3rem, 9vw, 6rem); }
+.home-process-stop::before {
+  content: ""; position: absolute; top: .55rem; left: -2.05rem;
+  width: .65rem; height: .65rem; border-radius: 50%;
+  background: var(--rule-strong);
+  transition: background var(--ui) var(--ease), transform var(--ui) var(--ease);
+}
+.home-process-stop[data-active="true"]::before { background: var(--accent); transform: scale(1.35); }
+.home-process-stop-index {
+  color: var(--accent-text); font-size: .875rem; font-weight: 500; letter-spacing: .14em;
+  font-variant-numeric: tabular-nums;
+}
+.home-process-stop h3 { margin-top: .5rem; }
+.home-process-stop-text { margin-top: 1rem; max-width: 28rem; color: var(--muted); }
+.home-process-stop-why {
+  margin-top: .85rem; max-width: 28rem;
+  color: var(--muted); font-size: .9375rem;
+}
+.home-process-stop-image { margin-top: 1.75rem; }
+.home-process-more { display: block; margin-top: clamp(1rem, 3vw, 2rem); }
+
+@media (min-width: 64rem) {
+  .home-process-layout { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); }
+  .home-process-rail { display: block; align-self: start; position: sticky; top: calc(var(--header-h) + 3rem); }
+  .home-process-rail ol { margin: 0; padding: 0; list-style: none; display: grid; gap: .35rem; }
+  .home-process-rail li {
+    display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: .5rem;
+    padding: .4rem 0 .4rem .75rem;
+    border-left: 2px solid transparent;
+    color: var(--muted); font-size: .875rem;
+    transition: color var(--ui) var(--ease), border-color var(--ui) var(--ease);
+  }
+  .home-process-rail li span { color: var(--muted); font-variant-numeric: tabular-nums; }
+  /* Progress is carried by the rule and the weight, never by colour alone. */
+  .home-process-rail li[data-state="past"] { border-left-color: var(--rule-strong); }
+  .home-process-rail li[data-state="active"] {
+    border-left-color: var(--accent); color: var(--foreground); font-weight: 600;
+  }
+  .home-process-rail li[data-state="active"] span { color: var(--accent-text); }
+
+  .home-process-track { padding-left: 0; }
+  .home-process-track::before { display: none; }
+  .home-process-stop {
+    display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: clamp(2.5rem, 5vw, 4.5rem); align-items: center;
+  }
+  .home-process-stop::before { display: none; }
+  .home-process-stop-image { margin-top: 0; }
+  /* Alternate which side the photograph takes, so the sequence reads as a journey. */
+  .home-process-stop:nth-child(even) .home-process-stop-copy { order: 2; }
+}
+
+/* ========================= 07 · PATTERN ARCHIVE ======================== */
+/* The brightest surface on the page: a gallery wall between two warmer rooms. */
+.home-patterns { padding-block: var(--section-y); background-color: var(--surface); background-image: var(--paper-grain); }
+.home-patterns-head { display: grid; gap: 1rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.home-patterns-head h2 { margin-top: 1rem; }
+.home-patterns-count { color: var(--muted); font-size: .875rem; }
+
+.home-pattern-wall { display: grid; gap: clamp(2rem, 4vw, 3rem); margin: 0; padding: 0; list-style: none; }
+.home-pattern-cell figure { margin: 0; }
+.home-pattern-cell .media-frame { transition: transform var(--ui) var(--ease); }
+.home-pattern-cell figure:hover .media-frame { transform: scale(1.015); }
+.home-pattern-cell figcaption { margin-top: 1.1rem; }
+.home-pattern-cell h3 { font-size: 1.25rem; }
+.home-pattern-cell[data-lane="dominant"] h3 { font-size: clamp(1.5rem, 2.6vw, 2.25rem); }
+.home-pattern-meta { margin-top: .4rem; color: var(--accent-text); font-size: .8125rem; letter-spacing: .04em; }
+.home-pattern-text { margin-top: .7rem; color: var(--muted); font-size: .9375rem; max-width: 34rem; }
+
+@media (min-width: 48rem) {
+  .home-patterns-head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .home-pattern-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+@media (min-width: 64rem) {
+  /* One dominant image holds the wall and the rest hang around it — across two bands
+     rather than a single tall column, which would leave half the wall empty. */
+  .home-pattern-wall { grid-template-columns: repeat(12, 1fr); column-gap: clamp(1.5rem, 3vw, 2.5rem); }
+  .home-pattern-cell[data-lane="dominant"] { grid-column: 1 / span 7; }
+  .home-pattern-cell[data-lane="supporting"]:nth-child(2) { grid-column: 9 / span 4; align-self: end; }
+  .home-pattern-cell[data-lane="supporting"]:nth-child(3) { grid-column: 1 / span 5; }
+  .home-pattern-cell[data-lane="supporting"]:nth-child(4) { grid-column: 7 / span 5; margin-top: clamp(2rem, 5vw, 4.5rem); }
+  .home-pattern-cell[data-lane="supporting"]:nth-child(n + 5) { grid-column: span 4; }
+}
+
+/* ========================= 08 · MASTER ARTISAN ========================= */
+/* The big human moment: the portrait takes the screen before the record does. */
+.home-master { background: var(--dark); color: var(--on-dark); }
+.home-master-stage {
+  position: relative;
+  /* Tall enough that a 4:5 portrait shows the person and the work in one frame; a wider,
+     shorter stage crops a standing figure down to a torso. */
+  min-height: min(100svh, 54rem);
+  display: grid; align-items: end;
+  isolation: isolate;
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+.home-master-portrait { position: absolute; inset: 0; z-index: -2; overflow: hidden; margin: 0; }
+.home-master-veil {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(to top, rgba(10, 24, 21, .92) 0%, rgba(10, 24, 21, .55) 34%, rgba(10, 24, 21, .1) 72%),
+    linear-gradient(to right, rgba(10, 24, 21, .6) 0%, rgba(10, 24, 21, .1) 52%, rgba(10, 24, 21, 0) 78%);
+}
+.home-master-quote-block { max-width: 46rem; }
+.home-master-kicker { font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif; font-weight: 500; color: var(--craft); }
+.home-master-quote {
+  margin: 1.5rem 0 0; padding: 0;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.75rem, 5vw, 3.25rem);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -.02em;
+  color: var(--on-dark);
+  text-wrap: balance;
+  text-shadow: 0 1px 18px rgba(10, 24, 21, .6);
+}
+.home-master-quote::before { content: "“"; }
+.home-master-quote::after { content: "”"; }
+/* The archive's own line takes no quotation marks, because no one is being quoted. */
+.home-master-quote[data-unattributed="true"]::before,
+.home-master-quote[data-unattributed="true"]::after { content: none; }
+.home-master-attribution {
+  margin-top: 1.75rem; color: var(--craft); font-size: .9375rem; letter-spacing: .02em;
+  text-shadow: 0 1px 14px rgba(10, 24, 21, .6);
+}
+
+.home-master-record {
+  display: grid; gap: 2rem;
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  border-top: 1px solid var(--rule-dark);
+}
+.home-master-bio p { max-width: 34rem; color: var(--on-dark-muted); }
+.home-master-expertise {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  margin: 0; padding: 0; list-style: none;
+}
+.home-master-expertise li {
+  padding: .35rem .75rem; border: 1px solid var(--rule-dark);
+  color: var(--on-dark-muted); font-size: .8125rem;
+}
+.home-master-audio { margin: 1.5rem 0 0; }
+.home-master-audio figcaption { margin-bottom: .5rem; color: var(--craft); font-size: .8125rem; }
+.home-master-audio audio { width: min(100%, 26rem); }
+.home-master-meta .upcoming-link { margin-top: 1.5rem; color: var(--on-dark-muted); }
+.home-master-meta .upcoming-link span { border-color: var(--rule-dark); color: var(--on-dark-muted); }
+.home-master-meta .demo-flag { margin-top: 1.25rem; }
+
+@media (min-width: 64rem) {
+  .home-master-record { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(3rem, 6vw, 6rem); }
+}
+
+/* ========================= 09 · LEARNING PATH ========================== */
+/* Quiet: the invitation, not a sales page. */
+.home-learning { padding-block: clamp(4.5rem, 10vw, 10rem); }
+.home-learning-inner { display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); align-items: start; }
+.home-learning-copy h2 { margin-top: 1rem; }
+.home-journey { margin: clamp(2.5rem, 5vw, 3.5rem) 0 0; padding: 0; list-style: none; display: grid; }
+.home-journey li {
+  display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem; align-items: baseline;
+  padding-block: 1rem; border-bottom: 1px solid var(--rule);
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  line-height: 1.5;
+}
+.home-journey li span {
+  color: var(--muted); font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  font-size: .8125rem; letter-spacing: .12em; font-variant-numeric: tabular-nums;
+}
+.home-journey li:last-child { border-bottom: 0; color: var(--accent-text); }
+.home-journey li:last-child span { color: var(--accent-text); }
+
+.home-learning-card {
+  align-self: start;
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  background: var(--primary); color: var(--background);
+}
+.home-learning-card-kicker { color: var(--craft); font-size: .8125rem; letter-spacing: .14em; }
+.home-learning-card h3 { margin-top: 1rem; color: var(--background); }
+.home-learning-card-text { margin-top: 1rem; color: rgba(247, 245, 240, .78); font-size: .9375rem; }
+.home-learning-card-count {
+  margin-top: 1.5rem; padding-top: 1.25rem;
+  border-top: 1px solid rgba(247, 245, 240, .22);
+  color: var(--background); font-size: 1rem;
+}
+.home-learning-card .button-solid { margin-top: 1.5rem; background: var(--background); color: var(--primary); }
+.home-learning-card .button-solid:hover { background: #fff; }
+.home-learning-card .button-solid svg { color: var(--accent); }
+
+@media (min-width: 64rem) {
+  .home-learning-inner { grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); }
+}
+
+/* ========================= 10 · NEXT GENERATION ======================== */
+.home-next { padding-block: var(--section-y); background-color: var(--surface-warm); background-image: var(--paper-grain); }
+.home-next-head > * { max-width: var(--measure); }
+.home-next-head h2 { margin-top: 1rem; }
+.home-next-head .lead { margin-top: 1.5rem; }
+.home-next-wall {
+  display: grid; gap: clamp(2rem, 5vw, 3rem);
+  margin: clamp(2.5rem, 6vw, 4rem) 0 0; padding: 0; list-style: none;
+}
+.home-next-wall figure { margin: 0; }
+.home-next-wall figcaption { margin-top: 1rem; }
+.home-next-wall h3 { font-size: 1.125rem; }
+.home-next-author { margin-top: .4rem; color: var(--accent-text); font-size: .8125rem; }
+.home-next-concept { margin-top: .6rem; color: var(--muted); font-size: .9375rem; }
+.home-next-more { margin-top: 2rem; }
+
+@media (min-width: 48rem) {
+  .home-next-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Hung at differing heights, the way work sits on an exhibition wall. */
+  .home-next-wall > li:nth-child(2n) { margin-top: clamp(2rem, 5vw, 4rem); }
+}
+@media (min-width: 64rem) {
+  .home-next-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: start; }
+  .home-next-wall > li:nth-child(2n) { margin-top: 0; }
+  .home-next-wall > li:nth-child(4n + 2) { margin-top: clamp(3rem, 6vw, 5rem); }
+  .home-next-wall > li:nth-child(4n + 3) { margin-top: clamp(1rem, 2vw, 2rem); }
+  .home-next-wall > li:nth-child(4n) { margin-top: clamp(4rem, 8vw, 7rem); }
+}
+
+/* ========================= 11 · PROCESSION ============================= */
+.home-procession { padding-block: var(--section-y); background: var(--dark); color: var(--on-dark); }
+.home-procession-head > * { max-width: var(--measure); }
+.home-procession-head .section-index { color: var(--craft); }
+.home-procession-head h2 { margin-top: 1rem; color: var(--on-dark); }
+.home-procession-head .lead { margin-top: 1.5rem; color: var(--on-dark-muted); }
+.home-procession-stage { margin-top: clamp(2.5rem, 5vw, 4rem); }
+.home-procession-stage figure { margin: 0; }
+.home-procession-video {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 16 / 9; object-fit: cover;
+  background: var(--dark-raised);
+}
+.home-procession-caption { display: grid; gap: .4rem; margin-top: 1.1rem; color: var(--on-dark-muted); }
+.home-procession-caption .caption { color: var(--craft); }
+.home-procession-note { display: block; margin-top: 1.5rem; color: var(--on-dark-muted); font-size: .8125rem; }
+
+/* ========================= 12 · CLOSING ================================ */
+.home-closing {
+  min-height: min(100svh, 46rem);
+  display: grid; align-items: center;
+  isolation: isolate;
+  padding-block: var(--section-y);
+  background: var(--dark); color: var(--on-dark);
+  text-align: center;
+}
+.home-closing-media { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.home-closing-veil {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to bottom, rgba(10, 24, 21, .58), rgba(10, 24, 21, .82));
+}
+.home-closing-inner { display: grid; justify-items: center; }
+.home-closing-title {
+  max-width: 16ch;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--on-dark);
+  text-shadow: 0 1px 20px rgba(10, 24, 21, .6);
+}
+.home-closing-lead {
+  max-width: 32ch; margin-top: 1.75rem; text-wrap: balance;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.25rem, 3.2vw, 1.875rem);
+  line-height: 1.55;
+  color: var(--craft);
+  text-shadow: 0 1px 16px rgba(10, 24, 21, .6);
+}
+.home-closing .button-solid { margin-top: 2.75rem; }
+.home-closing-tagline { margin-top: 2.5rem; color: var(--on-dark-muted); font-size: .8125rem; letter-spacing: .12em; }

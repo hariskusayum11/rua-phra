@@ -1,0 +1,384 @@
+# เรือพระเล่าเรื่อง (Rua Phra Story)
+
+แพลตฟอร์มพิพิธภัณฑ์ดิจิทัลและคลังองค์ความรู้เกี่ยวกับเรือพระในพื้นที่ปากพะยูน ออกแบบเพื่อเชื่อมโยงเรือพระ ลวดลาย ช่างฝีมือ กระบวนการทำงาน วัสดุ เครื่องมือ เทคนิค และแหล่งความรู้เข้าด้วยกัน
+
+> **สถานะข้อมูล** ระบบนี้มีทั้งข้อมูลภาคสนามจริงและข้อมูลสาธิตปนกันอยู่ และแยกจากกันชัดเจน
+>
+> - **ข้อมูลจริง** ได้แก่ ภาพถ่ายและวิดีโอจากพื้นที่จริงที่อำเภอปากพะยูน เรือพระวัดรัตนาราม ลวดลาย ขั้นตอนการทำงาน และช่าง ทั้งหมดบันทึกโดยทีมภาคสนามและได้รับอนุญาตให้เผยแพร่แล้ว แต่**ยังรอการตรวจสอบร่วมกับช่างและชุมชน** จึงมีสถานะ `PENDING_REVIEW` และมีข้อความกำกับไว้ในทุกหน้าที่แสดงผล
+> - **ข้อมูลสาธิต** ที่มากับ `npm run db:seed` เป็นของสมมติล้วน ใช้เป็นชุดทดสอบของ test suite เท่านั้น มีเครื่องหมาย `isDemo` และเว็บไซต์จะ**ไม่แสดงข้อมูลสาธิตในหมวดที่มีข้อมูลจริงแล้ว**
+>
+> ทั้งสองแบบยังไม่ควรนำไปอ้างอิงเป็นข้อเท็จจริงทางวัฒนธรรมจนกว่าจะขึ้นสถานะ `VERIFIED`
+
+## ฟีเจอร์หลัก
+
+### เว็บไซต์สาธารณะ
+
+- หน้าแรกแบบ editorial museum ที่อ่านข้อมูลจากฐานข้อมูล เล่าเรื่องเรียงลำดับตั้งแต่เปิดเรื่อง งานช่าง เรือเด่น การสำรวจเรือ ขั้นตอน ลวดลาย ช่าง การเรียนรู้ คนรุ่นถัดไป จนถึงบทปิด
+- วิดีโอวันชักพระจากพื้นที่จริง ไม่เล่นอัตโนมัติและไม่โหลดจนกว่าผู้ใช้จะกดเล่น
+- คลังเรือพระพร้อมข้อมูลวัด ปี แนวคิด และเรื่องราว
+- หน้ารายละเอียดลวดลายบน `/patterns/[slug]` และหน้าช่างบน `/masters/[slug]` พร้อมความเชื่อมโยงไปยังเรือ ขั้นตอน และช่างคนอื่น
+- Interactive Boat Explorer บน `/boats/[slug]`
+  - จุดสำรวจวางด้วยพิกัด X/Y แบบเปอร์เซ็นต์
+  - Side panel บนเดสก์ท็อป
+  - Bottom sheet บนมือถือ
+  - รองรับคีย์บอร์ด การสัมผัส และ focus management
+  - แสดงคำอธิบาย ความหมาย ลวดลาย และช่างที่เกี่ยวข้อง
+- ประสบการณ์ “จากกระดาษ...สู่เรือพระ” บน `/craft`
+  - Timeline กระบวนการจากฐานข้อมูล
+  - หน้ารายละเอียดแต่ละขั้นตอน
+  - รองรับภาพ วิดีโอ วัสดุ เครื่องมือ เทคนิค เคล็ดลับ และคำเตือน
+- Responsive layout และภาษาไทยด้วย IBM Plex Sans Thai / Noto Serif Thai
+- ทุกหน้าที่ข้อมูลยังไม่ผ่านการตรวจสอบจะมีข้อความกำกับสถานะไว้เสมอ
+- Loading, empty, error และ 404 states
+- ผ่านเกณฑ์ contrast ระดับ WCAG AA โดยมี unit test บังคับไว้ ไม่ให้แก้สีจนตัวอักษรอ่านไม่ออกโดยไม่รู้ตัว
+- เคารพ `prefers-reduced-motion` ทุกการเคลื่อนไหว และแสดงเนื้อหาครบถ้วนแม้ปิด JavaScript
+
+### Admin CMS
+
+ระบบจัดการแยกจากหน้าสาธารณะและป้องกันด้วยการเข้าสู่ระบบ รองรับ CRUD สำหรับ:
+
+- คลังภาพและสื่อ (อัปโหลดไฟล์ได้โดยตรง)
+- วัด / ชุมชน
+- เรือพระ
+- เรื่องราวเรือพระ
+- ส่วนประกอบและจุดสำรวจบนเรือ
+- ลวดลาย
+- ช่างฝีมือ
+- กระบวนการองค์ความรู้
+- ขั้นตอนการทำงาน
+- วัสดุ
+- เครื่องมือ
+- เทคนิค
+- แหล่งความรู้
+- QR Code
+
+ฟอร์มใช้ React Hook Form และ Zod พร้อมการตรวจสอบข้อมูลทั้งฝั่ง client และ server มีข้อความสำเร็จ/ผิดพลาด การยืนยันก่อนลบ empty states และตัวอย่างภาพ
+
+Hotspot Editor ช่วยให้ผู้ดูแลเลือกเรือ คลิกบนภาพเพื่อวางจุด และลากจุดเดิมเพื่อเปลี่ยนตำแหน่ง ระบบจะแปลงตำแหน่งเป็นเปอร์เซ็นต์ก่อนบันทึกลง `BoatSection`
+
+**การอัปโหลดภาพ** เลือกไฟล์แล้วระบบย่อเหลือกว้างสูงสุด 2400px แปลงเป็น WebP หมุนตาม EXIF ให้ตั้งตรง แล้ว**ลบข้อมูล EXIF ทิ้งทั้งหมดรวมถึงพิกัด GPS** ไฟล์เก็บที่ `storage/uploads/` ซึ่งอยู่นอก `public/` และนอก build แล้วเสิร์ฟผ่าน route `/media/[name]` เหตุผลคือ Next อ่านรายชื่อไฟล์ใน `public/` ตอนเซิร์ฟเวอร์สตาร์ตเท่านั้น ไฟล์ที่อัปโหลดระหว่างรันจึงจะ 404 จนกว่าจะรีสตาร์ต
+
+**การเชื่อมความสัมพันธ์** แต่ละหน้ามีตัวเลือกแบบ checkbox สำหรับเชื่อมข้อมูลข้ามหมวด เช่น ลวดลายบนเรือ ช่างที่ทำลาย วัสดุและเครื่องมือของแต่ละขั้นตอน ระบบเพิ่มเฉพาะที่ติ๊กใหม่และลบเฉพาะที่เอาออก ความสัมพันธ์ที่มีข้อมูลของตัวเอง (เช่น บทบาทของช่างในเรือลำนั้น) ยังไม่เปิดให้แก้จากตรงนี้ เพราะ checkbox จะทำให้ข้อความเหล่านั้นหายไปเงียบ ๆ
+
+สถานะเนื้อหาที่รองรับ:
+
+- `DRAFT`
+- `PENDING_REVIEW`
+- `REVISION_REQUIRED`
+- `VERIFIED`
+- `PUBLISHED`
+
+สถานะ `VERIFIED` และ `PUBLISHED` จะบันทึกผู้ตรวจสอบและเวลาที่ตรวจสอบ
+
+## เทคโนโลยี
+
+- Next.js 16 และ React 19
+- TypeScript
+- PostgreSQL 17
+- Prisma ORM 7
+- Auth.js / NextAuth
+- React Hook Form
+- Zod
+- Playwright และ axe-core
+- Tailwind CSS 4 และ CSS แบบกำหนดเอง
+
+## ความต้องการของระบบ
+
+- Node.js 20 ขึ้นไป
+- npm
+- Docker Desktop หรือ PostgreSQL ที่เชื่อมต่อได้
+
+## การติดตั้ง
+
+ติดตั้ง dependencies:
+
+```powershell
+npm install
+```
+
+คัดลอกไฟล์ environment:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+กำหนดค่าใน `.env`:
+
+```env
+DATABASE_URL="postgresql://rua:local_dev_only@localhost:54329/rua_phra"
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+AUTH_SECRET="เปลี่ยนเป็นค่าสุ่มที่ยาวและปลอดภัย"
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="เปลี่ยนเป็นรหัสผ่านที่ปลอดภัย"
+```
+
+ห้าม commit ไฟล์ `.env` หรือใช้ค่าตัวอย่างในการ deploy จริง
+
+## เปิดฐานข้อมูล
+
+โปรเจกต์มี PostgreSQL สำหรับ development ใน `compose.yaml`:
+
+```powershell
+docker compose up -d
+```
+
+ตรวจสอบ container:
+
+```powershell
+docker compose ps
+```
+
+หยุดฐานข้อมูล:
+
+```powershell
+docker compose down
+```
+
+คำสั่ง `docker compose down` จะไม่ลบ volume ฐานข้อมูล หากต้องการรักษาข้อมูลไว้ไม่ควรเพิ่ม `-v`
+
+## เตรียมฐานข้อมูล
+
+สร้างหรืออัปเดตตาราง:
+
+```powershell
+npm run db:migrate
+```
+
+สร้าง Prisma Client:
+
+```powershell
+npm run db:generate
+```
+
+เพิ่มข้อมูลสาธิต:
+
+```powershell
+npm run db:seed
+```
+
+เปิด Prisma Studio:
+
+```powershell
+npx prisma studio
+```
+
+Prisma Studio เปิดที่ <http://localhost:5555>
+
+## เปิดเว็บไซต์
+
+Development server:
+
+```powershell
+npm run dev
+```
+
+เปิด <http://localhost:3000>
+
+เส้นทางสำคัญ:
+
+| หน้า | URL |
+| --- | --- |
+| หน้าแรก | <http://localhost:3000> |
+| กระบวนการงานช่าง | <http://localhost:3000/craft> |
+| เรือพระ (ข้อมูลจริง) | <http://localhost:3000/boats/rua-phra-wat-rattanaram-2568> |
+| ลวดลาย | <http://localhost:3000/patterns/kled-phaya-nak-rattanaram> |
+| ช่าง | <http://localhost:3000/masters/chang-lai-kradat-rattanaram> |
+| เข้าสู่ระบบ | <http://localhost:3000/login> |
+| Admin CMS | <http://localhost:3000/admin> |
+
+เข้าสู่ระบบด้วย `ADMIN_EMAIL` และ `ADMIN_PASSWORD` จากไฟล์ `.env` เมื่อเข้าสู่ระบบสำเร็จ ระบบจะสร้างหรืออัปเดตผู้ใช้บทบาท `ADMIN` ในฐานข้อมูล
+
+## การนำภาพและวิดีโอภาคสนามเข้าระบบ
+
+ใช้เมื่อมีไฟล์ชุดใหม่จากการลงพื้นที่ สำหรับภาพทีละใบระหว่างแก้ข้อมูล ให้ใช้ปุ่มอัปโหลดใน Admin แทน
+
+1. วางไฟล์ดิบไว้ใน `photos/incoming/` ตั้งชื่อไฟล์อย่างไรก็ได้
+2. เขียนบันทึกประกอบไว้ใน `photos/incoming/NOTES.txt` ว่าแต่ละไฟล์คืออะไร ถ่ายที่ไหน ใครถ่าย และได้รับอนุญาตจากคนในภาพแล้วหรือยัง
+3. สำรวจก่อนว่าได้ไฟล์อะไรมาบ้าง
+
+   ```powershell
+   npm run photos:scan
+   ```
+
+4. นำเข้าจริง ระบบจะย่อภาพ แปลงเป็น WebP ลบ EXIF ถอดรหัสวิดีโอเป็น MP4 แล้วสร้างระเบียน `Media` ให้
+
+   ```powershell
+   npm run photos:import
+   ```
+
+   ใช้ `--dry-run` เพื่อดูผลก่อนโดยไม่เขียนอะไร และ `--images-only` เพื่อข้ามวิดีโอซึ่งใช้เวลานาน
+
+ไฟล์ที่ `NOTES.txt` ระบุว่ายังไม่ได้ขออนุญาต จะถูกย้ายไป `photos/withheld/` ซึ่งอยู่นอก `public/` และไม่เข้า git ระเบียนในฐานข้อมูลยังถูกสร้างไว้เพื่อไม่ให้ลืมว่ามีไฟล์นี้อยู่ แต่ `url` จะเป็น `null` จนกว่าจะได้รับอนุญาต
+
+## Production build
+
+```powershell
+npm run build
+npm run start
+```
+
+ก่อน deploy ต้องกำหนด `DATABASE_URL`, `AUTH_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` และ `NEXT_PUBLIC_SITE_URL` ให้เหมาะกับ environment จริง รวมถึงใช้ HTTPS และรหัสผ่านที่ปลอดภัย
+
+## การทดสอบ
+
+ตรวจรูปแบบและคุณภาพโค้ด:
+
+```powershell
+npm run lint
+```
+
+ตรวจ TypeScript:
+
+```powershell
+npm run typecheck
+```
+
+ทดสอบ unit tests:
+
+```powershell
+npm test
+```
+
+ทดสอบฐานข้อมูล:
+
+```powershell
+npm run test:db
+```
+
+ทดสอบหน้าเว็บด้วย Playwright:
+
+```powershell
+npm run test:browser
+```
+
+Browser tests ครอบคลุม:
+
+- Responsive layout ที่ 320, 390, 768 และ 1440 พิกเซล
+- Accessibility ด้วย axe-core
+- Interactive Boat Explorer บนเดสก์ท็อปและมือถือ
+- Craft timeline และหน้ารายละเอียดขั้นตอน
+- การป้องกัน Admin
+- CRUD จริงผ่าน Admin form
+- การบันทึกสถานะ `PUBLISHED`
+- การวาง ลาก บันทึก และโหลดพิกัด hotspot
+- การสร้างวัด การอัปโหลดภาพ และการเชื่อมความสัมพันธ์ผ่าน Admin
+- การไล่ลิงก์ทั้งเว็บไซต์เพื่อยืนยันว่าไม่มีลิงก์ใดพาไปหน้า 404
+
+Playwright จะลบข้อมูลที่ test สร้างขึ้นทั้งก่อนและหลังรัน ผ่าน `tests/fixtures-clean.ts` เพื่อไม่ให้แถวค้างสะสมจนทดสอบรอบถัดไปล้ม
+
+## โครงสร้างโปรเจกต์
+
+```text
+prisma/
+  migrations/             Prisma migrations
+  schema.prisma           Domain model
+  seed.ts                 ข้อมูลสาธิต
+photos/
+  incoming/               ที่วางไฟล์ภาพและวิดีโอดิบ (ไม่เข้า git)
+  withheld/               สื่อที่ยังไม่ได้รับอนุญาตให้เผยแพร่ (อยู่นอก public/ และไม่เข้า git)
+  manifest.json           บันทึกว่าไฟล์ต้นทางถูกนำไปใช้ที่ใด
+public/
+  images/                 ภาพภาคสนามที่ผ่านการประมวลผลแล้ว
+  videos/                 วิดีโอขบวนแห่และคลังคลิป
+  placeholders/           ภาพสำรอง
+scripts/
+  scan-photos.mjs         สำรวจไฟล์ใน incoming/ พร้อมขนาดและสัดส่วน
+  import-photos.mjs       ย่อ แปลง ลบ EXIF และบันทึกลงฐานข้อมูล
+storage/
+  uploads/                ภาพที่อัปโหลดผ่าน Admin (ไม่เข้า git)
+src/
+  app/
+    admin/                Admin CMS และ server actions
+    api/auth/             Auth.js route
+    boats/[slug]/         Interactive Boat Explorer
+    craft/                Process timeline และ step detail
+    masters/[slug]/       หน้าช่าง
+    patterns/[slug]/      หน้าลวดลาย
+    media/[name]/         เสิร์ฟไฟล์จาก storage/uploads
+    globals.css           Design tokens และ base styles
+    home.css              ระบบหน้าแรก
+    archive.css           หน้ารายละเอียดลวดลายและช่าง
+  components/
+    admin/                Admin forms, Hotspot Editor, upload, relations
+    archive/              ส่วนประกอบหน้ารายละเอียด
+    boat/                 Boat Explorer interaction
+    home/                 แต่ละ section ของหน้าแรก
+    media/                MediaFrame จุดเดียวที่ภาพถูกแสดง
+    motion/               Scroll reveal ที่เคารพ prefers-reduced-motion
+  generated/prisma/       Prisma Client ที่ generate อัตโนมัติ
+  lib/
+    admin/                นิยาม resource และความสัมพันธ์ของ Admin
+    db/                   Database connection
+    design/               คำนวณ contrast ratio ให้ test ตรวจได้
+    services/             Data access layer
+    validations/          Zod schemas
+tests/
+  browser/                Playwright end-to-end tests
+```
+
+## Domain model หลัก
+
+- `Temple` เชื่อมกับ `Boat`
+- `Boat` มี `BoatStory` และ `BoatSection`
+- `BoatSection` เก็บพิกัด hotspot และเชื่อม `Pattern`
+- `Pattern` เชื่อมกับเรือ ส่วนประกอบ และช่าง
+- `Master` เชื่อมกับลวดลายและเรือ
+- `KnowledgeProcess` มี `ProcessStep`
+- `ProcessStep` เชื่อมกับ `Material`, `Tool`, `Technique`, `Pattern` และ `Master`
+- `Media` ใช้ร่วมกับภาพและวิดีโอของเนื้อหา
+- `KnowledgeSource` และ `ContentVerification` รองรับที่มาและขั้นตอนตรวจสอบ
+- `QRCode` ชี้ไปยังเรือ ลวดลาย ช่าง กระบวนการ หรือขั้นตอน
+
+Primary key ใช้ UUID พร้อม indexes, unique constraints, timestamps และ referential actions ตามความสัมพันธ์ใน `prisma/schema.prisma`
+
+## แนวทางจัดการข้อมูลวัฒนธรรม
+
+- ทำเครื่องหมาย `isDemo` สำหรับข้อมูลสมมติหรือข้อมูลที่ยังไม่ยืนยัน
+- เก็บแหล่งที่มาด้วย `KnowledgeSource`
+- ใช้สถานะ `PENDING_REVIEW` เมื่อรอผู้เชี่ยวชาญตรวจสอบ
+- ใช้ `REVISION_REQUIRED` เมื่อข้อมูลต้องแก้ไข
+- ใช้ `VERIFIED` เมื่อข้อเท็จจริงผ่านการตรวจสอบแล้ว
+- ใช้ `PUBLISHED` เมื่อตรวจสอบแล้วและพร้อมเผยแพร่ต่อสาธารณะ
+- หลีกเลี่ยงการนำข้อมูลสาธิตไปแสดงเป็นข้อเท็จจริงโดยไม่มีคำกำกับ
+- ไม่ใส่เครื่องหมายคำพูดถ้าไม่มีคำพูดจริง หน้าไหนยังไม่ได้บันทึกคำบอกเล่าของช่าง จะเขียนว่ายังไม่ได้บันทึก ไม่ใช่แต่งขึ้นมาแทน
+- ลายที่ยังไม่รู้ชื่อเรียกในพื้นที่ ใช้ชื่อบรรยายลักษณะไปก่อน และระบุว่าเป็นชื่อชั่วคราว
+
+### สิทธิ์ ความยินยอม และความปลอดภัยของผู้ให้ข้อมูล
+
+- ภาพหรือวิดีโอที่ยังไม่ได้รับอนุญาตจากคนในภาพ **ห้ามเข้า `public/` และห้ามเข้า git** ตัวนำเข้าจะย้ายไฟล์เหล่านั้นไป `photos/withheld/` และตั้ง `Media.url` เป็น `null` แทน
+- ทุกภาพที่เข้าระบบจะถูก**ลบ EXIF ทิ้ง** เพราะภาพภาคสนามมักติดพิกัด GPS ซึ่งหลายครั้งคือบ้านของคนที่ระบุตัวได้
+- ภาพจากแหล่งอื่นที่มีลายน้ำหรือไม่ทราบเจ้าของ ไม่นำมาเผยแพร่จนกว่าจะติดต่อเจ้าของได้
+- ใส่เครดิตชื่อผู้ถ่ายใน `Media.credit` ทุกครั้งที่ทราบ
+
+## คำสั่งที่ใช้บ่อย
+
+| คำสั่ง | หน้าที่ |
+| --- | --- |
+| `npm run dev` | เปิด development server |
+| `npm run build` | Generate Prisma Client และสร้าง production build |
+| `npm run start` | เปิด production server จาก build |
+| `npm run lint` | ตรวจ ESLint |
+| `npm run typecheck` | ตรวจ route types และ TypeScript |
+| `npm test` | รัน unit tests |
+| `npm run test:browser` | รัน Playwright tests |
+| `npm run db:migrate` | สร้างและใช้งาน migration |
+| `npm run db:seed` | เพิ่มข้อมูลสาธิต |
+| `npm run db:generate` | Generate Prisma Client |
+| `npm run test:db` | ทดสอบการเชื่อมต่อและ query ฐานข้อมูล |
+| `npm run photos:scan` | สำรวจไฟล์ใน `photos/incoming/` พร้อมขนาดและสัดส่วน |
+| `npm run photos:import` | นำภาพและวิดีโอเข้าระบบ รองรับ `--dry-run` และ `--images-only` |
+
+## ก่อนเผยแพร่สู่สาธารณะ
+
+ตอนนี้ `src/app/layout.tsx` ตั้ง `robots: { index: false, follow: false }` ไว้ เพื่อไม่ให้เสิร์ชเอนจินเก็บข้อมูลที่ยังไม่ผ่านการตรวจสอบ ก่อนเปิดจริงให้ทำตามนี้
+
+- ตรวจสอบเนื้อหาร่วมกับช่างและชุมชน แล้วเปลี่ยนสถานะจาก `PENDING_REVIEW` เป็น `VERIFIED` หรือ `PUBLISHED`
+- ยืนยันอีกครั้งว่าทุกภาพที่มีคนอยู่ในภาพได้รับอนุญาตแล้ว และใส่เครดิตผู้ถ่ายครบ
+- บีบอัดหรือย้ายไฟล์วิดีโอไปไว้บนบริการสตรีมมิง ปัจจุบันวิดีโอรวมกันประมาณ 39 MB อยู่ในรีโพ
+- เอา `robots: { index: false, follow: false }` ออก
+- ตั้งค่า `ADMIN_EMAIL`, `ADMIN_PASSWORD` และ `AUTH_SECRET` ใหม่สำหรับ production ห้าม commit ไฟล์ `.env` หรือใช้ค่าตัวอย่างในการ deploy จริง
+
+## หน่วยงานที่ดำเนินการ
+
+- มหาวิทยาลัยทักษิณ
+- สำนักงานส่งเสริมการเรียนรู้ระดับอำเภอปากพะยูน

@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env*
+!.env.example
+src/generated/
+*.tsbuildinfo
+playwright-report/
+test-results/
+
+# Uploaded media: served by a route handler, never part of the build.
+storage/

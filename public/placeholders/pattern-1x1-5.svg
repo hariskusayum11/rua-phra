@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="ภาพตัวอย่างลวดลายสำหรับการพัฒนา ยังไม่ใช่ลายที่บันทึกจากพื้นที่">
+  <title>ภาพตัวอย่างลวดลายสำหรับการพัฒนา ยังไม่ใช่ลายที่บันทึกจากพื้นที่</title>
+  <rect width="1200" height="1200" fill="#f1e9d9"/>
+<rect width="1200" height="1200" fill="#f1e9d9"/>
+<circle cx="150.0" cy="150.0" r="102.0" fill="none" stroke="#a85535" stroke-opacity=".75" stroke-width="22.4"/>
+<path d="M348.0 252.0 q102.0 -204.0 204.0 0" fill="none" stroke="#a85535" stroke-opacity=".8" stroke-width="24.5"/>
+<path d="M750.0 48.0 q102.0 102.0 0 204.0 q-102.0 -102.0 0 -204.0 Z" fill="#a85535" fill-opacity=".8"/>
+<circle cx="1050.0" cy="150.0" r="102.0" fill="none" stroke="#a85535" stroke-opacity=".75" stroke-width="22.4"/>
+<path d="M48.0 552.0 q102.0 -204.0 204.0 0" fill="none" stroke="#a85535" stroke-opacity=".8" stroke-width="24.5"/>
+<path d="M450.0 348.0 q102.0 102.0 0 204.0 q-102.0 -102.0 0 -204.0 Z" fill="#a85535" fill-opacity=".8"/>
+<circle cx="750.0" cy="450.0" r="102.0" fill="none" stroke="#a85535" stroke-opacity=".75" stroke-width="22.4"/>
+<path d="M948.0 552.0 q102.0 -204.0 204.0 0" fill="none" stroke="#a85535" stroke-opacity=".8" stroke-width="24.5"/>
+<path d="M150.0 648.0 q102.0 102.0 0 204.0 q-102.0 -102.0 0 -204.0 Z" fill="#a85535" fill-opacity=".8"/>
+<circle cx="450.0" cy="750.0" r="102.0" fill="none" stroke="#a85535" stroke-opacity=".75" stroke-width="22.4"/>
+<path d="M648.0 852.0 q102.0 -204.0 204.0 0" fill="none" stroke="#a85535" stroke-opacity=".8" stroke-width="24.5"/>
+<path d="M1050.0 648.0 q102.0 102.0 0 204.0 q-102.0 -102.0 0 -204.0 Z" fill="#a85535" fill-opacity=".8"/>
+<circle cx="150.0" cy="1050.0" r="102.0" fill="none" stroke="#a85535" stroke-opacity=".75" stroke-width="22.4"/>
+<path d="M348.0 1152.0 q102.0 -204.0 204.0 0" fill="none" stroke="#a85535" stroke-opacity=".8" stroke-width="24.5"/>
+<path d="M750.0 948.0 q102.0 102.0 0 204.0 q-102.0 -102.0 0 -204.0 Z" fill="#a85535" fill-opacity=".8"/>
+<circle cx="1050.0" cy="1050.0" r="102.0" fill="none" stroke="#a85535" stroke-opacity=".75" stroke-width="22.4"/>
+<rect x="0" y="0" width="1200" height="1200" fill="#b99555" fill-opacity="0.090"/>
+  <text x="1158" y="1158" text-anchor="end" font-family="sans-serif" font-size="38" fill="#ffffff" fill-opacity=".42">PLACEHOLDER</text>
+</svg>

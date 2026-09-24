@@ -1,0 +1,7 @@
+# Original field photography is large and lives outside version control.
+# The processed, web-sized derivatives in public/photos are what the site serves.
+incoming/*
+!incoming/NOTES.txt
+
+# Material held pending consent never enters public/ and never enters version control.
+withheld/
