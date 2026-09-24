@@ -9,3 +9,7 @@ test-results/
 
 # Uploaded media: served by a route handler, never part of the build.
 storage/
+
+# Word documents are rebuilt from docs/build-systemdoc.js; preview renders are not kept.
+docs/preview.pdf
+docs/*.jpg
