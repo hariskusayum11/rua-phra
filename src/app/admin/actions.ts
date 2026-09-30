@@ -174,9 +174,12 @@ export async function saveResource(resource: ResourceKey, id: string | null, val
       }
       case "qr-codes": {
         const raw=adminSchemas["qr-codes"].parse(values);
-        const target = { boatId:null,patternId:null,masterId:null,processId:null,stepId:null };
-        const key = ({BOAT:"boatId",PATTERN:"patternId",MASTER:"masterId",PROCESS:"processId",STEP:"stepId"} as const)[raw.targetKind];
-        const data={ code:raw.code,label:raw.label,targetKind:raw.targetKind,active:raw.active,isDemo:raw.isDemo,...target,[key]:raw.targetId };
+        // Every pointer is cleared first, so changing a code's kind never leaves the old
+        // target behind for the resolver to trip over.
+        const target = { boatId:null,patternId:null,masterId:null,processId:null,stepId:null,path:null } as Record<string,string|null>;
+        const key = ({BOAT:"boatId",PATTERN:"patternId",MASTER:"masterId",PROCESS:"processId",STEP:"stepId",PAGE:"path"} as const)[raw.targetKind];
+        target[key] = raw.targetKind === "PAGE" ? raw.path ?? null : raw.targetId ?? null;
+        const data={ code:raw.code,label:raw.label,targetKind:raw.targetKind,active:raw.active,isDemo:raw.isDemo,...target };
         const row=id?await db.qRCode.update({where:{id},data}):await db.qRCode.create({data});savedId=row.id;break;
       }
     }

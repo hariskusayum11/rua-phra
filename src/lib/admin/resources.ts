@@ -103,8 +103,10 @@ export const resources: Record<ResourceKey, { label: string; singular: string; f
     {name:"quizJson",label:"แบบฝึกหัดท้ายบท",type:"quiz",help:"เว้นว่างไว้ได้ถ้าบทนี้ไม่มีแบบฝึกหัด"},
   ] },
   "qr-codes": { label: "QR Codes", singular: "QR Code", fields: [
-    {name:"code",label:"รหัสสั้น",required:true},{name:"label",label:"ชื่อกำกับ",required:true},{name:"targetKind",label:"ประเภทปลายทาง",type:"select",options:[{value:"BOAT",label:"เรือพระ"},{value:"PATTERN",label:"ลวดลาย"},{value:"MASTER",label:"ช่าง"},{value:"PROCESS",label:"กระบวนการ"},{value:"STEP",label:"ขั้นตอน"}]},
-    {name:"targetId",label:"เนื้อหาปลายทาง",type:"select",required:true},{name:"active",label:"เปิดใช้งาน",type:"checkbox"},
+    {name:"code",label:"รหัสสั้น",required:true},{name:"label",label:"ชื่อกำกับ",required:true},{name:"targetKind",label:"ประเภทปลายทาง",type:"select",options:[{value:"BOAT",label:"เรือพระ"},{value:"PATTERN",label:"ลวดลาย"},{value:"MASTER",label:"ช่าง"},{value:"PROCESS",label:"กระบวนการ"},{value:"STEP",label:"ขั้นตอน"},{value:"PAGE",label:"หน้าเว็บ เช่น บอร์ดนิทรรศการ"}]},
+    {name:"targetId",label:"เนื้อหาปลายทาง",type:"select"},
+    {name:"path",label:"เส้นทางหน้าเว็บ",help:"ใช้เมื่อเลือกประเภทเป็นหน้าเว็บ เช่น /exhibition"},
+    {name:"active",label:"เปิดใช้งาน",type:"checkbox"},
   ] },
 };
 

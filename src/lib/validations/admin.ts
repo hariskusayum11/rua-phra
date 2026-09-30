@@ -48,7 +48,10 @@ export const adminSchemas = {
   // against the block and quiz schemas in the save action, where a failure can be reported
   // against the field the editor was actually looking at.
   lessons: z.object({ courseId:uuid, title:text, slug, position:positiveInt, status, contentsJson:z.string().default(""), quizJson:z.string().default(""), ...commonDemo }),
-  "qr-codes": z.object({ code:z.string().trim().min(1).max(80).regex(/^[a-zA-Z0-9-]+$/),label:text,targetKind:z.enum(["BOAT","PATTERN","MASTER","PROCESS","STEP"]),targetId:uuid,active:z.boolean().default(false),...commonDemo }),
+  // A PAGE code points at a path and has no record to pick, so targetId and path swap
+  // places depending on the kind. Requiring both would make every form unfillable.
+  "qr-codes": z.object({ code:z.string().trim().min(1).max(80).regex(/^[a-zA-Z0-9-]+$/),label:text,targetKind:z.enum(["BOAT","PATTERN","MASTER","PROCESS","STEP","PAGE"]),targetId:z.preprocess(emptyToUndefined,z.string().uuid().optional()),path:z.preprocess(emptyToUndefined,z.string().trim().max(200).regex(/^\/(?!\/)[\w\-./#?=&]*$/,"ใช้เส้นทางภายในเว็บไซต์ เช่น /exhibition").optional()),active:z.boolean().default(false),...commonDemo })
+    .refine((v)=>v.targetKind==="PAGE"?Boolean(v.path):Boolean(v.targetId),{ message:"เลือกเนื้อหาปลายทาง หรือกรอกเส้นทางหน้าเว็บ", path:["targetId"] }),
 } satisfies Record<ResourceKey, z.ZodType>;
 
 export type ActionState = { ok: boolean; message: string; fieldErrors?: Record<string,string[]>; id?: string };

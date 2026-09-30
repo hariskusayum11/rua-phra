@@ -25,7 +25,7 @@ export async function getAdminList(resource: ResourceKey): Promise<AdminListRow[
     case "sources": return (await db.knowledgeSource.findMany({orderBy:{updatedAt:"desc"},include:{verification:true}})).map(x=>({id:x.id,title:x.title,detail:x.informant||x.kind,status:x.verification?.status??"DRAFT",updatedAt:x.updatedAt}));
     case "courses": return (await db.course.findMany({orderBy:{updatedAt:"desc"},include:{_count:{select:{lessons:true}}}})).map(x=>({id:x.id,title:x.title,detail:`${x._count.lessons} บทเรียน · /learn/${x.slug}`,updatedAt:x.updatedAt}));
     case "lessons": return (await db.lesson.findMany({orderBy:[{course:{title:"asc"}},{position:"asc"}],include:{course:true,verification:true,_count:{select:{contents:true,quizzes:true}}}})).map(x=>({id:x.id,title:`${x.position}. ${x.title}`,detail:`${x.course.title} · ${x._count.contents} ส่วน${x._count.quizzes>0?" · มีแบบฝึกหัด":""}`,status:x.verification?.status??"DRAFT",updatedAt:x.updatedAt}));
-    case "qr-codes": return (await db.qRCode.findMany({orderBy:{updatedAt:"desc"}})).map(x=>({id:x.id,title:x.label,detail:`/q/${x.code} · ${x.targetKind} · ${x.scanCount} scans`,status:x.active?"ACTIVE":"INACTIVE",updatedAt:x.updatedAt}));
+    case "qr-codes": return (await db.qRCode.findMany({orderBy:{updatedAt:"desc"}})).map(x=>({id:x.id,title:x.label,detail:`/q/${x.code} · ${x.targetKind}${x.path?` ${x.path}`:""} · ${x.scanCount} scans`,status:x.active?"ACTIVE":"INACTIVE",updatedAt:x.updatedAt}));
   }
 }
 
@@ -57,6 +57,7 @@ export async function getAdminRecord(resource: ResourceKey, id: string): Promise
   if(resource==="sources" && row.interviewDate instanceof Date) result.interviewDate=row.interviewDate.toISOString().slice(0,10);
   if(resource==="qr-codes") {
     result.targetId=(row.boatId||row.patternId||row.masterId||row.processId||row.stepId||"") as string;
+    result.path=(row.path||"") as string;
   }
   if(resource==="media" && row.takenAt instanceof Date) result.takenAt=row.takenAt.toISOString().slice(0,10);
   if(resource==="lessons") {

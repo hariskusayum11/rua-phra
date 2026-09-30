@@ -75,6 +75,8 @@ enum QRTargetKind {
   PROCESS
   STEP
   LESSON
+  /// A page of the site rather than a record: an exhibition board, a leaflet, a sign.
+  PAGE
 }
 
 enum StepMediaRole {
@@ -640,6 +642,9 @@ model QRCode {
   step       ProcessStep?      @relation(fields: [stepId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   lessonId   String?           @db.Uuid
   lesson     Lesson?           @relation(fields: [lessonId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  /// Destination for targetKind PAGE: a site-relative path such as /exhibition. Kept here
+  /// rather than in the printed link so a sign already on a wall can be repointed.
+  path       String?           @db.VarChar(200)
   scanCount  Int               @default(0)
   active     Boolean           @default(true)
   isDemo     Boolean           @default(false)

@@ -52,8 +52,12 @@ function Field({field,resource,register,errors,watched,setValue,options}:{field:
   if(field.type==="relations") return <RelationField field={field} value={(watched[field.name] as string[]|undefined)??[]} options={options[field.optionSource||""]||[]} setValue={setValue}/>;
   if(field.type==="hotspot") return <HotspotEditor key="hotspot" boatId={String(watched.boatId||"")} x={Number(watched.x)||0} y={Number(watched.y)||0} boats={options.boats||[]} onChange={(x,y)=>{setValue("x",x,{shouldDirty:true,shouldValidate:true});setValue("y",y,{shouldDirty:true,shouldValidate:true});}}/>;
   let fieldOptions=field.name==="status"?statuses:(field.options||options[field.optionSource||""]||[]);
-  if(resource==="qr-codes"&&field.name==="targetId") {
-    const kind=String(watched.targetKind||"BOAT"); const source=kind==="BOAT"?"boats":kind==="PATTERN"?"patterns":kind==="MASTER"?"masters":kind==="PROCESS"?"processes":"steps";fieldOptions=options[source]||[];
+  if(resource==="qr-codes") {
+    const kind=String(watched.targetKind||"BOAT");
+    // A page code has a path and no record; a record code has the reverse. Showing both
+    // at once invites an editor to fill in the one that will be thrown away.
+    if(field.name==="targetId"){ if(kind==="PAGE")return null; const source=kind==="BOAT"?"boats":kind==="PATTERN"?"patterns":kind==="MASTER"?"masters":kind==="PROCESS"?"processes":"steps";fieldOptions=options[source]||[]; }
+    if(field.name==="path"&&kind!=="PAGE")return null;
   }
   const error=errors[field.name]?.message?.toString(); const wide=field.type==="textarea"||field.type==="media";
   if(field.type==="checkbox") return <label className="admin-check admin-field-wide"><input type="checkbox" {...register(field.name)}/><span>{field.label}</span></label>;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { contactChannel, partners, projectTitle } from "@/lib/site-info";
+import { award, contacts, partners, projectTitle, team, telHref, workTitle } from "@/lib/site-info";
 
 export const metadata: Metadata = {
   title: "เกี่ยวกับโครงการ",
@@ -96,31 +96,41 @@ export default function AboutPage() {
             หากพบชื่อลาย ลำดับขั้นตอน ชื่อคน หรือรายละเอียดใดที่คลาดเคลื่อน
             การแจ้งกลับมาถือเป็นส่วนหนึ่งของงาน ไม่ใช่การรบกวน
           </p>
-          {contactChannel.kind === "email" ? (
-            <p>
-              ส่งรายละเอียดมาที่ <a className="editorial-link" href={`mailto:${contactChannel.value}`}>{contactChannel.value}</a>
-            </p>
-          ) : (
-            <p>
-              ขณะนี้ยังไม่มีช่องทางติดต่อโดยตรงของโครงการ
-              ระหว่างนี้แจ้งผ่านหน่วยงานที่ดำเนินการทั้งสองแห่งด้านล่างได้
-              และช่องทางติดต่อโดยตรงจะประกาศไว้ในหน้านี้เมื่อพร้อม
-            </p>
-          )}
+          <p>ติดต่อทีมงานได้โดยตรงที่</p>
         </div>
-      </section>
-
-      <section className="shell about-block" aria-labelledby="about-partners">
-        <h2 id="about-partners">หน่วยงานที่ดำเนินการ</h2>
-        <ul className="about-partners">
-          {partners.map((partner) => (
-            <li key={partner.name}>
-              <strong>{partner.name}</strong>
-              <span>{partner.role}</span>
+        <ul className="about-contacts">
+          {contacts.map((contact) => (
+            <li key={contact.phone}>
+              <span>{contact.name}</span>
+              {/* A tel: link so a phone dials it; the printed form is the source. */}
+              <a href={telHref(contact.phone)}>{contact.phone}</a>
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="shell about-block" aria-labelledby="about-partners">
+        <h2 id="about-partners">หน่วยงานและผู้จัดทำ</h2>
+        <div className="about-partner-groups">
+          {partners.map((partner) => (
+            <div key={partner.key} className="about-partner-group">
+              <strong>{partner.name}</strong>
+              {partner.parent && <span className="about-partner-parent">{partner.parent}</span>}
+              <span className="about-partner-role">{partner.role}</span>
+              <ul>
+                {team
+                  .filter((member) => member.partner === partner.key)
+                  .map((member) => (
+                    <li key={member.name}>{member.name}</li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
         <p className="about-project-line">{projectTitle}</p>
+        <p className="about-project-line">
+          ผลงาน “{workTitle}” · {award.programme} “{award.theme}” · {award.round}
+        </p>
       </section>
 
       <nav className="shell about-back" aria-label="ไปยังส่วนอื่นของคลัง">

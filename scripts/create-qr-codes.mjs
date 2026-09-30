@@ -25,17 +25,20 @@ const plan = [
   { code: "lai-kradat", label: "ลายดอกบนแถบกระดาษ", targetKind: "PATTERN", patternId: pattern?.id },
   { code: "chang-kradat", label: "ช่างลายกระดาษ วัดรัตนาราม", targetKind: "MASTER", masterId: master?.id },
   { code: "craft", label: "จากกระดาษสู่เรือพระ — กระบวนการทั้งหมด", targetKind: "PROCESS", processId: (await prisma.knowledgeProcess.findFirst({ select: { id: true } }))?.id },
+  // The exhibition board. A PAGE code rather than a link printed straight onto the panel,
+  // so the destination can be changed after the board is already standing in a hall.
+  { code: "nithat", label: "บอร์ดนิทรรศการ เรือพระเล่าเรื่อง", targetKind: "PAGE", path: "/exhibition" },
 ];
 
 for (const entry of plan) {
-  const target = entry.boatId ?? entry.patternId ?? entry.masterId ?? entry.processId;
+  const target = entry.boatId ?? entry.patternId ?? entry.masterId ?? entry.processId ?? entry.path;
   if (!target) {
     console.warn(`ข้าม ${entry.code} — ยังไม่มีเนื้อหาปลายทางในฐานข้อมูล`);
     continue;
   }
   const row = await prisma.qRCode.upsert({
     where: { code: entry.code },
-    update: { label: entry.label, targetKind: entry.targetKind, boatId: entry.boatId ?? null, patternId: entry.patternId ?? null, masterId: entry.masterId ?? null, processId: entry.processId ?? null },
+    update: { label: entry.label, targetKind: entry.targetKind, boatId: entry.boatId ?? null, patternId: entry.patternId ?? null, masterId: entry.masterId ?? null, processId: entry.processId ?? null, path: entry.path ?? null },
     create: { ...entry, active: true, isDemo: false },
     select: { code: true, label: true, scanCount: true },
   });

@@ -35,7 +35,10 @@ export function SiteFooter() {
           <p className="site-footer-partners-label">ดำเนินการโดย</p>
           <ul>
             {partners.map((partner) => (
-              <li key={partner.name}>{partner.name}</li>
+              <li key={partner.key}>
+                {partner.name}
+                {partner.parent && <small>{partner.parent}</small>}
+              </li>
             ))}
           </ul>
         </div>

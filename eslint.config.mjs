@@ -12,5 +12,8 @@ export default defineConfig([
       "@typescript-eslint/no-unused-vars": ["error", { ignoreRestSiblings: true }],
     },
   },
-  globalIgnores([".next/**", "src/generated/**", "next-env.d.ts"]),
+  // docs/ holds a standalone CommonJS script that builds the Word report. It is not part
+  // of the application and is not bundled; linting it against the app's rules only argues
+  // about require() in a file Node runs directly.
+  globalIgnores([".next/**", "src/generated/**", "next-env.d.ts", "docs/**"]),
 ]);

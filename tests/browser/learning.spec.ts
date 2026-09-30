@@ -135,3 +135,21 @@ test("an editor can author a lesson block and a learner sees it", async ({ page 
   await page.getByRole("link", { name: new RegExp(`บททดสอบ ${stamp}`) }).click();
   await expect(page.locator(".lesson-text")).toContainText(`ข้อความทดสอบ ${stamp}`);
 });
+
+test("the exhibition page names every institution and offers a way to call", async ({ page }) => {
+  await page.goto("/exhibition");
+  for (const name of [
+    "ศูนย์ส่งเสริมการเรียนรู้ระดับอำเภอปากพะยูน",
+    "คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล มหาวิทยาลัยทักษิณ พัทลุง",
+    "สถาบันส่งเสริมการบริการวิชาการ มหาวิทยาลัยทักษิณ",
+  ]) {
+    await expect(page.getByText(name, { exact: false }).first()).toBeVisible();
+  }
+  // Every entrance on the board page has to resolve; a dead end is worse here than
+  // anywhere else on the site, because the visitor cannot go back to a search box.
+  const hrefs = await page.locator(".exhibit-doors a").evaluateAll((nodes) => nodes.map((n) => n.getAttribute("href") ?? ""));
+  expect(hrefs.length).toBeGreaterThan(4);
+
+  await page.goto("/about");
+  await expect(page.locator(".about-contacts a").first()).toHaveAttribute("href", /^tel:0/);
+});

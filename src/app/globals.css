@@ -3,6 +3,7 @@
 @import "./archive.css";
 @import "./learn.css";
 @import "./motion.css";
+@import "./exhibition.css";
 
 /* ---------------------------------------------------------------------------
    Design tokens — Contemporary Southern Thai Cultural Archive
@@ -287,6 +288,13 @@ body:has(.home-page) .header-spacer { display: none; }
 .site-footer-partners li {
   font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; color: var(--foreground);
 }
+/* The district centre sits under the provincial office; naming one without the other
+   credits the wrong body. */
+.site-footer-partners li small {
+  display: block; margin-top: .15rem;
+  font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  font-size: .8125rem; color: var(--muted);
+}
 .site-footer-legal {
   display: grid; gap: .5rem; margin-top: 2rem; padding-top: 1.75rem;
   border-top: 1px solid var(--rule);
@@ -553,6 +561,20 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .qr-print-warning svg { flex: none; width: 1.15rem; height: 1.15rem; margin-top: .15rem; }
 .qr-print-warning code { background: #f7e3d8; color: #7c2d12; }
 .qr-print-note { margin-top: 1rem; color: var(--admin-muted); font-size: .8125rem; }
+.qr-print-modes { margin-top: .85rem; }
+.qr-print-modes .editorial-link { color: #17634f; font-size: .875rem; }
+
+/* Board signs: one code per page, big enough to scan from standing distance. */
+.qr-print[data-poster] .qr-print-sheet { grid-template-columns: 1fr; gap: 2rem; }
+.qr-print[data-poster] .qr-print-image { max-width: 24rem; }
+.qr-print[data-poster] .qr-print-label { font-size: 1.5rem; }
+.qr-print[data-poster] .qr-print-url { font-size: 1rem; }
+@media print {
+  .qr-print[data-poster] .qr-print-sheet { grid-template-columns: 1fr; }
+  .qr-print[data-poster] .qr-print-card { break-after: page; border: 0; padding: 0; }
+  .qr-print[data-poster] .qr-print-card:last-child { break-after: auto; }
+  .qr-print[data-poster] .qr-print-image { max-width: 12cm; }
+}
 
 .qr-print-sheet {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));

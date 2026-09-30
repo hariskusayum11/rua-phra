@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import QRCodeLib from "qrcode";
-import { ArrowLeft, TriangleAlert } from "lucide-react";
+import { ArrowLeft, LayoutGrid, Maximize2, TriangleAlert } from "lucide-react";
 import { getQrCodeSheet } from "@/lib/services/qr";
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,13 @@ async function resolveBaseUrl() {
   return { base: `${proto}://${host}`, source: "เดาจากที่อยู่ที่เปิดหน้านี้" };
 }
 
-export default async function QrPrintPage() {
+type Props = { searchParams: Promise<{ [key: string]: string | string[] | undefined }> };
+
+export default async function QrPrintPage({ searchParams }: Props) {
+  // A sticker sheet and a board sign are different objects. One gets cut into squares and
+  // glued to a boat; the other is one large code read from a metre away in an exhibition
+  // hall, and printing it at sticker size would make it unscannable from standing distance.
+  const poster = (await searchParams).size === "poster";
   const [codes, { base, source }] = await Promise.all([getQrCodeSheet(), resolveBaseUrl()]);
   const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])/.test(base);
 
@@ -40,7 +46,7 @@ export default async function QrPrintPage() {
       // Error correction level M survives a sticker that has been rained on and peeled at
       // one corner, without making the modules so fine they blur on a cheap printer.
       svg: await QRCodeLib.toString(`${base}/q/${row.code}`, {
-        type: "svg", errorCorrectionLevel: "M", margin: 1, width: 240,
+        type: "svg", errorCorrectionLevel: "M", margin: 1, width: poster ? 900 : 240,
       }),
     })),
   );
@@ -48,16 +54,30 @@ export default async function QrPrintPage() {
   const retired = codes.filter((row) => !row.active);
 
   return (
-    <main className="admin-main qr-print" id="main-content" tabIndex={-1}>
+    <main className="admin-main qr-print" id="main-content" tabIndex={-1} data-poster={poster || undefined}>
       <div className="qr-print-controls">
         <Link className="editorial-link" href="/admin/qr-codes">
           <ArrowLeft aria-hidden="true" />
           กลับไปจัดการ QR Code
         </Link>
-        <h1>ป้าย QR สำหรับติดหน้างาน</h1>
+        <h1>{poster ? "ป้าย QR ขนาดใหญ่สำหรับบอร์ดนิทรรศการ" : "ป้าย QR สำหรับติดหน้างาน"}</h1>
+        <p className="qr-print-modes">
+          {poster ? (
+            <Link className="editorial-link" href="/admin/qr-print">
+              <LayoutGrid aria-hidden="true" />
+              สลับไปแบบสติกเกอร์ หลายดวงต่อหน้า
+            </Link>
+          ) : (
+            <Link className="editorial-link" href="/admin/qr-print?size=poster">
+              <Maximize2 aria-hidden="true" />
+              สลับไปแบบใหญ่ หน้าละหนึ่งดวง สำหรับบอร์ดนิทรรศการ
+            </Link>
+          )}
+        </p>
         <p>
           ป้ายทั้งหมดชี้ไปที่ <code>{base}/q/…</code> ({source})
           {" "}สั่งพิมพ์จากเบราว์เซอร์ได้เลย เมนูด้านข้างจะไม่ติดไปกับกระดาษ
+          {poster && " แบบใหญ่จะได้หน้าละหนึ่งดวง ประมาณ 12 เซนติเมตร สแกนได้จากระยะยืน"}
         </p>
 
         {isLocal && (

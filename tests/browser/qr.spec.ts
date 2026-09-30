@@ -78,3 +78,24 @@ test("the print sheet refuses to pretend localhost is a real address", async ({ 
   // Scoped to the warning itself: Next renders its own empty role="alert" route announcer.
   await expect(page.locator(".qr-print-warning")).toContainText("localhost");
 });
+
+test("a page code reaches the exhibition landing page", async ({ page }) => {
+  // The board code points at a path rather than a record, which is the one target kind
+  // whose destination is not guaranteed by a foreign key.
+  await page.goto("/q/nithat");
+  await expect(page).toHaveURL(/\/exhibition$/);
+  await expect(page.getByRole("heading", { level: 1, name: "เรือพระเล่าเรื่อง" })).toBeVisible();
+});
+
+test("the poster sheet prints one large code per page", async ({ page }) => {
+  await login(page);
+  await page.goto("/admin/qr-print");
+  await page.getByRole("link", { name: /แบบใหญ่/ }).click();
+  await expect(page).toHaveURL(/size=poster/);
+  await expect(page.locator(".qr-print[data-poster]")).toBeVisible();
+
+  // The square has to be physically bigger, not just laid out differently — a sticker-sized
+  // code on a board is unreadable from where a visitor stands.
+  const width = await page.locator(".qr-print-image svg").first().evaluate((n) => n.getBoundingClientRect().width);
+  expect(width).toBeGreaterThan(300);
+});

@@ -1,0 +1,122 @@
+/* ===========================================================================
+   The exhibition landing page.
+
+   Read standing up, on a phone, in a hall, with people waiting behind. So it is
+   phone-first in the strict sense: the small layout is the real one and the wide
+   screens just get more air, rather than the other way round. Nothing collapses
+   into columns that would put the entrances below a fold.
+   =========================================================================== */
+
+.exhibit { padding-block: clamp(2rem, 6vw, 3.5rem) clamp(3.5rem, 9vw, 6rem); }
+.exhibit > * + * { margin-top: clamp(2.25rem, 6vw, 3.5rem); }
+
+.exhibit-head h1 {
+  margin-top: .75rem;
+  font-size: clamp(2.5rem, 11vw, 4.5rem);
+  line-height: 1.12;
+}
+.exhibit-tagline {
+  margin-top: .85rem;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.125rem, 4.4vw, 1.5rem);
+  font-weight: 500;
+  color: var(--accent-text);
+}
+.exhibit-sub {
+  max-width: var(--measure);
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: .9375rem;
+  line-height: 1.75;
+}
+
+/* Full-bleed on a phone: the photograph is the reason anyone scanned the code. */
+.exhibit-figure {
+  margin: clamp(2rem, 6vw, 3rem) 0 0;
+}
+
+.exhibit-lede h2,
+.exhibit-doors h2,
+.exhibit-credits h2 {
+  font-size: clamp(1.375rem, 5vw, 1.875rem);
+}
+.exhibit-lede > p {
+  max-width: var(--measure);
+  margin-top: 1rem;
+  color: var(--muted);
+  line-height: 1.85;
+}
+.exhibit-lede .demo-notice { margin-top: 1.5rem; }
+
+.exhibit-counts {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px; margin: 1.75rem 0 0;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+.exhibit-counts > div {
+  display: grid; gap: .3rem; align-content: center;
+  padding: 1.1rem 1rem; background: var(--background);
+}
+.exhibit-counts dt { color: var(--muted); font-size: .8125rem; line-height: 1.5; }
+.exhibit-counts dd {
+  margin: 0;
+  font-family: "Noto Serif Thai", serif;
+  font-size: clamp(1.75rem, 7vw, 2.5rem); font-weight: 500;
+  line-height: 1.1; font-variant-numeric: tabular-nums;
+}
+
+/* --- the entrances ------------------------------------------------------- */
+
+.exhibit-doors ul { margin: 1.5rem 0 0; padding: 0; list-style: none; }
+.exhibit-doors li + li { margin-top: .6rem; }
+.exhibit-doors a {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  gap: 1rem;
+  /* A 64px row is a comfortable target for a thumb held at arm's length. */
+  min-height: 64px; padding: .9rem 1.1rem;
+  border: 1px solid var(--rule); background: var(--surface);
+  text-decoration: none;
+  transition: border-color var(--micro) var(--ease), transform var(--micro) var(--ease);
+}
+.exhibit-doors a:hover { border-color: var(--primary); transform: translateY(-1px); }
+.exhibit-doors a > svg:first-child { width: 1.35rem; height: 1.35rem; color: var(--accent-text); }
+.exhibit-doors span {
+  font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; font-weight: 500;
+}
+.exhibit-doors small {
+  display: block; margin-top: .2rem;
+  font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  font-size: .8125rem; font-weight: 400; color: var(--muted); line-height: 1.55;
+}
+.exhibit-doors a > svg:last-child {
+  width: 1.05rem; height: 1.05rem; color: var(--rule-strong);
+  transition: transform var(--micro) var(--ease), color var(--micro) var(--ease);
+}
+.exhibit-doors a:hover > svg:last-child { color: var(--accent-text); transform: translateX(.2rem); }
+
+/* --- credits ------------------------------------------------------------- */
+
+.exhibit-credits { padding-top: clamp(2rem, 5vw, 3rem); border-top: 1px solid var(--rule); }
+.exhibit-credit-group { margin-top: 1.5rem; }
+.exhibit-credit-group strong {
+  display: block; font-family: "Noto Serif Thai", serif; font-size: 1rem; font-weight: 500;
+}
+.exhibit-credit-group span { display: block; margin-top: .15rem; color: var(--muted); font-size: .8125rem; }
+.exhibit-credit-group p { margin-top: .4rem; color: var(--muted); font-size: .875rem; line-height: 1.7; }
+.exhibit-award { margin-top: 1.5rem; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.exhibit-credits .button-solid { margin-top: 2rem; }
+
+@media (min-width: 48rem) {
+  .exhibit-figure { width: min(100% - (var(--gutter) * 2), var(--max-w)); margin-inline: auto; }
+  .exhibit-counts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .exhibit-doors ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .exhibit-doors li + li { margin-top: 0; }
+}
+@media (min-width: 64rem) {
+  .exhibit-credits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
+  .exhibit-credits h2 { grid-column: 1 / -1; }
+  .exhibit-credit-group { margin-top: 0; }
+  .exhibit-award, .exhibit-credits .button-solid { grid-column: 1 / -1; }
+  .exhibit-award { margin-top: .5rem; }
+}
