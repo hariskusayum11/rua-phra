@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, BookOpenText, DraftingCompass, Play, ScrollText, Ship, Users } from "lucide-react";
@@ -5,7 +6,6 @@ import { MediaFrame } from "@/components/media/media-frame";
 import { award, partners, projectTitle, team, workTitle } from "@/lib/site-info";
 import { getExhibitionContent } from "@/lib/services/exhibition";
 
-export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "เรือพระเล่าเรื่อง — จากบอร์ดนิทรรศการ",
@@ -33,7 +33,17 @@ const doors = [
  * twelve-part story meant for someone sitting down — a fine thing to arrive at by choice,
  * and the wrong thing to hand a person who is standing in a hall with people behind them.
  */
+/**
+ * Rendered when someone asks for it, not when the image is built.
+ *
+ * `connection()` stops prerendering here, which is what lets the production image be
+ * built without a reachable database — a Docker build has no database, and a deploy that
+ * only works when one happens to be on the same network is a deploy that fails on the
+ * morning of the exhibition. The queries are small and indexed, and Postgres sits beside
+ * the app, so paying for them per request is cheaper than the fragility.
+ */
 export default async function ExhibitionPage() {
+  await connection();
   const content = await getExhibitionContent();
 
   return (

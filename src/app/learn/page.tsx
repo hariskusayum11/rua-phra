@@ -1,16 +1,26 @@
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getCourseIndex } from "@/lib/services/learning";
 
-export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "เรียนรู้",
   description: "ชุดบทเรียนงานกระดาษเรือพระ เรียนตามจังหวะของตัวเอง ไม่ต้องสมัครสมาชิก",
 };
 
+/**
+ * Rendered when someone asks for it, not when the image is built.
+ *
+ * `connection()` stops prerendering here, which is what lets the production image be
+ * built without a reachable database — a Docker build has no database, and a deploy that
+ * only works when one happens to be on the same network is a deploy that fails on the
+ * morning of the exhibition. The queries are small and indexed, and Postgres sits beside
+ * the app, so paying for them per request is cheaper than the fragility.
+ */
 export default async function LearnIndexPage() {
+  await connection();
   const courses = await getCourseIndex();
   const withLessons = courses.filter((course) => course._count.lessons > 0);
 

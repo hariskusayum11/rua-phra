@@ -1,0 +1,6 @@
+# Caddy gets and renews the HTTPS certificate by itself; there is nothing to run by hand
+# and nothing that quietly expires three months after the exhibition.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:3000
+}

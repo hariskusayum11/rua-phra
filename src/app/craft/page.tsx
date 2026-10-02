@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
   description: "สำรวจกระบวนการสร้างงานประดับกระดาษบนเรือพระผ่านลำดับองค์ความรู้ที่แก้ไขและตรวจสอบได้",
 };
 
+/** Request-time for the same reason as the homepage: the build has no database. */
 export default async function CraftPage() {
+  await connection();
   const processes = await getKnowledgeProcesses();
 
   return (

@@ -1,0 +1,63 @@
+# Production stack: the site, its database, and a reverse proxy that gets an HTTPS
+# certificate on its own.
+#
+#   1. copy .env.example to .env and fill in real values
+#   2. set SITE_DOMAIN to the domain pointed at this server
+#   3. docker compose -f compose.prod.yaml up -d --build
+#
+# Everything that must survive a restart is on a named volume: the database, and the
+# photographs uploaded through the admin.
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rua}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-rua_phra}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rua} -d ${POSTGRES_DB:-rua_phra}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rua}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-rua_phra}
+      NEXT_PUBLIC_SITE_URL: https://${SITE_DOMAIN:?set SITE_DOMAIN in .env}
+      AUTH_URL: https://${SITE_DOMAIN}
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?set ADMIN_EMAIL in .env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+    volumes:
+      # Photographs uploaded through the admin. Without this they live inside the
+      # container and are gone the next time it is rebuilt.
+      - uploads:/app/storage/uploads
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  db_data:
+  uploads:
+  caddy_data:
+  caddy_config:

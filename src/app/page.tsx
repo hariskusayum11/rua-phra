@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { BoatReader } from "@/components/home/boat-reader";
 import { Closing } from "@/components/home/closing";
 import { CraftProcess } from "@/components/home/craft-process";
@@ -17,14 +18,23 @@ import { getHomeContent } from "@/lib/services/home";
  * in the CMS reaches visitors without a deploy and without making every visit hit the
  * database.
  */
-export const revalidate = 300;
 
 /**
  * The homepage is one story told in eleven movements, and the order carries the argument:
  * object → story → craft → human → learning → continuation. Sections are not
  * interchangeable blocks; moving one breaks the sequence a first-time visitor needs.
  */
+/**
+ * Rendered when someone asks for it, not when the image is built.
+ *
+ * `connection()` stops prerendering here, which is what lets the production image be
+ * built without a reachable database — a Docker build has no database, and a deploy that
+ * only works when one happens to be on the same network is a deploy that fails on the
+ * morning of the exhibition. The queries are small and indexed, and Postgres sits beside
+ * the app, so paying for them per request is cheaper than the fragility.
+ */
 export default async function HomePage() {
+  await connection();
   const content = await getHomeContent();
 
   return (
