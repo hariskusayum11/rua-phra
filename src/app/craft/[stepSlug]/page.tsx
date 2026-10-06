@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BackNav } from "@/components/site/back-nav";
 import { AlertTriangle, ArrowLeft, ArrowRight, Lightbulb, Play } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getProcessStep, parseInstructions } from "@/lib/services/craft";
@@ -131,6 +132,13 @@ export default async function CraftStepPage({ params }: Props) {
         {previous ? <Link href={`/craft/${previous.slug}`}><ArrowLeft aria-hidden="true" /><span>ขั้นก่อนหน้า<small>{previous.title}</small></span></Link> : <span />}
         {next && <Link href={`/craft/${next.slug}`}><span>ขั้นถัดไป<small>{next.title}</small></span><ArrowRight aria-hidden="true" /></Link>}
       </nav>
+      <BackNav
+        destinations={[
+          { href: "/craft", label: "ขั้นตอนทั้งหมด" },
+          { href: "/#patterns", label: "คลังลวดลาย" },
+          { href: "/", label: "หน้าหลัก" },
+        ]}
+      />
     </main>
   );
 }

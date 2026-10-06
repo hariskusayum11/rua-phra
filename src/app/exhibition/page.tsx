@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BackNav } from "@/components/site/back-nav";
 import { ArrowRight, BookOpenText, DraftingCompass, Play, ScrollText, Ship, Users } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
 import { award, partners, projectTitle, team, workTitle } from "@/lib/site-info";
@@ -138,6 +139,8 @@ export default async function ExhibitionPage() {
           <ArrowRight aria-hidden="true" />
         </Link>
       </section>
+
+      <BackNav destinations={[{ href: "/", label: "เข้าสู่เว็บไซต์เต็ม" }]} />
     </main>
   );
 }

@@ -39,3 +39,33 @@ test("no public page links into a 404", async ({ page, request }) => {
   expect(seen.size, "the crawl found no links, so it is not testing anything").toBeGreaterThan(10);
   expect(broken, `dead links found:\n${broken.join("\n")}`).toEqual([]);
 });
+
+test("no page is a dead end", async ({ page }) => {
+  // A visitor who scanned a QR code at the temple has no history to go back to: the page
+  // they land on is the first thing in the tab. Every page therefore has to carry its own
+  // way onward, and the two screens that hide the site header carry it the most.
+  for (const path of [
+    "/",
+    "/craft",
+    "/craft/paper-cutting-demo",
+    "/boats/rua-phra-wat-rattanaram-2568",
+    "/patterns/lai-dok-bon-thaeb-kradat",
+    "/masters/chang-lai-kradat-rattanaram",
+    "/learn",
+    "/exhibition",
+    "/about",
+    "/login",
+  ]) {
+    await page.goto(path);
+    const ways = await page.locator("a[href]").evaluateAll((nodes) =>
+      nodes
+        .map((node) => node.getAttribute("href") ?? "")
+        .filter((href) => href.startsWith("/") && !href.startsWith("/#") && href !== "#"),
+    );
+    expect(new Set(ways).size, `${path} ไม่มีลิงก์พาไปหน้าอื่นเลย`).toBeGreaterThan(0);
+
+    // Reaching the homepage must never take more than one tap from anywhere.
+    const home = await page.locator('a[href="/"], a[href^="/#"]').count();
+    expect(home, `${path} ไม่มีทางกลับหน้าหลักในหน้าเดียว`).toBeGreaterThan(0);
+  }
+});

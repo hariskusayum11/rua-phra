@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Archive, BookOpenText, Boxes, DraftingCompass, GraduationCap, HardDrive, Image as ImageIcon, Landmark, LayoutDashboard, MapPin, NotebookPen, QrCode, ScrollText, Ship, Users, Wrench } from "lucide-react";
+import { Archive, BookOpenText, Boxes, DraftingCompass, ExternalLink, GraduationCap, HardDrive, Image as ImageIcon, Landmark, LayoutDashboard, MapPin, NotebookPen, QrCode, ScrollText, Ship, Users, Wrench } from "lucide-react";
 import { auth } from "@/auth";
 import { logoutAction } from "@/app/admin/actions";
 import { resources } from "@/lib/admin/resources";
@@ -17,6 +17,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <div className="admin-brand"><span>เรือพระเล่าเรื่อง</span><small>CONTENT MANAGEMENT</small></div>
+        {/* An editor is always editing something that has a public page. Kept at the top
+            because the menu below it is eighteen items long and already scrolls. */}
+        <Link className="admin-view-site" href="/" target="_blank" rel="noreferrer">
+          <ExternalLink aria-hidden="true" />ดูเว็บไซต์
+        </Link>
         <nav aria-label="เมนูผู้ดูแล">
           <Link href="/admin"><LayoutDashboard aria-hidden="true" />ภาพรวม</Link>
           {nav.map(([key,Icon])=><Link key={key} href={`/admin/${key}`}><Icon aria-hidden="true" />{resources[key].label}</Link>)}

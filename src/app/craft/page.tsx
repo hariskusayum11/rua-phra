@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { BackNav } from "@/components/site/back-nav";
 import { getKnowledgeProcesses } from "@/lib/services/craft";
 
 export const metadata: Metadata = {
@@ -75,6 +76,13 @@ export default async function CraftPage() {
           </ol>
         </section>
       ))}
+      <BackNav
+        destinations={[
+          { href: "/", label: "หน้าหลัก" },
+          { href: "/#patterns", label: "คลังลวดลาย" },
+          { href: "/learn", label: "บทเรียน" },
+        ]}
+      />
     </main>
   );
 }

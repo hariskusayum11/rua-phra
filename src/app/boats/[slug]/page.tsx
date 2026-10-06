@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { BackNav } from "@/components/site/back-nav";
 import { BoatExplorer } from "@/components/boat/boat-explorer";
 import { getBoatExplorer } from "@/lib/services/boats";
 
@@ -26,6 +27,13 @@ export default async function BoatDetailPage({ params }: Props) {
         {boat.isDemo && <p className="demo-notice">ข้อมูลสาธิต · ยังไม่ผ่านการตรวจสอบองค์ความรู้</p>}
       </header>
       <BoatExplorer boat={boat} />
+      <BackNav
+        destinations={[
+          { href: "/#boats", label: "เรือพระลำอื่น" },
+          { href: "/craft", label: "ขั้นตอนงานช่าง" },
+          { href: "/", label: "หน้าหลัก" },
+        ]}
+      />
     </main>
   );
 }

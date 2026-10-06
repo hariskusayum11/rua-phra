@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
@@ -22,6 +24,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <label>รหัสผ่าน<input name="password" type="password" autoComplete="current-password" required /></label>
         <button type="submit">เข้าสู่ระบบ</button>
       </form>
+      {/* The site header is hidden on this page, so this is the only way back. Someone who
+          followed the admin link by accident would otherwise be stuck here. */}
+      <Link className="login-back" href="/">
+        <ArrowLeft aria-hidden="true" />
+        กลับไปหน้าเว็บไซต์
+      </Link>
     </main>
   );
 }

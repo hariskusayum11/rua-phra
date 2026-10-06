@@ -534,7 +534,7 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .admin-media-preview { position:relative; width:min(100%,22rem); aspect-ratio:16/9; margin-top:.5rem; overflow:hidden; border:1px solid var(--admin-line); background:#e8ecea; }.admin-media-preview img { object-fit:cover; }
 .admin-form-actions { display:flex; justify-content:space-between; gap:1rem; margin-top:1.25rem; }.admin-danger { display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .85rem;border:1px solid #c66d59;border-radius:.35rem;background:#fff;color:#913d2b; }.admin-form-actions button:disabled { opacity:.55;cursor:wait; }
 .hotspot-editor { grid-column:1/-1; margin:0; padding:1rem; border:1px solid var(--admin-line); border-radius:.35rem; }.hotspot-editor legend { padding-inline:.35rem;font-weight:500; }.hotspot-editor > p,.hotspot-editor output { color:var(--admin-muted);font-size:.75rem; }.hotspot-canvas { position:relative; width:100%; margin-top:.75rem; overflow:hidden; background:#173b33; cursor:crosshair; }.hotspot-canvas > img { display:block;width:100%;height:auto;user-select:none;pointer-events:auto; }.hotspot-admin-point { position:absolute;display:grid;place-items:center;width:3rem;height:3rem;transform:translate(-50%,-50%);border:2px solid #fff;border-radius:50%;background:#c28a2f;color:#fff;box-shadow:0 0 0 .4rem rgba(255,255,255,.25);touch-action:none;cursor:grab; }.hotspot-admin-point:active { cursor:grabbing; }.hotspot-admin-point svg { width:1rem; }.hotspot-admin-empty { grid-column:1/-1;min-height:10rem;display:grid;place-content:center;justify-items:center;gap:.5rem;border:1px dashed #bfc9c4;color:var(--admin-muted); }
-.login-page { min-height:100dvh;display:grid;place-items:center;padding:1rem;background:#eef2f0; }.login-panel { width:min(100%,28rem);display:grid;gap:1rem;padding:2rem;border:1px solid #d5ddda;border-radius:.6rem;background:#fff;color:#17231f;box-shadow:0 1rem 3rem rgba(20,48,40,.08); }.login-panel h1 { font-family:"Noto Sans Thai",sans-serif;font-size:1.5rem; }.login-panel label { display:grid;gap:.35rem;font-size:.8rem; }.login-panel button { min-height:2.8rem;border:0;border-radius:.35rem;background:#17634f;color:#fff;font:inherit; }.form-alert { padding:.6rem .75rem;border-radius:.3rem;font-size:.8rem; }
+.login-page { min-height:100dvh;display:grid;place-items:center;align-content:center;justify-items:center;padding:1rem;background:#eef2f0; }.login-panel { width:min(100%,28rem);display:grid;gap:1rem;padding:2rem;border:1px solid #d5ddda;border-radius:.6rem;background:#fff;color:#17231f;box-shadow:0 1rem 3rem rgba(20,48,40,.08); }.login-panel h1 { font-family:"Noto Sans Thai",sans-serif;font-size:1.5rem; }.login-panel label { display:grid;gap:.35rem;font-size:.8rem; }.login-panel button { min-height:2.8rem;border:0;border-radius:.35rem;background:#17634f;color:#fff;font:inherit; }.form-alert { padding:.6rem .75rem;border-radius:.3rem;font-size:.8rem; }
 .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 @media (max-width:900px) { .admin-shell { grid-template-columns:1fr; }.admin-sidebar { position:static;height:auto; }.admin-sidebar nav { grid-template-columns:repeat(3,minmax(0,1fr)); }.admin-sidebar nav a { justify-content:center;text-align:center; }.admin-sidebar form { margin-top:1rem; }.admin-topbar { display:none; }.admin-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:600px) { .admin-sidebar nav { grid-template-columns:repeat(2,minmax(0,1fr)); }.admin-page-head { align-items:start;flex-direction:column;gap:1rem; }.admin-primary { width:100%; }.admin-form-grid { grid-template-columns:1fr;padding:1rem; }.admin-field-wide { grid-column:auto; }.admin-stats { grid-template-columns:1fr 1fr; }.admin-form-actions { flex-direction:column-reverse; }.admin-form-actions button { width:100%; }.hotspot-editor { grid-column:auto; }.admin-table { min-width:42rem; } }
@@ -678,3 +678,51 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .storage-notes code { padding:.1rem .3rem; background:#e3e0d8; border-radius:.2rem; color:#14312b; font-size:.8125rem; }
 .storage-footnote { margin-top:1rem; color:var(--admin-muted); font-size:.875rem; line-height:1.7; }
 .storage-notes .editorial-link { margin-top:1.25rem; color:#17634f; }
+
+/* ===========================================================================
+   Ways out.
+
+   Every page needs one that does not depend on the browser's back button. A
+   visitor who scanned a QR code at the temple has no history to go back to:
+   the page they are on is the first thing in the tab.
+   =========================================================================== */
+.back-nav {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem;
+  width: min(100% - (var(--gutter) * 2), var(--max-w));
+  margin: clamp(3rem, 7vw, 5rem) auto 0;
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid var(--rule);
+}
+.back-nav a {
+  display: inline-flex; min-height: 44px; align-items: center; gap: .5rem;
+  color: var(--muted); font-size: .9375rem; text-decoration: none;
+}
+.back-nav a:hover { color: var(--accent-text); }
+.back-nav svg { width: 1rem; height: 1rem; transition: transform var(--micro) var(--ease); }
+.back-nav a:hover svg { transform: translateX(-.2rem); }
+/* The first destination is where most readers want to go, so it carries the weight. */
+.back-nav-primary {
+  color: var(--foreground) !important; font-weight: 500;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .35em;
+}
+.back-nav-primary:hover { color: var(--accent-text) !important; }
+.on-dark .back-nav { border-color: var(--rule-dark); }
+.on-dark .back-nav a { color: var(--on-dark-muted); }
+.on-dark .back-nav-primary { color: var(--on-dark) !important; }
+
+/* The login screen hides the site header, so this is the only way back from it. */
+.login-back {
+  display: inline-flex; min-height: 44px; align-items: center; gap: .5rem;
+  margin-top: 1.5rem; color: #4a5a54; font-size: .875rem; text-decoration: none;
+}
+.login-back:hover { color: #17634f; text-decoration: underline; text-underline-offset: .3em; }
+.login-back svg { width: 1rem; height: 1rem; }
+
+.admin-view-site {
+  display: flex; align-items: center; gap: .6rem;
+  margin: 0 0 1rem; padding: .6rem .75rem;
+  border: 1px solid rgba(255,255,255,.22); border-radius: .35rem;
+  color: rgba(255,255,255,.85); font-size: .875rem; text-decoration: none;
+}
+.admin-view-site:hover { border-color: rgba(255,255,255,.45); color: #fff; }
+.admin-view-site svg { width: 1rem; height: 1rem; }
