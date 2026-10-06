@@ -9,6 +9,7 @@ import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { deleteResource, saveResource } from "@/app/admin/actions";
 import { uploadMediaFile } from "@/app/admin/upload";
 import { BlocksField, QuizField } from "@/components/admin/lesson-editors";
+import { downscaleImage, MAX_UPLOAD_BYTES } from "@/lib/admin/downscale";
 import { resources, type AdminField, type ResourceKey } from "@/lib/admin/resources";
 import type { AdminOption } from "@/lib/services/admin";
 import { adminSchemas, type ActionState } from "@/lib/validations/admin";
@@ -77,7 +78,15 @@ function UploadField({setValue,url,alt,help}:{setValue:ReturnType<typeof useForm
   async function choose(file:File|undefined) {
     if(!file)return;
     setError(null);setBusy(true);
-    const body=new FormData();body.append("file",file);
+    // Shrunk here first: a serverless host rejects a request body of a few megabytes, and
+    // a photograph off a camera is usually bigger than that. The server still re-encodes.
+    const prepared=await downscaleImage(file);
+    if(prepared.size>MAX_UPLOAD_BYTES){
+      setBusy(false);
+      setError(`ย่อขนาดไฟล์นี้ไม่สำเร็จ และไฟล์ยังใหญ่ ${(prepared.size/1048576).toFixed(1)}MB เกินกว่าที่เซิร์ฟเวอร์รับได้ — ลองบันทึกเป็น JPG หรือ WebP แล้วอัปโหลดใหม่`);
+      return;
+    }
+    const body=new FormData();body.append("file",prepared);
     const result=await uploadMediaFile(body);
     setBusy(false);
     if(!result.ok){setError(result.message);return;}
@@ -90,7 +99,7 @@ function UploadField({setValue,url,alt,help}:{setValue:ReturnType<typeof useForm
   return <fieldset className="admin-upload admin-field-wide"><legend>ไฟล์ภาพ</legend>
     <input type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/tiff" disabled={busy} onChange={event=>choose(event.target.files?.[0])}/>
     {help&&<small>{help}</small>}
-    {busy&&<p role="status">กำลังอัปโหลดและประมวลผลภาพ…</p>}
+    {busy&&<p role="status">กำลังย่อขนาดและอัปโหลดภาพ…</p>}
     {error&&<p className="field-error" role="alert">{error}</p>}
     {url&&<div className="admin-media-preview"><Image loader={({src})=>src} unoptimized fill sizes="352px" src={url} alt={alt||"ภาพที่อัปโหลด"}/></div>}
     {url&&<small>บันทึกไว้ที่ {url}</small>}

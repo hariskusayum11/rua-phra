@@ -1,6 +1,9 @@
 import "dotenv/config";
 import { expect, test, type Page } from "@playwright/test";
 import path from "node:path";
+import os from "node:os";
+import { rm, stat } from "node:fs/promises";
+import sharp from "sharp";
 
 async function login(page: Page) {
   await page.goto("/login");
@@ -91,4 +94,49 @@ test("linking a pattern to a boat from the admin reaches the public page", async
   await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขแล้ว");
   await page.reload();
   await expect(boats.locator('input[type="checkbox"]').first()).toBeChecked({ checked: wasChecked });
+});
+
+test("an oversized camera photograph is shrunk in the browser and still uploads", async ({ page }) => {
+  // The real failure this guards: a serverless host refuses a request body of a few
+  // megabytes, and a photograph straight off a camera is bigger than that. The browser has
+  // to shrink it before it is sent, or every real upload fails with a platform error.
+  //
+  // The file is generated here rather than committed, so the repository does not carry a
+  // six-megabyte fixture whose only job is to be too big. Noise, because a flat image
+  // compresses to almost nothing and would not be oversized.
+  const pixels = Buffer.alloc(5200 * 3900 * 3);
+  for (let i = 0; i < pixels.length; i += 1) pixels[i] = (Math.random() * 256) | 0;
+  const oversized = path.join(os.tmpdir(), `ruaphra-oversized-${Date.now()}.jpg`);
+  await sharp(pixels, { raw: { width: 5200, height: 3900, channels: 3 } })
+    .jpeg({ quality: 95 })
+    .toFile(oversized);
+  const { size } = await stat(oversized);
+  expect(size, "the generated photograph should exceed the request body limit").toBeGreaterThan(4 * 1024 * 1024);
+
+  try {
+    await login(page);
+    await page.goto("/admin/media/new");
+    await page.setInputFiles('input[type="file"]', oversized);
+
+    await expect(page.locator(".admin-upload .admin-media-preview")).toBeVisible({ timeout: 60_000 });
+    await expect(page.locator(".admin-upload .field-error")).toHaveCount(0);
+
+    await page.getByLabel("คำบรรยายภาพ").fill(`ภาพทดสอบการอัปโหลด ใหญ่ ${Date.now()}`);
+    await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
+    await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
+
+    // Stored at the archive's own ceiling, not at whatever came out of the camera. Read
+    // from the served file rather than the form, because width is recorded by the upload
+    // and never shown as a field.
+    await page.reload();
+    const preview = page.locator(".admin-upload .admin-media-preview img");
+    await expect(preview).toBeVisible();
+    await expect
+      .poll(() => preview.evaluate((img: HTMLImageElement) => img.naturalWidth))
+      .toBeGreaterThan(0);
+    const stored = await preview.evaluate((img: HTMLImageElement) => img.naturalWidth);
+    expect(stored, "the stored photograph should be capped at the archive's own width").toBeLessThanOrEqual(2400);
+  } finally {
+    await rm(oversized, { force: true });
+  }
 });

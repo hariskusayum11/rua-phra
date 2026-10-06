@@ -60,3 +60,32 @@ test("the decorative tones are kept away from text", () => {
   // Terracotta cannot carry text on the heritage green either; the gold does that there.
   assert.ok(contrastRatio(palette.accent, palette.dark) < 4.5);
 });
+
+test("media storage falls back to disk unless every credential is present", async () => {
+  const keys = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET", "NEXT_PUBLIC_MEDIA_BASE_URL"];
+  const saved = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
+  const restore = () => keys.forEach((k) => { if (saved[k] === undefined) delete process.env[k]; else process.env[k] = saved[k]; });
+
+  try {
+    keys.forEach((k) => delete process.env[k]);
+    const { objectStore, uploadUrl } = await import(`@/lib/media-storage?nothing=${Date.now()}`);
+    assert.equal(objectStore(), null, "no credentials should mean no object store");
+    assert.equal(uploadUrl("a.webp"), "/media/a.webp", "with no store, files are served from disk");
+
+    // Four of five set is a half-configured deployment: uploads would land on a disk that
+    // the next deploy throws away, which is exactly the silent data loss to avoid.
+    process.env.R2_ACCOUNT_ID = "acct";
+    process.env.R2_ACCESS_KEY_ID = "key";
+    process.env.R2_SECRET_ACCESS_KEY = "secret";
+    process.env.R2_BUCKET = "bucket";
+    const partial = await import(`@/lib/media-storage?partial=${Date.now()}`);
+    assert.equal(partial.objectStore(), null, "a missing public base must not count as configured");
+
+    process.env.NEXT_PUBLIC_MEDIA_BASE_URL = "https://media.example.org/";
+    const full = await import(`@/lib/media-storage?full=${Date.now()}`);
+    assert.ok(full.objectStore(), "all five set should configure the store");
+    assert.equal(full.uploadUrl("a.webp"), "https://media.example.org/a.webp", "trailing slash must not double up");
+  } finally {
+    restore();
+  }
+});

@@ -18,6 +18,7 @@
     "test:db": "tsx tests/database.integration.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1146.0",
     "@fontsource/ibm-plex-sans-thai": "^5.3.0",
     "@fontsource/noto-sans-thai": "^5.3.0",
     "@fontsource/noto-serif-thai": "^5.3.0",

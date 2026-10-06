@@ -1,19 +1,49 @@
 import path from "node:path";
 
 /**
- * Where uploaded media lives on disk.
+ * Where uploaded media lives.
  *
- * Deliberately outside public/. Next reads the public directory when the server starts, so
- * a file written there while the server is running is not served until a restart — an
- * editor would upload a photograph and watch it 404. Uploads are served by a route handler
- * instead, which reads from disk on every request. Keeping them out of public/ also keeps
- * them out of the build artifact, so a redeploy cannot silently drop them.
+ * Two backends, chosen by whether object storage is configured:
+ *
+ * **Object storage (production).** Cloudflare R2 over the S3 API. Needed because the site
+ * runs on a host with no persistent disk — a file written beside the server is gone the
+ * next time the server moves, and an editor would have no way of knowing until a
+ * photograph stopped loading weeks later.
+ *
+ * **Local disk (development and tests).** Keeps the project runnable with nothing but a
+ * database, so nobody needs cloud credentials to work on it or to run the suite.
+ *
+ * The switch is the presence of credentials, not a flag, so a deployment cannot be half
+ * configured: either all four values are set and uploads go to the bucket, or none are and
+ * they go to disk.
  */
+
 export const uploadRoot = path.join(process.cwd(), "storage", "uploads");
 
-/** The public path that maps to a stored file. */
+export type ObjectStoreConfig = {
+  accountId: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  bucket: string;
+  /** Public base URL the bucket is served from, without a trailing slash. */
+  publicBase: string;
+};
+
+/** Returns the object-store settings, or null when the local disk should be used. */
+export function objectStore(): ObjectStoreConfig | null {
+  const accountId = process.env.R2_ACCOUNT_ID?.trim();
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim();
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
+  const bucket = process.env.R2_BUCKET?.trim();
+  const publicBase = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim().replace(/\/+$/, "");
+  if (!accountId || !accessKeyId || !secretAccessKey || !bucket || !publicBase) return null;
+  return { accountId, accessKeyId, secretAccessKey, bucket, publicBase };
+}
+
+/** The address a stored file is served from, for either backend. */
 export function uploadUrl(fileName: string) {
-  return `/media/${fileName}`;
+  const store = objectStore();
+  return store ? `${store.publicBase}/${fileName}` : `/media/${fileName}`;
 }
 
 const SAFE_NAME = /^[A-Za-z0-9._-]+$/;

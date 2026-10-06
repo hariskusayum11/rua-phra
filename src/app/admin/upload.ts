@@ -4,6 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { uploadRoot, uploadUrl } from "@/lib/media-storage";
+import { putObject } from "@/lib/object-store";
 import sharp from "sharp";
 import { auth } from "@/auth";
 import { getDb } from "@/lib/db";
@@ -56,13 +57,18 @@ export async function uploadMediaFile(formData: FormData): Promise<UploadResult>
 
     const storageKey = `upload-${randomUUID()}`;
     const fileName = `${storageKey}.webp`;
-    await mkdir(uploadRoot, { recursive: true });
-    await writeFile(
-      path.join(uploadRoot, fileName),
-      await input.resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer(),
-    );
+    const body = await input.resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
 
-    return { ok: true, url: uploadUrl(fileName), storageKey, mimeType: "image/webp", width, height };
+    // The bucket when one is configured, the disk beside the server when not. Writing
+    // first and recording the address afterwards means a failed upload leaves no record
+    // pointing at a file that was never stored.
+    const stored = await putObject(fileName, body, "image/webp");
+    if (!stored) {
+      await mkdir(uploadRoot, { recursive: true });
+      await writeFile(path.join(uploadRoot, fileName), body);
+    }
+
+    return { ok: true, url: stored ?? uploadUrl(fileName), storageKey, mimeType: "image/webp", width, height };
   } catch (error) {
     console.error("Media upload failed", error);
     return { ok: false, message: "อัปโหลดไม่สำเร็จ กรุณาลองอีกครั้ง" };
