@@ -8,7 +8,10 @@ playwright-report/
 test-results/
 
 # Uploaded media: served by a route handler, never part of the build.
-storage/
+# Anchored to the repository root. Written bare, this pattern matches any directory called
+# storage anywhere in the tree — which silently swallowed src/app/admin/storage, so the
+# admin sidebar shipped a link to a page that was never committed.
+/storage/
 
 # Word documents are rebuilt from docs/build-systemdoc.js; preview renders are not kept.
 docs/preview.pdf
