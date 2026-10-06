@@ -485,6 +485,7 @@ Primary key ใช้ UUID พร้อม indexes, unique constraints, timestam
 | `npm run photos:scan` | สำรวจไฟล์ใน `photos/incoming/` พร้อมขนาดและสัดส่วน |
 | `npm run photos:import` | นำภาพและวิดีโอเข้าระบบ รองรับ `--dry-run` และ `--images-only` |
 | `npx tsx scripts/migrate-media-to-r2.mjs` | ย้ายภาพที่อัปโหลดและวิดีโอขึ้น Cloudflare R2 รองรับ `--dry-run` |
+| `npx tsx scripts/push-data-to-server.mjs` | คัดลอกข้อมูลจากเครื่องขึ้นฐานข้อมูลเซิร์ฟเวอร์ รองรับ `--dry-run` และ `--force` |
 
 เมื่อตั้งค่า R2 แล้ว `photos:import` จะส่งไฟล์ขึ้น R2 แทนการเขียนลง `public/` ให้อัตโนมัติ
 และบอกไว้ตอนเริ่มรันว่ากำลังเก็บไฟล์ไว้ที่ไหน

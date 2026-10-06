@@ -297,21 +297,34 @@ git pull && docker compose -f compose.prod.yaml up -d --build
 
 ฐานข้อมูลบนเซิร์ฟเวอร์จะว่างเปล่าตอนเริ่ม ต้องย้ายข้อมูลภาคสนามขึ้นไป
 
-**สำรองจากเครื่องตัวเอง** (เปิด Docker Desktop ไว้ก่อน)
+### ขึ้น Neon หรือฐานข้อมูลที่ผู้ให้บริการจัดการให้
+
+ใส่ `NEON_DIRECT_URL` (เส้นที่**ไม่มี** `-pooler`) ลง `.env` แล้วสร้างตารางก่อน
+
+```powershell
+$env:DATABASE_URL = $env:NEON_DIRECT_URL
+npx prisma migrate deploy
+```
+
+จากนั้นคัดลอกข้อมูล ดูก่อนได้ว่าจะย้ายอะไรบ้าง
+
+```powershell
+npx tsx scripts/push-data-to-server.mjs --dry-run
+npx tsx scripts/push-data-to-server.mjs
+```
+
+> **ทำไมไม่ใช้ `pg_dump` ตรง ๆ** คำสั่งที่เห็นทั่วไปคือ `pg_dump --data-only --disable-triggers`
+> แล้วส่งเข้า `psql` แต่การปิด trigger เป็นสิทธิ์ระดับ superuser ซึ่งผู้ให้บริการแบบจัดการให้
+> ไม่มอบให้ การนำเข้าจะหยุดที่ foreign key แรกที่เจอ สคริปต์นี้จึง**เรียงลำดับตารางตาม
+> ความสัมพันธ์แทนการปิดการตรวจสอบ** และเติมค่าที่อ้างถึงตารางตัวเองในรอบที่สอง
+>
+> สคริปต์จะไม่เขียนทับฐานข้อมูลที่มีข้อมูลอยู่แล้ว เว้นแต่เติม `--force`
+
+### ขึ้นเซิร์ฟเวอร์ของตัวเองที่มีสิทธิ์เต็ม
 
 ```bash
 docker exec rua_phra_story-db-1 pg_dump -U rua -d rua_phra --data-only --disable-triggers > backup.sql
-```
-
-**นำขึ้นเซิร์ฟเวอร์**
-
-```bash
 scp backup.sql user@เซิร์ฟเวอร์:/tmp/
-```
-
-**นำเข้าบนเซิร์ฟเวอร์**
-
-```bash
 docker compose -f compose.prod.yaml exec -T db psql -U rua -d rua_phra < /tmp/backup.sql
 ```
 
