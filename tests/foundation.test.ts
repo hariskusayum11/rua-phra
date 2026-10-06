@@ -89,3 +89,32 @@ test("media storage falls back to disk unless every credential is present", asyn
     restore();
   }
 });
+
+test("the storage ceiling always stays inside the free allowance", async () => {
+  const saved = process.env.R2_MAX_BYTES;
+  const load = async (value?: string) => {
+    if (value === undefined) delete process.env.R2_MAX_BYTES;
+    else process.env.R2_MAX_BYTES = value;
+    return import(`@/lib/media-storage?ceiling=${Math.random()}`);
+  };
+
+  try {
+    const { storageCeiling, FREE_TIER_BYTES } = await load(undefined);
+    assert.ok(storageCeiling() < FREE_TIER_BYTES, "the default must leave headroom below the free tier");
+
+    // A ceiling above the free allowance would defeat the whole point: the limit exists to
+    // stop a project with no budget being billed, so it can be lowered but never raised
+    // past the line where charging starts.
+    const raised = await load(String(50 * 1024 ** 3));
+    assert.ok(raised.storageCeiling() <= raised.FREE_TIER_BYTES, "a ceiling above the free tier must be refused");
+
+    const lowered = await load(String(1024 ** 3));
+    assert.equal(lowered.storageCeiling(), 1024 ** 3, "a lower ceiling should be honoured");
+
+    const nonsense = await load("not-a-number");
+    assert.ok(nonsense.storageCeiling() > 0, "unparseable input must fall back, not disable the limit");
+  } finally {
+    if (saved === undefined) delete process.env.R2_MAX_BYTES;
+    else process.env.R2_MAX_BYTES = saved;
+  }
+});

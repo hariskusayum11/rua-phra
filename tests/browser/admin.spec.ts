@@ -125,3 +125,16 @@ test("hotspot editor converts clicks to percentages and persists dragged coordin
   await page.getByRole("button", { name: "ลบรายการ" }).click();
   await expect(page).toHaveURL(/\/admin\/sections$/);
 });
+
+test("the storage page says where files are kept and warns before any charge", async ({ page }) => {
+  await login(page);
+  await page.goto("/admin/storage");
+  await expect(page.getByRole("heading", { level: 1, name: "พื้นที่เก็บไฟล์" })).toBeVisible();
+
+  // Without object-store credentials the page must say so plainly rather than showing a
+  // zero that an editor would read as "nothing stored yet".
+  await expect(page.getByText("เก็บไฟล์ไว้ในเครื่องนี้")).toBeVisible();
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+
+  await expect(page.getByRole("link", { name: "พื้นที่เก็บไฟล์" })).toBeVisible();
+});

@@ -3,8 +3,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { uploadRoot, uploadUrl } from "@/lib/media-storage";
-import { putObject } from "@/lib/object-store";
+import { objectStore, uploadRoot, uploadUrl } from "@/lib/media-storage";
+import { bucketUsage, putObject } from "@/lib/object-store";
 import sharp from "sharp";
 import { auth } from "@/auth";
 import { getDb } from "@/lib/db";
@@ -58,6 +58,24 @@ export async function uploadMediaFile(formData: FormData): Promise<UploadResult>
     const storageKey = `upload-${randomUUID()}`;
     const fileName = `${storageKey}.webp`;
     const body = await input.resize({ width, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
+
+    // Refuse before writing, not after. The free allowance on the object store is
+    // generous enough that this should never fire, but "should never" is not a thing to
+    // put between a project with no budget and a bill it did not agree to.
+    const usage = await bucketUsage();
+    if (objectStore() && !usage) {
+      return { ok: false, message: "ตรวจสอบพื้นที่เก็บไฟล์ไม่ได้ในขณะนี้ จึงยังไม่อัปโหลด — ลองใหม่อีกครั้ง หรือดูหน้าพื้นที่เก็บไฟล์" };
+    }
+    if (usage && usage.bytes + body.length > usage.limitBytes) {
+      const used = (usage.bytes / 1024 ** 3).toFixed(2);
+      const limit = (usage.limitBytes / 1024 ** 3).toFixed(0);
+      return {
+        ok: false,
+        message:
+          `พื้นที่เก็บไฟล์เต็มเพดานที่ตั้งไว้แล้ว (ใช้ไป ${used} GB จาก ${limit} GB) ` +
+          "ระบบหยุดอัปโหลดไว้เพื่อไม่ให้เกินโควตาฟรีและถูกเรียกเก็บเงิน — ลบไฟล์ที่ไม่ใช้ออกก่อน หรือขยายเพดานที่ R2_MAX_BYTES",
+      };
+    }
 
     // The bucket when one is configured, the disk beside the server when not. Writing
     // first and recording the address afterwards means a failed upload leaves no record

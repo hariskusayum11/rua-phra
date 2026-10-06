@@ -1,6 +1,6 @@
 import "server-only";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { objectStore, type ObjectStoreConfig } from "@/lib/media-storage";
+import { ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { objectStore, storageCeiling, type ObjectStoreConfig } from "@/lib/media-storage";
 
 /**
  * Writing to Cloudflare R2 through its S3-compatible API.
@@ -50,4 +50,51 @@ export async function putObject(fileName: string, body: Buffer, contentType: str
   );
 
   return `${config.publicBase}/${fileName}`;
+}
+
+/**
+ * How much of the free allowance the bucket is using.
+ *
+ * Measured by listing the bucket rather than by asking an analytics API, so it needs no
+ * second credential and reports what is actually stored right now. Listing costs one
+ * operation per thousand objects — against an allowance of a million a month, the
+ * measurement is free in any sense that matters.
+ */
+export type BucketUsage = { bytes: number; objects: number; limitBytes: number; measuredAt: Date };
+
+let usageCache: { at: number; value: BucketUsage } | null = null;
+const USAGE_TTL_MS = 60_000;
+
+export async function bucketUsage(options?: { fresh?: boolean }): Promise<BucketUsage | null> {
+  const config = objectStore();
+  if (!config) return null;
+  if (!options?.fresh && usageCache && Date.now() - usageCache.at < USAGE_TTL_MS) return usageCache.value;
+
+  const client = clientFor(config);
+  let bytes = 0;
+  let objects = 0;
+  let token: string | undefined;
+
+  try {
+    do {
+      const page = await client.send(
+        new ListObjectsV2Command({ Bucket: config.bucket, ContinuationToken: token, MaxKeys: 1000 }),
+      );
+      for (const item of page.Contents ?? []) {
+        bytes += item.Size ?? 0;
+        objects += 1;
+      }
+      token = page.IsTruncated ? page.NextContinuationToken : undefined;
+    } while (token);
+  } catch (error) {
+    // Wrong credentials, a bucket that has been renamed, the network being down. The
+    // admin page shows this as a state of its own rather than a 500, and an upload
+    // treats an unknown size as a reason to refuse rather than to carry on.
+    console.error("Could not measure bucket usage", error);
+    return null;
+  }
+
+  const value: BucketUsage = { bytes, objects, limitBytes: storageCeiling(), measuredAt: new Date() };
+  usageCache = { at: Date.now(), value };
+  return value;
 }

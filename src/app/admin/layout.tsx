@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Archive, BookOpenText, Boxes, DraftingCompass, GraduationCap, Image as ImageIcon, Landmark, LayoutDashboard, MapPin, NotebookPen, QrCode, ScrollText, Ship, Users, Wrench } from "lucide-react";
+import { Archive, BookOpenText, Boxes, DraftingCompass, GraduationCap, HardDrive, Image as ImageIcon, Landmark, LayoutDashboard, MapPin, NotebookPen, QrCode, ScrollText, Ship, Users, Wrench } from "lucide-react";
 import { auth } from "@/auth";
 import { logoutAction } from "@/app/admin/actions";
 import { resources } from "@/lib/admin/resources";
@@ -20,6 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <nav aria-label="เมนูผู้ดูแล">
           <Link href="/admin"><LayoutDashboard aria-hidden="true" />ภาพรวม</Link>
           {nav.map(([key,Icon])=><Link key={key} href={`/admin/${key}`}><Icon aria-hidden="true" />{resources[key].label}</Link>)}
+          <Link href="/admin/storage"><HardDrive aria-hidden="true" />พื้นที่เก็บไฟล์</Link>
         </nav>
         <form action={logoutAction}><button type="submit">ออกจากระบบ</button></form>
       </aside>

@@ -643,3 +643,38 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 
 .lesson-editor-add { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin-top:1rem; }
 .lesson-editor-add select { min-height:2.75rem; padding:.4rem .6rem; border:1px solid var(--admin-line); border-radius:.25rem; font:inherit; }
+
+/* ===========================================================================
+   Storage usage.
+
+   Read by someone who is worried about being charged, so the number they came
+   for is the largest thing on the page and the colour says whether to act.
+   =========================================================================== */
+.storage-card { max-width:46rem; padding:1.5rem; border:1px solid var(--admin-line); border-radius:.5rem; background:#fff; }
+.storage-status { display:flex; align-items:center; gap:.6rem; font-weight:500; }
+.storage-status svg { width:1.15rem; height:1.15rem; }
+.storage-card[data-level="ok"] .storage-status { color:#17634f; }
+.storage-card[data-level="warn"] .storage-status { color:#8a5a00; }
+.storage-card[data-level="danger"] .storage-status { color:#9a3412; }
+
+.storage-figure { margin-top:1rem; font-family:"Noto Serif Thai",serif; font-size:clamp(2rem,5vw,3rem); font-weight:500; line-height:1.1; }
+.storage-figure span { display:block; margin-top:.4rem; font-family:"IBM Plex Sans Thai","Noto Sans Thai",sans-serif; font-size:.875rem; font-weight:400; color:var(--admin-muted); }
+
+.storage-bar { height:.6rem; margin-top:1.25rem; background:#e8e6e0; border-radius:999px; overflow:hidden; }
+.storage-bar span { display:block; block-size:100%; border-radius:999px; background:#17634f; transition:inline-size var(--ui) var(--ease); }
+.storage-card[data-level="warn"] .storage-bar span { background:#b57c13; }
+.storage-card[data-level="danger"] .storage-bar span { background:#9a3412; }
+
+.storage-facts { display:grid; gap:1rem; margin:1.5rem 0 0; }
+.storage-facts > div { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.25rem 1rem; padding-block:.6rem; border-bottom:1px solid var(--admin-line); }
+.storage-facts dt { color:var(--admin-muted); font-size:.875rem; }
+.storage-facts dd { margin:0; font-weight:500; font-variant-numeric:tabular-nums; }
+
+.storage-notes { max-width:46rem; margin-top:2rem; }
+.storage-notes h2 { font-family:"Noto Sans Thai",sans-serif; font-size:1.125rem; }
+.storage-notes ul { margin:1rem 0 0; padding-left:1.15rem; color:var(--admin-muted); }
+.storage-notes li { margin-bottom:.6rem; line-height:1.75; }
+.storage-notes li strong { color:var(--admin-ink,#1a1a1a); }
+.storage-notes code { padding:.1rem .3rem; background:#e3e0d8; border-radius:.2rem; color:#14312b; font-size:.8125rem; }
+.storage-footnote { margin-top:1rem; color:var(--admin-muted); font-size:.875rem; line-height:1.7; }
+.storage-notes .editorial-link { margin-top:1.25rem; color:#17634f; }

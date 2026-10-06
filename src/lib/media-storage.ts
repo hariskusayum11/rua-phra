@@ -69,3 +69,19 @@ export const CONTENT_TYPES: Record<string, string> = {
   ".png": "image/png",
   ".mp4": "video/mp4",
 };
+
+/** Cloudflare R2 includes 10GB a month at no charge. */
+export const FREE_TIER_BYTES = 10 * 1024 * 1024 * 1024;
+
+/**
+ * The point at which this site stops writing files.
+ *
+ * Deliberately short of the free allowance. The gap absorbs an upload that lands between
+ * one measurement and the next, so the first thing that happens on approaching the limit
+ * is a refused upload with an explanation — not an invoice to a project with no budget.
+ */
+export function storageCeiling() {
+  const configured = Number(process.env.R2_MAX_BYTES);
+  if (Number.isFinite(configured) && configured > 0 && configured <= FREE_TIER_BYTES) return configured;
+  return 8 * 1024 * 1024 * 1024;
+}
