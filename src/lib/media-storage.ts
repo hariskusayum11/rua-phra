@@ -53,6 +53,16 @@ export function objectStore(): ObjectStoreConfig | null {
   const bucket = process.env.R2_BUCKET?.trim();
   const publicBase = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim().replace(/\/+$/, "");
   if (!accountId || !accessKeyId || !secretAccessKey || !bucket || !publicBase) return null;
+  // The S3 endpoint and the public address are two different URLs on the same screen, and
+  // the S3 one is the one Cloudflare shows first. Pointing the site at it means every image
+  // answers 400 with an XML error, because that endpoint only accepts signed requests.
+  if (/\.r2\.cloudflarestorage\.com/i.test(publicBase)) {
+    console.error(
+      "NEXT_PUBLIC_MEDIA_BASE_URL ถูกตั้งเป็นที่อยู่ S3 API ซึ่งต้องมีลายเซ็นกำกับทุกคำขอ " +
+      "ใช้ที่อยู่สาธารณะของ bucket แทน เช่น https://pub-xxxxxxxx.r2.dev",
+    );
+    return null;
+  }
   return { accountId, accessKeyId, secretAccessKey, bucket, publicBase };
 }
 
