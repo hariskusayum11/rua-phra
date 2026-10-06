@@ -131,10 +131,21 @@ test("the storage page says where files are kept and warns before any charge", a
   await page.goto("/admin/storage");
   await expect(page.getByRole("heading", { level: 1, name: "พื้นที่เก็บไฟล์" })).toBeVisible();
 
-  // Without object-store credentials the page must say so plainly rather than showing a
-  // zero that an editor would read as "nothing stored yet".
-  await expect(page.getByText("เก็บไฟล์ไว้ในเครื่องนี้")).toBeVisible();
-  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  // The page has to read correctly whether or not a bucket is configured, because the
+  // suite runs in both situations: a developer with no cloud account, and a checkout that
+  // has the real credentials in .env.
+  const configured = await page.locator(".storage-card").count();
+  if (configured) {
+    await expect(page.locator(".storage-figure")).toContainText(/MB|KB|GB/);
+    await expect(page.getByRole("progressbar")).toBeVisible();
+    // The whole point of the page: it names the ceiling and says what happens at it.
+    await expect(page.locator(".storage-notes")).toContainText("หยุดรับไฟล์");
+    const level = await page.locator(".storage-card").getAttribute("data-level");
+    expect(["ok", "warn", "danger"]).toContain(level);
+  } else {
+    await expect(page.getByText("เก็บไฟล์ไว้ในเครื่องนี้")).toBeVisible();
+  }
 
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await expect(page.getByRole("link", { name: "พื้นที่เก็บไฟล์" })).toBeVisible();
 });

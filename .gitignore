@@ -13,3 +13,6 @@ storage/
 # Word documents are rebuilt from docs/build-systemdoc.js; preview renders are not kept.
 docs/preview.pdf
 docs/*.jpg
+
+# วิดีโอย้ายไปเก็บที่ object storage แล้ว ไฟล์ในเครื่องเป็นสำเนาสำรอง
+public/videos

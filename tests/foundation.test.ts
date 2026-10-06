@@ -118,3 +118,35 @@ test("the storage ceiling always stays inside the free allowance", async () => {
     else process.env.R2_MAX_BYTES = saved;
   }
 });
+
+test("the account id is accepted in either form Cloudflare shows it", async () => {
+  const saved = { ...process.env };
+  const load = async () => import(`@/lib/media-storage?account=${Math.random()}`);
+  const base = {
+    R2_ACCESS_KEY_ID: "key",
+    R2_SECRET_ACCESS_KEY: "secret",
+    R2_BUCKET: "bucket",
+    NEXT_PUBLIC_MEDIA_BASE_URL: "https://pub-abc.r2.dev",
+  };
+
+  try {
+    Object.assign(process.env, base);
+
+    process.env.R2_ACCOUNT_ID = "bb05cb0ee484b1e3ce5b6fcb59324f50";
+    assert.equal((await load()).objectStore()?.accountId, "bb05cb0ee484b1e3ce5b6fcb59324f50");
+
+    // Cloudflare only shows the id inside the S3 address, so pasting the whole line is the
+    // obvious mistake. Left unhandled it builds "https://https://…" and fails as a DNS
+    // error naming a host nobody typed.
+    process.env.R2_ACCOUNT_ID = "https://bb05cb0ee484b1e3ce5b6fcb59324f50.r2.cloudflarestorage.com/ruaphra-media";
+    assert.equal((await load()).objectStore()?.accountId, "bb05cb0ee484b1e3ce5b6fcb59324f50");
+
+    process.env.R2_ACCOUNT_ID = "bb05cb0ee484b1e3ce5b6fcb59324f50.r2.cloudflarestorage.com";
+    assert.equal((await load()).objectStore()?.accountId, "bb05cb0ee484b1e3ce5b6fcb59324f50");
+  } finally {
+    for (const key of [...Object.keys(base), "R2_ACCOUNT_ID"]) {
+      if (saved[key] === undefined) delete process.env[key];
+      else process.env[key] = saved[key];
+    }
+  }
+});

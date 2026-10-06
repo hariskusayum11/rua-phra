@@ -29,9 +29,25 @@ export type ObjectStoreConfig = {
   publicBase: string;
 };
 
+/**
+ * Pulls the account id out of whatever was pasted in.
+ *
+ * Cloudflare shows the id only as part of the S3 API address, so copying that whole line
+ * is the obvious thing to do and produces an endpoint like `https://https://…`. The failure
+ * surfaces as a DNS error naming a host nobody typed, which is no help at all. Accepting
+ * both forms costs one regular expression.
+ */
+function normaliseAccountId(value: string | undefined) {
+  const raw = value?.trim();
+  if (!raw) return undefined;
+  const fromUrl = /([0-9a-f]{32})\.r2\.cloudflarestorage\.com/i.exec(raw);
+  if (fromUrl) return fromUrl[1];
+  return raw.replace(/^https?:\/\//, "").split(/[./]/)[0] || undefined;
+}
+
 /** Returns the object-store settings, or null when the local disk should be used. */
 export function objectStore(): ObjectStoreConfig | null {
-  const accountId = process.env.R2_ACCOUNT_ID?.trim();
+  const accountId = normaliseAccountId(process.env.R2_ACCOUNT_ID);
   const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim();
   const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
   const bucket = process.env.R2_BUCKET?.trim();

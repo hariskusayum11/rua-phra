@@ -22,25 +22,25 @@ import path from "node:path";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { PrismaClient } from "../src/generated/prisma/client.ts";
+import { objectStore } from "../src/lib/media-storage.ts";
 
 const dryRun = process.argv.includes("--dry-run");
 
-const accountId = process.env.R2_ACCOUNT_ID?.trim();
-const accessKeyId = process.env.R2_ACCESS_KEY_ID?.trim();
-const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
-const bucket = process.env.R2_BUCKET?.trim();
-const publicBase = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim().replace(/\/+$/, "");
-
-if (!accountId || !accessKeyId || !secretAccessKey || !bucket || !publicBase) {
+// Read through the application's own loader rather than straight from the environment,
+// so the script and the site agree on what the settings mean — including tolerating an
+// account id pasted as the whole S3 address, which is what Cloudflare puts on screen.
+const config = objectStore();
+if (!config) {
   console.error("ยังไม่ได้ตั้งค่า R2 ใน .env — ต้องมีครบทั้ง 5 ค่า");
   console.error("  R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, NEXT_PUBLIC_MEDIA_BASE_URL");
   process.exit(1);
 }
+const { bucket, publicBase } = config;
 
 const s3 = new S3Client({
   region: "auto",
-  endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-  credentials: { accessKeyId, secretAccessKey },
+  endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
+  credentials: { accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey },
 });
 
 const TYPES = {
@@ -49,7 +49,12 @@ const TYPES = {
 };
 
 async function put(key, filePath) {
-  const body = await readFile(filePath);
+  let body;
+  try {
+    body = await readFile(filePath);
+  } catch (error) {
+    throw new Error(`อ่านไฟล์ต้นทางไม่ได้ (${error.code ?? error.message})`);
+  }
   const contentType = TYPES[path.extname(filePath).toLowerCase()] ?? "application/octet-stream";
   if (!dryRun) {
     await s3.send(new PutObjectCommand({
@@ -109,7 +114,7 @@ for (const video of videos) {
   try {
     result = await put(key, path.join(process.cwd(), "public", relative));
   } catch (error) {
-    console.log(`  ข้าม ${video.url} — อ่านไฟล์ไม่ได้ (${error.code ?? error.message})`);
+    console.log(`  ข้าม ${video.url} — ${error.message}`);
     continue;
   }
   if (!dryRun) await prisma.media.update({ where: { id: video.id }, data: { url: result.url } });
@@ -130,7 +135,7 @@ for (const poster of posters) {
   try {
     result = await put(key, path.join(process.cwd(), "public", relative));
   } catch (error) {
-    console.log(`  ข้าม ${poster.url} — อ่านไฟล์ไม่ได้ (${error.code ?? error.message})`);
+    console.log(`  ข้าม ${poster.url} — ${error.message}`);
     continue;
   }
   if (!dryRun) await prisma.media.update({ where: { id: poster.id }, data: { url: result.url } });
