@@ -75,20 +75,45 @@ openssl rand -base64 48
 
 ### 3.2 สร้างที่เก็บไฟล์ที่ Cloudflare R2
 
-1. สมัครที่ cloudflare.com แล้วเข้าเมนู **R2 Object Storage** กด **Create bucket** ตั้งชื่อ `ruaphra-media`
-2. เข้าแท็บ **Settings** ของ bucket หาหัวข้อ **Public access** แล้วกด **Allow Access**
+1. สมัครที่ cloudflare.com แล้วเข้าเมนู **R2 Object Storage** กด **Create bucket**
+   ตั้งชื่อ `ruaphra-media` เลือก Location **Asia-Pacific (APAC)** เพราะใกล้ไทยที่สุด
+
+2. เข้าแท็บ **Settings** ของ bucket หาหัวข้อ **Public Development URL**
+   (เมนูนี้เคยชื่อ Public access — Cloudflare เปลี่ยนชื่อแล้ว) กด **Enable** ทางขวา
    จะได้ที่อยู่หน้าตาแบบ `https://pub-xxxxxxxx.r2.dev` เก็บไว้เป็น `NEXT_PUBLIC_MEDIA_BASE_URL`
-3. กลับไปหน้า R2 หลัก กด **Manage API Tokens → Create API Token**
+
+   > **ที่อยู่นี้ Cloudflare จำกัดอัตราการเรียกและระบุว่าไม่เหมาะกับการใช้งานจริง**
+   > ใช้สำหรับทดสอบไปก่อนได้ แต่ก่อนวันจัดนิทรรศการควรเปลี่ยนไปใช้ Custom Domain ตามข้อ 3.2.2
+   > ซึ่งไม่มีข้อจำกัดนี้และไม่มีค่าใช้จ่ายเพิ่ม
+
+3. **Account ID** คัดลอกได้จากหัวข้อ **General** ในหน้าเดียวกัน บรรทัด **S3 API**
+   เป็นส่วนที่อยู่หลัง `https://` และก่อน `.r2.cloudflarestorage.com` เก็บไว้เป็น `R2_ACCOUNT_ID`
+
+4. กลับไปหน้า R2 หลัก กด **Manage API Tokens → Create API Token**
    เลือกสิทธิ์ **Object Read & Write** เฉพาะ bucket นี้
-   จะได้ **Access Key ID** และ **Secret Access Key** เก็บไว้
-4. **Account ID** อยู่ที่หน้าแรกของ R2 เก็บไว้เป็น `R2_ACCOUNT_ID`
+   จะได้ **Access Key ID** และ **Secret Access Key**
+
+   > **Secret Access Key แสดงครั้งเดียว** คัดลอกใส่ `.env` ทันที และอย่าส่งต่อทางแชต
+   > อย่าแคปหน้าจอที่มีค่านี้ และอย่า commit ขึ้น git
+
+### 3.2.2 เปลี่ยนไปใช้ Custom Domain ก่อนวันงาน
+
+ที่อยู่ `r2.dev` ถูกจำกัดอัตราการเรียก ถ้ามีคนสแกน QR พร้อมกันหลายคนที่บูธ ภาพอาจโหลดไม่ขึ้น
+แก้ด้วยการผูกโดเมนย่อยของตัวเอง ฟรีและไม่มีลิมิต
+
+1. ย้าย DNS ของโดเมนมาที่ Cloudflare (ทำตอนซื้อโดเมนหรือย้ายทีหลังก็ได้)
+2. ที่หน้า bucket → **Settings** → **Custom Domains** → **Add**
+   ใส่โดเมนย่อย เช่น `media.ruaphra.org` Cloudflare จะสร้าง DNS record ให้เอง
+3. เปลี่ยน `NEXT_PUBLIC_MEDIA_BASE_URL` เป็น `https://media.ruaphra.org` แล้ว deploy ใหม่
+4. **ที่อยู่ของไฟล์เดิมจะเปลี่ยนตาม** ต้องแก้ค่าในฐานข้อมูลด้วย รันสคริปต์ย้ายสื่ออีกครั้ง
+   หรือบอกผมให้เขียนคำสั่งแก้ที่อยู่ให้
 
 ### 3.2.1 เปิด CORS ให้เบราว์เซอร์อัปโหลดวิดีโอได้
 
 วิดีโอส่งจากเบราว์เซอร์ไปยัง R2 โดยตรง ไม่ผ่านเซิร์ฟเวอร์ เพราะไฟล์ใหญ่เกินกว่าที่เซิร์ฟเวอร์รับได้
 จึงต้องอนุญาตให้เว็บไซต์เขียนลง bucket ได้ **ถ้าไม่ตั้งค่านี้ การอัปโหลดวิดีโอจะล้มโดยไม่บอกสาเหตุ**
 
-ที่หน้า bucket → **Settings** → **CORS Policy** → **Add CORS policy** ใส่ตามนี้
+ที่หน้า bucket → **Settings** → เมนูซ้ายมือ **CORS Policy** → **Add CORS policy** ใส่ตามนี้
 แล้วเปลี่ยน `AllowedOrigins` เป็นที่อยู่จริงของเว็บไซต์
 
 ```json
