@@ -15,7 +15,7 @@
  */
 import "dotenv/config";
 import { randomBytes } from "node:crypto";
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { objectStore } from "../src/lib/media-storage.ts";
 
@@ -46,9 +46,35 @@ function password() {
   return Array.from(randomBytes(20), (byte) => alphabet[byte % alphabet.length]).join("");
 }
 
-const adminEmail = process.env.ADMIN_EMAIL?.trim() || "admin@ruaphra.local";
-const adminPassword = password();
-const authSecret = randomBytes(48).toString("base64");
+const out = path.join(process.cwd(), ".env.vercel");
+
+/**
+ * Secrets already generated are kept.
+ *
+ * Re-running this to fix a site address should not quietly change the admin password: the
+ * old one may already be in the hosting provider and written on a piece of paper. Pass
+ * --new-secrets to deliberately rotate them.
+ */
+const rotate = process.argv.includes("--new-secrets");
+let previous = new Map();
+if (!rotate) {
+  try {
+    const existing = await readFile(out, "utf8");
+    previous = new Map(
+      existing
+        .split(/\r?\n/)
+        .filter((line) => line.includes("=") && !line.startsWith("#"))
+        .map((line) => [line.slice(0, line.indexOf("=")), line.slice(line.indexOf("=") + 1)]),
+    );
+  } catch {
+    // No previous file: everything is generated fresh below.
+  }
+}
+
+const adminEmail = previous.get("ADMIN_EMAIL") || process.env.ADMIN_EMAIL?.trim() || "admin@ruaphra.local";
+const adminPassword = previous.get("ADMIN_PASSWORD") || password();
+const authSecret = previous.get("AUTH_SECRET") || randomBytes(48).toString("base64");
+const reused = previous.size > 0;
 
 const lines = [
   "# ค่าสำหรับ Vercel เท่านั้น — สร้างโดย scripts/make-vercel-env.mjs",
@@ -68,14 +94,17 @@ const lines = [
   "",
 ];
 
-const out = path.join(process.cwd(), ".env.vercel");
 await writeFile(out, lines.join("\n"), "utf8");
 
 console.log(`เขียนไฟล์แล้ว: ${out}`);
 console.log("");
 console.log(`ที่อยู่เว็บไซต์   ${siteUrl}`);
 console.log(`อีเมลผู้ดูแล     ${adminEmail}`);
-console.log(`รหัสผ่านผู้ดูแล   อยู่ในไฟล์ บรรทัด ADMIN_PASSWORD — เปิดดูแล้วจดเก็บไว้`);
+console.log(
+  reused
+    ? "รหัสผ่านผู้ดูแล   ใช้ค่าเดิมจากไฟล์ก่อนหน้า (เติม --new-secrets ถ้าต้องการสุ่มใหม่)"
+    : "รหัสผ่านผู้ดูแล   อยู่ในไฟล์ บรรทัด ADMIN_PASSWORD — เปิดดูแล้วจดเก็บไว้",
+);
 console.log("");
 console.log("ขั้นต่อไป");
 console.log("  1. ที่หน้า Vercel กดปุ่ม Import .env แล้วเลือกไฟล์นี้");
