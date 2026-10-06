@@ -29,6 +29,8 @@ import ffmpegPath from "ffmpeg-static";
 // statically visible to an ES module importing it through tsx.
 import { MediaKind, MediaProvider } from "../src/generated/prisma/enums.ts";
 import { PrismaClient } from "../src/generated/prisma/client.ts";
+import { objectStore } from "../src/lib/media-storage.ts";
+import { putObject } from "../src/lib/storage/r2.ts";
 
 const run = promisify(execFile);
 
@@ -43,6 +45,18 @@ const published = path.join(root, "public", "photos");
 const withheldRoot = path.join(root, "photos", "withheld");
 const manifestPath = path.join(root, "photos", "manifest.json");
 const dryRun = process.argv.includes("--dry-run");
+/**
+ * When object storage is configured, published files go there instead of into public/.
+ * Every batch of field material otherwise lands in the repository permanently — git keeps
+ * what it is given, so a photograph added and later replaced is two photographs forever.
+ * Withheld material never goes to the bucket: it is served from nowhere by definition.
+ */
+const store = objectStore();
+if (store) {
+  console.log(`เก็บไฟล์ที่ ${store.publicBase}`);
+} else {
+  console.log("เก็บไฟล์ในโฟลเดอร์ public/ ของโปรเจกต์ (ยังไม่ได้ตั้งค่าที่เก็บไฟล์ภายนอก)");
+}
 /** Re-encoding a two-minute clip to change a photograph's focal point helps nobody. */
 const imagesOnly = process.argv.includes("--images-only");
 
@@ -160,9 +174,16 @@ for (const entry of manifest.images ?? []) {
     ? path.join(withheldRoot, slot.folder, `${entry.key}.webp`)
     : path.join(published, slot.folder, `${entry.key}.webp`);
 
+  let publishedUrl = withholding ? null : `/${relative}`;
+
   if (!dryRun) {
-    await mkdir(path.dirname(destination), { recursive: true });
-    await image.resize({ width: targetWidth, withoutEnlargement: true }).webp({ quality: 82 }).toFile(destination);
+    const resized = await image.resize({ width: targetWidth, withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
+    if (store && !withholding) {
+      publishedUrl = await putObject(`${entry.key}.webp`, resized, "image/webp");
+    } else {
+      await mkdir(path.dirname(destination), { recursive: true });
+      await writeFile(destination, resized);
+    }
   }
 
   const mediaData = {
@@ -171,7 +192,7 @@ for (const entry of manifest.images ?? []) {
     storageKey: entry.key,
     // A withheld file has no public address, and the record says so rather than pointing
     // at something that would 404 — or worse, at something that would resolve.
-    url: withholding ? null : `/${relative}`,
+    url: publishedUrl,
     alt: entry.alt.trim(),
     mimeType: "image/webp",
     width: targetWidth,
@@ -286,11 +307,20 @@ for (const entry of imagesOnly ? [] : manifest.videos ?? []) {
     continue;
   }
 
+  // ffmpeg can only write to a file, so the transcode lands on disk either way. When a
+  // bucket is configured the result is handed over and the local copy becomes scratch.
+  let videoUrl = withholding ? null : `/${relative}`;
+  let posterUrl = withholding ? null : `/${posterRelative}`;
+  if (store && !withholding) {
+    videoUrl = await putObject(`${entry.key}.mp4`, await readFile(destination), "video/mp4");
+    posterUrl = await putObject(`${entry.key}-poster.jpg`, await readFile(posterDestination), "image/jpeg");
+  }
+
   const posterData = {
     kind: MediaKind.IMAGE,
     provider: MediaProvider.LOCAL,
     storageKey: `${entry.key}-poster`,
-    url: withholding ? null : `/${posterRelative}`,
+    url: posterUrl,
     alt: entry.posterAlt ?? entry.alt,
     mimeType: "image/jpeg",
     width: targetWidth,
@@ -314,7 +344,7 @@ for (const entry of imagesOnly ? [] : manifest.videos ?? []) {
     kind: MediaKind.VIDEO,
     provider: MediaProvider.LOCAL,
     storageKey: entry.key,
-    url: withholding ? null : `/${relative}`,
+    url: videoUrl,
     alt: entry.alt.trim(),
     mimeType: "video/mp4",
     width: targetWidth,

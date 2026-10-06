@@ -29,6 +29,10 @@ export const adminSchemas = {
     mimeType: z.preprocess(emptyToUndefined, z.string().optional()),
     width: z.preprocess(emptyToUndefined, z.coerce.number().int().optional()),
     height: z.preprocess(emptyToUndefined, z.coerce.number().int().optional()),
+    // Set by whichever upload control ran; a record is one or the other, never both.
+    kind: z.enum(["IMAGE", "VIDEO"]).default("IMAGE"),
+    durationSeconds: z.preprocess(emptyToUndefined, z.coerce.number().optional()),
+    posterMediaId: optionalUuid.optional(),
     ...commonDemo,
   }),
   temples: z.object({ name:text, slug, community:text, description:optionalText, ...commonDemo }),

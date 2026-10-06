@@ -95,17 +95,19 @@ export async function saveResource(resource: ResourceKey, id: string | null, val
 
     switch (resource) {
       case "media": {
-        const { takenAt, ...raw } = adminSchemas.media.parse(values);
+        const { takenAt, kind, ...raw } = adminSchemas.media.parse(values);
         const data = {
           ...raw,
+          kind,
           takenAt: takenAt ? new Date(`${takenAt}T00:00:00Z`) : null,
-          kind: "IMAGE" as const,
           provider: "LOCAL" as const,
           url: raw.url ?? null,
           storageKey: raw.storageKey ?? null,
           mimeType: raw.mimeType ?? "image/webp",
           width: raw.width ?? null,
           height: raw.height ?? null,
+          durationSeconds: raw.durationSeconds ?? null,
+          posterMediaId: raw.posterMediaId ?? null,
           focalX: raw.focalX ?? null,
           focalY: raw.focalY ?? null,
         };

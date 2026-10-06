@@ -37,7 +37,7 @@ test("an editor can add a temple without touching a script", async ({ page }) =>
 test("an editor can upload a photograph and reuse it as a boat cover", async ({ page }) => {
   await login(page);
   await page.goto("/admin/media/new");
-  await page.setInputFiles('input[type="file"]', path.join(process.cwd(), "tests", "fixtures", "upload-sample.jpg"));
+  await page.setInputFiles('input[accept^="image"]', path.join(process.cwd(), "tests", "fixtures", "upload-sample.jpg"));
   // The upload runs on choose; the preview appears when the file has landed.
   await expect(page.locator(".admin-upload .admin-media-preview")).toBeVisible({ timeout: 20_000 });
 
@@ -116,7 +116,7 @@ test("an oversized camera photograph is shrunk in the browser and still uploads"
   try {
     await login(page);
     await page.goto("/admin/media/new");
-    await page.setInputFiles('input[type="file"]', oversized);
+    await page.setInputFiles('input[accept^="image"]', oversized);
 
     await expect(page.locator(".admin-upload .admin-media-preview")).toBeVisible({ timeout: 60_000 });
     await expect(page.locator(".admin-upload .field-error")).toHaveCount(0);
@@ -124,6 +124,9 @@ test("an oversized camera photograph is shrunk in the browser and still uploads"
     await page.getByLabel("คำบรรยายภาพ").fill(`ภาพทดสอบการอัปโหลด ใหญ่ ${Date.now()}`);
     await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
     await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
+    // Saving redirects to the record's own URL; reloading before that lands on the blank
+    // form and the preview that should be there is simply not.
+    await expect(page).toHaveURL(/\/admin\/media\/[0-9a-f-]+$/);
 
     // Stored at the archive's own ceiling, not at whatever came out of the camera. Read
     // from the served file rather than the form, because width is recorded by the upload
@@ -139,4 +142,21 @@ test("an oversized camera photograph is shrunk in the browser and still uploads"
   } finally {
     await rm(oversized, { force: true });
   }
+});
+
+test("the video control appears and explains itself when storage is not configured", async ({ page }) => {
+  await login(page);
+  await page.goto("/admin/media/new");
+
+  // Video goes browser-to-bucket, so without a bucket there is nowhere for it to go. The
+  // form has to say that rather than failing once someone has waited out a 30MB upload.
+  const field = page.locator(".admin-upload").filter({ hasText: "ไฟล์วิดีโอ" });
+  await expect(field).toBeVisible();
+  await expect(field.locator('input[accept^="video"]')).toHaveAttribute("accept", /video\/mp4/);
+
+  // A file the browser cannot decode must produce something an editor can act on, not the
+  // internal name of the step that failed.
+  const tiny = Buffer.from([0, 0, 0, 24, 102, 116, 121, 112, 109, 112, 52, 50]);
+  await field.locator('input[accept^="video"]').setInputFiles({ name: "clip.mp4", mimeType: "video/mp4", buffer: tiny });
+  await expect(field.locator(".field-error")).toContainText("เปิดไฟล์วิดีโอนี้ไม่ได้", { timeout: 20_000 });
 });

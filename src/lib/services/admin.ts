@@ -10,7 +10,7 @@ export type AdminOption = { value: string; label: string; imageUrl?: string | nu
 export async function getAdminList(resource: ResourceKey): Promise<AdminListRow[]> {
   const db=getDb();
   switch(resource) {
-    case "media": return (await db.media.findMany({orderBy:{createdAt:"desc"},take:300})).map(x=>({id:x.id,title:x.alt,detail:[x.kind,x.width&&x.height?`${x.width}×${x.height}`:null,x.photographer].filter(Boolean).join(" · "),status:x.url?"READY":"NO FILE",updatedAt:x.updatedAt}));
+    case "media": return (await db.media.findMany({orderBy:{createdAt:"desc"},take:300})).map(x=>({id:x.id,title:x.alt,detail:[x.kind,x.width&&x.height?`${x.width}×${x.height}`:null,x.durationSeconds?`${Math.round(x.durationSeconds)} วิ`:null,x.photographer].filter(Boolean).join(" · "),status:x.url?"READY":"NO FILE",updatedAt:x.updatedAt}));
     case "temples": return (await db.temple.findMany({orderBy:{name:"asc"},include:{_count:{select:{boats:true}}}})).map(x=>({id:x.id,title:x.name,detail:`${x.community} · เรือ ${x._count.boats} ลำ`,updatedAt:x.updatedAt}));
     case "boats": return (await db.boat.findMany({orderBy:{updatedAt:"desc"},include:{temple:true,verification:true}})).map(x=>({id:x.id,title:x.name,detail:`${x.temple.name} · พ.ศ. ${x.year}`,status:x.verification?.status??"DRAFT",updatedAt:x.updatedAt}));
     case "stories": return (await db.boatStory.findMany({orderBy:{updatedAt:"desc"},include:{boat:true,verification:true}})).map(x=>({id:x.id,title:x.title,detail:x.boat.name,status:x.verification?.status??"DRAFT",updatedAt:x.updatedAt}));
@@ -60,6 +60,13 @@ export async function getAdminRecord(resource: ResourceKey, id: string): Promise
     result.path=(row.path||"") as string;
   }
   if(resource==="media" && row.takenAt instanceof Date) result.takenAt=row.takenAt.toISOString().slice(0,10);
+  if(resource==="media") {
+    // Without these, opening a video record and pressing save would rewrite it as an image
+    // with no length and no poster.
+    result.kind=(row.kind as string)??"IMAGE";
+    result.durationSeconds=row.durationSeconds??"";
+    result.posterMediaId=row.posterMediaId??"";
+  }
   if(resource==="lessons") {
     // The editor works on JSON, so the stored rows are handed back in the same shape they
     // were posted in — including the answer key, which an editor is allowed to see.

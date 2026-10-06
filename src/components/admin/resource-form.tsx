@@ -10,6 +10,7 @@ import { deleteResource, saveResource } from "@/app/admin/actions";
 import { uploadMediaFile } from "@/app/admin/upload";
 import { BlocksField, QuizField } from "@/components/admin/lesson-editors";
 import { downscaleImage, MAX_UPLOAD_BYTES } from "@/lib/admin/downscale";
+import { VideoUploadField } from "@/components/admin/video-upload";
 import { resources, type AdminField, type ResourceKey } from "@/lib/admin/resources";
 import type { AdminOption } from "@/lib/services/admin";
 import { adminSchemas, type ActionState } from "@/lib/validations/admin";
@@ -47,7 +48,21 @@ export function AdminResourceForm({resource,id,initialValues={},options,created=
 }
 
 function Field({field,resource,register,errors,watched,setValue,options}:{field:AdminField;resource:ResourceKey;register:ReturnType<typeof useForm<Values>>["register"];errors:ReturnType<typeof useForm<Values>>["formState"]["errors"];watched:Values;setValue:ReturnType<typeof useForm<Values>>["setValue"];options:OptionMap}) {
+  if(field.type==="upload"&&String(watched.kind||"")==="VIDEO") return null;
+  if(field.type==="videoUpload"&&String(watched.mimeType||"").startsWith("image/")) return null;
   if(field.type==="upload") return <UploadField setValue={setValue} url={String(watched.url||"")} alt={String(watched.alt||"")} help={field.help}/>;
+  if(field.type==="videoUpload") return <VideoUploadField key="video" onComplete={(result)=>{
+    // One record is one file. Filling these marks it as a video, which is what makes the
+    // image controls above irrelevant rather than merely unused.
+    setValue("kind","VIDEO",{shouldDirty:true});
+    setValue("url",result.url,{shouldDirty:true});
+    setValue("storageKey",result.storageKey,{shouldDirty:true});
+    setValue("mimeType",result.mimeType,{shouldDirty:true});
+    setValue("width",result.width,{shouldDirty:true});
+    setValue("height",result.height,{shouldDirty:true});
+    setValue("durationSeconds",Math.round(result.durationSeconds),{shouldDirty:true});
+    if(result.posterMediaId)setValue("posterMediaId",result.posterMediaId,{shouldDirty:true});
+  }}/>;
   if(field.type==="blocks") return <BlocksField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} mediaOptions={options.media||[]} stepOptions={options.stepSlugs||[]} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
   if(field.type==="quiz") return <QuizField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
   if(field.type==="relations") return <RelationField field={field} value={(watched[field.name] as string[]|undefined)??[]} options={options[field.optionSource||""]||[]} setValue={setValue}/>;

@@ -4,7 +4,7 @@ export type ResourceKey = (typeof resourceKeys)[number];
 export type AdminField = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "date" | "media" | "hotspot" | "upload" | "relations" | "blocks" | "quiz";
+  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "date" | "media" | "hotspot" | "upload" | "videoUpload" | "relations" | "blocks" | "quiz";
   required?: boolean;
   help?: string;
   optionSource?: "temples" | "boats" | "media" | "processes" | "patterns" | "masters" | "steps" | "materials" | "tools" | "techniques" | "courses";
@@ -21,6 +21,7 @@ export const resources: Record<ResourceKey, { label: string; singular: string; f
     { name: "location", label: "สถานที่" },
     { name: "focalX", label: "จุดโฟกัส X (%)", type: "number", help: "จุดที่ต้องคงไว้เมื่อภาพถูกตัดให้พอดีกรอบ เว้นว่างไว้จะใช้กึ่งกลาง" },
     { name: "focalY", label: "จุดโฟกัส Y (%)", type: "number" },
+    { name: "videoUpload", label: "ไฟล์วิดีโอ", type: "videoUpload", help: "ใช้แทนการอัปโหลดภาพเมื่อต้องการเพิ่มวิดีโอ ระบบจะเก็บความยาวและภาพปกให้เอง" },
   ] },
   temples: { label: "วัด / ชุมชน", singular: "วัด", fields: [
     { name: "name", label: "ชื่อวัด", required: true }, { name: "slug", label: "Slug", required: true },
