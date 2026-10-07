@@ -4,12 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, ArrowLeft, CheckCircle2, Grip, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
 import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { deleteResource, saveResource } from "@/app/admin/actions";
 import { uploadMediaFile } from "@/app/admin/upload";
 import { BlocksField, QuizField } from "@/components/admin/lesson-editors";
+import { flashMessage } from "@/components/admin/admin-flash";
 import { downscaleImage, MAX_UPLOAD_BYTES } from "@/lib/admin/downscale";
 import { VideoUploadField } from "@/components/admin/video-upload";
 import { resources, type AdminField, type ResourceKey } from "@/lib/admin/resources";
@@ -20,23 +21,41 @@ type Values = Record<string, string | number | boolean | string[] | undefined>;
 type OptionMap = Record<string, AdminOption[]>;
 const statuses=[{value:"DRAFT",label:"ฉบับร่าง"},{value:"PENDING_REVIEW",label:"รอตรวจสอบ"},{value:"REVISION_REQUIRED",label:"ต้องแก้ไข"},{value:"VERIFIED",label:"ตรวจสอบแล้ว"},{value:"PUBLISHED",label:"เผยแพร่"}];
 
-export function AdminResourceForm({resource,id,initialValues={},options,created=false}:{resource:ResourceKey;id?:string;initialValues?:Record<string,unknown>;options:OptionMap;created?:boolean}) {
-  const router=useRouter(); const [pending,startTransition]=useTransition(); const [recordId,setRecordId]=useState(id); const [feedback,setFeedback]=useState<ActionState|null>(created?{ok:true,message:"สร้างรายการแล้ว"}:null);
+export function AdminResourceForm({resource,id,initialValues={},options}:{resource:ResourceKey;id?:string;initialValues?:Record<string,unknown>;options:OptionMap}) {
+  const router=useRouter(); const [pending,startTransition]=useTransition(); const recordId=id; const [feedback,setFeedback]=useState<ActionState|null>(null);
   const defaults=useMemo(()=>({status:"DRAFT",active:true,isDemo:false,x:50,y:50,...initialValues}) as Values,[initialValues]);
   const resolver = zodResolver(adminSchemas[resource]) as unknown as Resolver<Values>;
   const {register,handleSubmit,control,setValue,formState:{errors}}=useForm<Values>({resolver,defaultValues:defaults});
   const watched=useWatch({control}) as Values; const config=resources[resource];
-  useEffect(()=>{
-    if(!id)return;
-    const feedbackKey=`admin-created:${resource}:${id}`;
-    let feedbackTimer:ReturnType<typeof setTimeout>|undefined;
-    if(window.sessionStorage.getItem(feedbackKey)){window.sessionStorage.removeItem(feedbackKey);feedbackTimer=setTimeout(()=>setFeedback({ok:true,message:"สร้างรายการแล้ว"}),0);}
-    if(created)router.replace(`/admin/${resource}/${id}`);
-    return ()=>{if(feedbackTimer)clearTimeout(feedbackTimer);};
-  },[created,id,resource,router]);
 
-  function submit(values:Values) { setFeedback(null);startTransition(async()=>{const result=await saveResource(resource,recordId??null,values);setFeedback(result);if(result.ok){if(!recordId&&result.id){setRecordId(result.id);window.sessionStorage.setItem(`admin-created:${resource}:${result.id}`,"1");router.replace(`/admin/${resource}/${result.id}`);}window.scrollTo({top:0,behavior:"smooth"});}}); }
-  function remove() { if(!recordId||!window.confirm(`ยืนยันการลบ${config.singular}นี้? การทำงานนี้ย้อนกลับไม่ได้`))return;startTransition(async()=>{const result=await deleteResource(resource,recordId);if(result.ok)router.replace(`/admin/${resource}`);else setFeedback(result);}); }
+  /**
+   * Saving finishes the job, so it returns to the list rather than leaving the editor in a
+   * form with nothing left to do. `replace` rather than `push`: going back from the list
+   * should reach whatever came before the form, not the form that was just submitted and
+   * would be resubmitted.
+   *
+   * Errors keep the editor where they are, because the thing that needs fixing is here.
+   */
+  function submit(values:Values) {
+    setFeedback(null);
+    startTransition(async()=>{
+      const result=await saveResource(resource,recordId??null,values);
+      if(!result.ok){setFeedback(result);window.scrollTo({top:0,behavior:"smooth"});return;}
+      flashMessage(recordId?`บันทึกการแก้ไข${config.singular}แล้ว`:`เพิ่ม${config.singular}แล้ว`);
+      router.replace(`/admin/${resource}`);
+      router.refresh();
+    });
+  }
+  function remove() {
+    if(!recordId||!window.confirm(`ยืนยันการลบ${config.singular}นี้? การทำงานนี้ย้อนกลับไม่ได้`))return;
+    startTransition(async()=>{
+      const result=await deleteResource(resource,recordId);
+      if(!result.ok){setFeedback(result);return;}
+      flashMessage(`ลบ${config.singular}แล้ว`);
+      router.replace(`/admin/${resource}`);
+      router.refresh();
+    });
+  }
 
   return <form className="admin-form" onSubmit={handleSubmit(submit)} noValidate>
     {feedback&&<div className={`admin-feedback ${feedback.ok?"success":"error"}`} role={feedback.ok?"status":"alert"}>{feedback.ok?<CheckCircle2 aria-hidden="true"/>:<AlertCircle aria-hidden="true"/>}<div><span>{feedback.message}</span>{feedback.fieldErrors&&<ul>{Object.entries(feedback.fieldErrors).flatMap(([field,messages])=>messages.map(message=><li key={`${field}-${message}`}>{resources[resource].fields.find(item=>item.name===field)?.label||field}: {message}</li>))}</ul>}</div></div>}

@@ -19,6 +19,16 @@ async function canvasReady(page: Page) {
   });
 }
 
+/**
+ * Saving returns to the list, so a test that wants to inspect what it saved has to go back
+ * in. Finds the row by the text that identifies it and follows its edit link.
+ */
+async function reopen(page: Page, resource: string, label: string | RegExp) {
+  await expect(page).toHaveURL(new RegExp(`/admin/${resource}$`));
+  await page.getByRole("row").filter({ hasText: label }).getByRole("link", { name: "แก้ไข" }).click();
+  await expect(page).toHaveURL(new RegExp(`/admin/${resource}/[0-9a-f-]+$`));
+}
+
 async function login(page: Page) {
   await page.goto("/login");
   await page.getByLabel("อีเมล").fill(process.env.ADMIN_EMAIL!);
@@ -43,13 +53,13 @@ test("material CRUD persists through the real admin form", async ({ page }) => {
   await page.getByLabel("Slug").fill(slug);
   await page.getByLabel("คำอธิบาย").fill("สร้างเพื่อยืนยันการทำงานของ CRUD และจะถูกลบเมื่อทดสอบเสร็จ");
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page).toHaveURL(/\/admin\/materials\/[0-9a-f-]+$/);
-  await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
+  await expect(page.locator(".admin-feedback")).toContainText("เพิ่มวัสดุแล้ว");
+  await reopen(page, "materials", "วัสดุทดสอบจากเบราว์เซอร์");
 
   await page.getByLabel("ชื่อ").fill("วัสดุทดสอบที่แก้ไขแล้ว");
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขแล้ว");
-  await page.reload();
+  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขวัสดุแล้ว");
+  await reopen(page, "materials", "วัสดุทดสอบที่แก้ไขแล้ว");
   await expect(page.getByLabel("ชื่อ")).toHaveValue("วัสดุทดสอบที่แก้ไขแล้ว");
 
   page.once("dialog", dialog=>dialog.accept());
@@ -67,8 +77,8 @@ test("published content records reviewer attribution", async ({ page }) => {
   await page.getByLabel("คำอธิบาย").fill("ข้อมูลชั่วคราวสำหรับตรวจสอบสถานะการเผยแพร่");
   await page.getByLabel("สถานะเนื้อหา").selectOption("PUBLISHED");
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
-  await page.goto("/admin/processes");
+  await expect(page).toHaveURL(/\/admin\/processes$/);
+  await expect(page.locator(".admin-feedback")).toContainText("เพิ่มกระบวนการแล้ว");
   const row=page.getByRole("row", { name: /กระบวนการทดสอบการเผยแพร่/ });
   await expect(row).toContainText("PUBLISHED");
   await row.getByRole("link", { name: "แก้ไข" }).click();
@@ -95,8 +105,8 @@ test("hotspot editor converts clicks to percentages and persists dragged coordin
   expect(Number(await page.getByLabel("X (%)").inputValue())).toBeCloseTo(72,1);
   expect(Number(await page.getByLabel("Y (%)").inputValue())).toBeCloseTo(28,1);
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
-  await expect(page).toHaveURL(/\/admin\/sections\/[0-9a-f-]+$/);
+  await expect(page.locator(".admin-feedback")).toContainText("เพิ่มจุดสำรวจแล้ว");
+  await reopen(page, "sections", "จุดทดสอบพิกัด");
 
   const editCanvas=page.locator(".hotspot-canvas");
   const point=page.locator(".hotspot-admin-point");
@@ -115,8 +125,8 @@ test("hotspot editor converts clicks to percentages and persists dragged coordin
   await expect(page.getByLabel("X (%)")).toHaveValue(/^3[45](\.|$)/);
   await expect(page.getByLabel("Y (%)")).toHaveValue(/^6[456](\.|$)/);
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขแล้ว");
-  await page.reload();
+  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขจุดสำรวจแล้ว");
+  await reopen(page, "sections", "จุดทดสอบพิกัด");
   // react-hook-form fills these inputs after hydration, so the assertion has to retry.
   // A one-shot inputValue() can read "" before that, and Number("") is 0.
   await expect(page.getByLabel("X (%)")).toHaveValue(/^3[45](\.|$)/);

@@ -5,6 +5,13 @@ import os from "node:os";
 import { rm, stat } from "node:fs/promises";
 import sharp from "sharp";
 
+/** Saving returns to the list, so inspecting what was saved means going back in. */
+async function reopen(page: Page, resource: string, label: string | RegExp) {
+  await expect(page).toHaveURL(new RegExp(`/admin/${resource}$`));
+  await page.getByRole("row").filter({ hasText: label }).getByRole("link", { name: "แก้ไข" }).click();
+  await expect(page).toHaveURL(new RegExp(`/admin/${resource}/[0-9a-f-]+$`));
+}
+
 async function login(page: Page) {
   await page.goto("/login");
   await page.getByLabel("อีเมล").fill(process.env.ADMIN_EMAIL!);
@@ -21,9 +28,10 @@ test("an editor can add a temple without touching a script", async ({ page }) =>
   await page.getByLabel("Slug").fill(slug);
   await page.getByLabel("ชุมชน / ที่ตั้ง").fill("ชุมชนทดสอบ อำเภอปากพะยูน");
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
+  await expect(page).toHaveURL(/\/admin\/temples$/);
+  await expect(page.locator(".admin-feedback")).toContainText("เพิ่มวัดแล้ว");
 
-  // The new temple is immediatelyselectable when creating a boat.
+  // The new temple is immediately selectable when creating a boat.
   await page.goto("/admin/boats/new");
   await expect(page.locator('select[name="templeId"]')).toContainText("วัดทดสอบจากเบราว์เซอร์");
 
@@ -47,12 +55,10 @@ test("an editor can upload a photograph and reuse it as a boat cover", async ({ 
   await page.getByLabel("จุดโฟกัส X (%)").fill("40");
   await page.getByLabel("จุดโฟกัส Y (%)").fill("30");
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
-  // Saving redirects to the record's own URL; reloading before that lands on the blank form.
-  await expect(page).toHaveURL(/\/admin\/media\/[0-9a-f-]+$/);
+  await expect(page.locator(".admin-feedback")).toContainText("เพิ่มไฟล์สื่อแล้ว");
 
-  // Stored metadata survives a reload, and the file is actually served.
-  await page.reload();
+  // Stored metadata survives the round trip, and the file is actually served.
+  await reopen(page, "media", alt);
   await expect(page.getByLabel("จุดโฟกัส X (%)")).toHaveValue("40");
   const src = await page.locator(".admin-upload .admin-media-preview img").getAttribute("src");
   expect(src).toBeTruthy();
@@ -85,14 +91,16 @@ test("linking a pattern to a boat from the admin reaches the public page", async
   // Toggle off, save, confirm it persisted, then restore.
   await first.setChecked(!wasChecked);
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขแล้ว");
-  await page.reload();
+  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขลวดลายแล้ว");
+  // Saving replaces the form in history rather than stacking on it, so going back lands
+  // wherever the editor came from. Reopen from the list instead.
+  await reopen(page, "patterns", "ลายเกล็ดพญานาค");
   await expect(boats.locator('input[type="checkbox"]').first()).toBeChecked({ checked: !wasChecked });
 
   await boats.locator('input[type="checkbox"]').first().setChecked(wasChecked);
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขแล้ว");
-  await page.reload();
+  await expect(page.locator(".admin-feedback")).toContainText("บันทึกการแก้ไขลวดลายแล้ว");
+  await reopen(page, "patterns", "ลายเกล็ดพญานาค");
   await expect(boats.locator('input[type="checkbox"]').first()).toBeChecked({ checked: wasChecked });
 });
 
@@ -121,17 +129,15 @@ test("an oversized camera photograph is shrunk in the browser and still uploads"
     await expect(page.locator(".admin-upload .admin-media-preview")).toBeVisible({ timeout: 60_000 });
     await expect(page.locator(".admin-upload .field-error")).toHaveCount(0);
 
-    await page.getByLabel("คำบรรยายภาพ").fill(`ภาพทดสอบการอัปโหลด ใหญ่ ${Date.now()}`);
+    const alt = `ภาพทดสอบการอัปโหลด ใหญ่ ${Date.now()}`;
+    await page.getByLabel("คำบรรยายภาพ").fill(alt);
     await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-    await expect(page.locator(".admin-feedback")).toContainText("สร้างรายการแล้ว");
-    // Saving redirects to the record's own URL; reloading before that lands on the blank
-    // form and the preview that should be there is simply not.
-    await expect(page).toHaveURL(/\/admin\/media\/[0-9a-f-]+$/);
+    await expect(page.locator(".admin-feedback")).toContainText("เพิ่มไฟล์สื่อแล้ว");
+    await reopen(page, "media", alt);
 
     // Stored at the archive's own ceiling, not at whatever came out of the camera. Read
     // from the served file rather than the form, because width is recorded by the upload
     // and never shown as a field.
-    await page.reload();
     const preview = page.locator(".admin-upload .admin-media-preview img");
     await expect(preview).toBeVisible();
     await expect

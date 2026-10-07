@@ -740,7 +740,9 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
   display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
   margin:0; padding:0; list-style:none; font-size:.8125rem; color:var(--admin-muted);
 }
-.admin-breadcrumb li + li::before { content:"A"; margin-right:.4rem; color:#b6c0bb; }
+/* A literal character, not an escape: one resource is called "วัด / ชุมชน", so a slash
+   separator makes a three-level trail read as four. */
+.admin-breadcrumb li + li::before { content:"›"; margin-right:.4rem; color:#b6c0bb; }
 .admin-breadcrumb a { color:var(--admin-muted); text-decoration:none; }
 .admin-breadcrumb a:hover { color:#17634f; text-decoration:underline; text-underline-offset:.25em; }
 .admin-breadcrumb [aria-current="page"] { color:var(--admin-ink); font-weight:500; }

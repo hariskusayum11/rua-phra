@@ -124,10 +124,10 @@ test("an editor can author a lesson block and a learner sees it", async ({ page 
   await page.getByRole("button", { name: "เพิ่มส่วน" }).click();
   await page.getByLabel("ข้อความ").fill(`ข้อความทดสอบ ${stamp}`);
   await page.getByRole("button", { name: "บันทึกข้อมูล" }).click();
-  await expect(page.locator(".admin-feedback.success")).toBeVisible();
-
-  const course = await page.getByLabel("ชุดบทเรียน").inputValue();
-  expect(course).not.toBe("");
+  // Saving returns to the list, where the new lesson is now one of the rows.
+  await expect(page).toHaveURL(/\/admin\/lessons$/);
+  await expect(page.locator(".admin-feedback.success")).toContainText("เพิ่มบทเรียนแล้ว");
+  await expect(page.getByRole("row").filter({ hasText: `บททดสอบ ${stamp}` })).toHaveCount(1);
 
   // The lesson is reachable from the public course page and shows what was typed.
   await page.goto("/learn");
