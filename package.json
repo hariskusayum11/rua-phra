@@ -13,6 +13,7 @@
     "db:seed": "prisma db seed",
     "photos:scan": "node scripts/scan-photos.mjs",
     "photos:import": "tsx scripts/import-photos.mjs",
+    "media:check": "tsx scripts/check-media-files.mjs",
     "test": "tsx --test tests/*.test.ts",
     "test:browser": "playwright test",
     "test:db": "tsx tests/database.integration.ts"
