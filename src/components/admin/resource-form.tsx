@@ -1,7 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CheckCircle2, Grip, Save, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowLeft, CheckCircle2, Grip, Save, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Image from "next/image";
@@ -43,7 +44,9 @@ export function AdminResourceForm({resource,id,initialValues={},options,created=
     {/* A lesson has no demo flag of its own — it is demo because its course is — so the
         checkbox is hidden rather than left there doing nothing. */}
     {resource!=="lessons"&&<label className="admin-check"><input type="checkbox" {...register("isDemo")}/><span>ข้อมูลสาธิต / ยังไม่ใช่ข้อมูลภาคสนามจริง</span></label>}
-    <footer className="admin-form-actions">{recordId&&<button className="admin-danger" type="button" onClick={remove} disabled={pending}><Trash2 aria-hidden="true"/>ลบรายการ</button>}<button className="admin-save" type="submit" disabled={pending}><Save aria-hidden="true"/>{pending?"กำลังบันทึก…":"บันทึกข้อมูล"}</button></footer>
+    {/* After a long form the reader is at the bottom, which is where the way out has to
+        be. The breadcrumb at the top is a scroll away and might as well not exist. */}
+    <footer className="admin-form-actions"><Link className="admin-back-link" href={`/admin/${resource}`}><ArrowLeft aria-hidden="true"/>กลับไปรายการ{config.label}</Link>{recordId&&<button className="admin-danger" type="button" onClick={remove} disabled={pending}><Trash2 aria-hidden="true"/>ลบรายการ</button>}<button className="admin-save" type="submit" disabled={pending}><Save aria-hidden="true"/>{pending?"กำลังบันทึก…":"บันทึกข้อมูล"}</button></footer>
   </form>;
 }
 

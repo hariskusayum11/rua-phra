@@ -726,3 +726,32 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 }
 .admin-view-site:hover { border-color: rgba(255,255,255,.45); color: #fff; }
 .admin-view-site svg { width: 1rem; height: 1rem; }
+
+/* --------------------------- admin wayfinding ---------------------------- */
+.admin-breadcrumb { display:flex; align-items:center; gap:.6rem; margin-bottom:1.25rem; }
+.admin-breadcrumb-back {
+  display:grid; place-items:center; inline-size:2rem; block-size:2rem; flex:none;
+  border:1px solid var(--admin-line); border-radius:.35rem;
+  background:#fff; color:var(--admin-muted); text-decoration:none;
+}
+.admin-breadcrumb-back:hover { border-color:#17634f; color:#17634f; }
+.admin-breadcrumb-back svg { width:1.1rem; height:1.1rem; }
+.admin-breadcrumb ol {
+  display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
+  margin:0; padding:0; list-style:none; font-size:.8125rem; color:var(--admin-muted);
+}
+.admin-breadcrumb li + li::before { content:"A"; margin-right:.4rem; color:#b6c0bb; }
+.admin-breadcrumb a { color:var(--admin-muted); text-decoration:none; }
+.admin-breadcrumb a:hover { color:#17634f; text-decoration:underline; text-underline-offset:.25em; }
+.admin-breadcrumb [aria-current="page"] { color:var(--admin-ink); font-weight:500; }
+
+/* Sits on the opposite side to the destructive and the confirming buttons, so leaving is
+   never one slip away from deleting. */
+.admin-back-link {
+  display:inline-flex; min-height:2.75rem; align-items:center; gap:.5rem;
+  margin-right:auto; padding:.55rem .25rem;
+  color:var(--admin-muted); font-size:.875rem; text-decoration:none;
+}
+.admin-back-link:hover { color:#17634f; }
+.admin-back-link svg { width:1rem; height:1rem; }
+@media (max-width:600px) { .admin-back-link { width:100%; justify-content:center; margin-right:0; } }

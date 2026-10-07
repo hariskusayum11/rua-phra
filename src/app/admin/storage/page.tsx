@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { bucketUsage } from "@/lib/object-store";
 import { FREE_TIER_BYTES, objectStore } from "@/lib/media-storage";
 
@@ -32,6 +33,7 @@ export default async function StoragePage() {
   if (configured && !usage) {
     return (
       <main className="admin-main" id="main-content" tabIndex={-1}>
+        <AdminBreadcrumb crumbs={[{ href: "/admin", label: "ภาพรวม" }, { label: "พื้นที่เก็บไฟล์" }]} />
         <header className="admin-page-head">
           <div>
             <p className="admin-kicker">Storage</p>
@@ -50,6 +52,7 @@ export default async function StoragePage() {
   if (!configured || !usage) {
     return (
       <main className="admin-main" id="main-content" tabIndex={-1}>
+        <AdminBreadcrumb crumbs={[{ href: "/admin", label: "ภาพรวม" }, { label: "พื้นที่เก็บไฟล์" }]} />
         <header className="admin-page-head">
           <div>
             <p className="admin-kicker">Storage</p>
@@ -72,6 +75,7 @@ export default async function StoragePage() {
 
   return (
     <main className="admin-main" id="main-content" tabIndex={-1}>
+      <AdminBreadcrumb crumbs={[{ href: "/admin", label: "ภาพรวม" }, { label: "พื้นที่เก็บไฟล์" }]} />
       <header className="admin-page-head">
         <div>
           <p className="admin-kicker">Storage</p>

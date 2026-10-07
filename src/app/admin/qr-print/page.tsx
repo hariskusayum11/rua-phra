@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import QRCodeLib from "qrcode";
 import { ArrowLeft, LayoutGrid, Maximize2, TriangleAlert } from "lucide-react";
 import { getQrCodeSheet } from "@/lib/services/qr";
+import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 
 export const dynamic = "force-dynamic";
 
@@ -55,6 +56,7 @@ export default async function QrPrintPage({ searchParams }: Props) {
 
   return (
     <main className="admin-main qr-print" id="main-content" tabIndex={-1} data-poster={poster || undefined}>
+      <AdminBreadcrumb crumbs={[{ href: "/admin", label: "ภาพรวม" }, { href: "/admin/qr-codes", label: "QR Codes" }, { label: "พิมพ์ป้าย" }]} />
       <div className="qr-print-controls">
         <Link className="editorial-link" href="/admin/qr-codes">
           <ArrowLeft aria-hidden="true" />
