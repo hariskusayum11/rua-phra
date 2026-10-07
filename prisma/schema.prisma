@@ -68,6 +68,13 @@ enum SourceKind {
   DEMO
 }
 
+/// Whether the year's procession was judged at all. 2559, 2560 and 2564 were not held;
+/// the words each was recorded with differ and are kept in the row's note.
+enum CompetitionYearStatus {
+  JUDGED
+  NOT_HELD
+}
+
 enum QRTargetKind {
   BOAT
   PATTERN
@@ -93,6 +100,7 @@ model Temple {
   description String?  @db.Text
   isDemo      Boolean  @default(false)
   boats       Boat[]
+  results     CompetitionResult[]
   createdAt   DateTime @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime @default(now()) @updatedAt @db.Timestamptz(3)
 
@@ -524,12 +532,53 @@ model KnowledgeSource {
   citation      String?               @db.Text
   isDemo        Boolean               @default(false)
   links         KnowledgeSourceLink[]
+  competitionYears CompetitionYear[]
   consent       Consent?
   verification  ContentVerification?
   createdAt     DateTime              @default(now()) @db.Timestamptz(3)
   updatedAt     DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
 
   @@index([kind, interviewDate])
+}
+
+/// One year of the Pak Phayun procession competition.
+///
+/// A year is a record in its own right rather than a column on a result, because a year
+/// with no competition is a fact the archive has to be able to state. 2559, 2560 and 2564
+/// have no placings and are not gaps in the data.
+model CompetitionYear {
+  id        String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// Buddhist calendar year, stored the way Boat.year is.
+  year      Int                   @unique
+  status    CompetitionYearStatus
+  /// Kept as the source worded it. "งดจัดงาน" and "ไม่มีการจัดงาน" record the same fact in
+  /// different words, and which words were used is part of what was recorded.
+  note      String?               @db.Text
+  sourceId  String?               @db.Uuid
+  source    KnowledgeSource?      @relation(fields: [sourceId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  isDemo    Boolean               @default(false)
+  results   CompetitionResult[]
+  createdAt DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime              @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@index([sourceId])
+}
+
+/// A temple's placing in one year. The rank is whatever was awarded — 2567 went to four.
+model CompetitionResult {
+  id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  yearId    String          @db.Uuid
+  year      CompetitionYear @relation(fields: [yearId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rank      Int
+  templeId  String          @db.Uuid
+  temple    Temple          @relation(fields: [templeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  note      String?
+  isDemo    Boolean         @default(false)
+  createdAt DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime        @default(now()) @updatedAt @db.Timestamptz(3)
+
+  @@unique([yearId, rank])
+  @@index([templeId])
 }
 
 model Consent {

@@ -174,3 +174,88 @@
   .about-prose > p:first-child { margin-top: 0; }
   .about-status-list, .about-partners { margin-top: 0; }
 }
+
+/* ===========================================================================
+   ผลการประกวด — /competition
+   A page of numbers in an archive otherwise made of photographs and prose.
+   It borrows the about page's one-column rhythm so it does not read as a
+   different website, and adds a table that has to survive a phone.
+   =========================================================================== */
+.competition-page { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 9vw, 8rem); }
+.competition-page > * + * { margin-top: clamp(3rem, 7vw, 5.5rem); }
+
+.competition-lede h1 { margin-top: 1rem; font-size: clamp(2.25rem, 5.5vw, 4.5rem); }
+.competition-lede .lead { max-width: var(--measure); margin-top: 1.75rem; }
+
+.competition-block h2 {
+  padding-bottom: 1rem; border-bottom: 1px solid var(--rule);
+  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+}
+.competition-note { max-width: var(--measure); margin-top: 1.25rem; color: var(--muted); font-size: .9375rem; }
+
+/* The table is wider than a phone and shrinking the type to fit would make it
+   unreadable, so it scrolls sideways inside its own box instead of pushing the
+   whole page sideways. */
+.competition-scroll { margin-top: 1.5rem; overflow-x: auto; }
+.competition-table { width: 100%; min-width: 30rem; border-collapse: collapse; font-size: .9375rem; }
+.competition-table th, .competition-table td { padding: .85rem .75rem; border-bottom: 1px solid var(--rule); text-align: start; }
+.competition-table thead th { border-bottom: 1px solid var(--rule-strong); color: var(--muted); font-size: .8125rem; font-weight: 500; }
+.competition-table tbody th { font-family: "Noto Serif Thai", serif; font-size: 1rem; font-weight: 500; }
+.competition-num { text-align: end; font-variant-numeric: tabular-nums; }
+.competition-total { font-weight: 500; }
+.competition-zero { color: var(--rule-strong); }
+.competition-wins {
+  display: inline-flex; align-items: center; gap: .3rem; margin-inline-start: .6rem;
+  color: var(--accent-text); font-family: "Noto Sans Thai", sans-serif; font-size: .8125rem; font-weight: 500;
+}
+.competition-wins svg { width: .9rem; height: .9rem; }
+
+.competition-years { margin: 1.75rem 0 0; padding: 0; list-style: none; }
+.competition-year { padding-block: 1.5rem; border-bottom: 1px solid var(--rule); }
+.competition-year h3 { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; font-weight: 500; }
+.competition-places { margin: .9rem 0 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
+.competition-places li { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+.competition-rank {
+  flex: none; min-width: 3.25rem; color: var(--muted);
+  font-size: .8125rem; font-variant-numeric: tabular-nums;
+}
+/* First place is the thing the eye is looking for in a list like this. */
+.competition-places li[data-rank="1"] .competition-rank { color: var(--accent-text); font-weight: 500; }
+.competition-places li[data-rank="1"] .competition-temple { font-weight: 500; }
+.competition-temple { display: flex; flex-direction: column; gap: .15rem; }
+.competition-temple small { color: var(--muted); font-size: .8125rem; }
+.competition-variant { flex-basis: 100%; padding-inline-start: 4rem; color: var(--muted); font-size: .8125rem; }
+
+/* A year with no competition is a record, not an empty row, so it keeps its place in the
+   list and says what happened instead of being skipped. */
+.competition-year[data-held="false"] { background: var(--surface-warm); }
+.competition-year[data-held="false"] h3 { color: var(--muted); }
+.competition-nothing { margin-top: .5rem; color: var(--muted); font-size: .9375rem; }
+.competition-pending { color: var(--accent-text); }
+
+@media (min-width: 40rem) {
+  .competition-year[data-held="false"] { padding-inline: 1.25rem; border-radius: .5rem; }
+}
+@media (min-width: 64rem) {
+  .competition-block {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    column-gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .competition-block h2 { grid-column: 1; padding-bottom: 0; border-bottom: 0; }
+  .competition-block > :not(h2) { grid-column: 2; }
+  .competition-block > :not(h2):first-of-type { margin-top: 0; }
+  .competition-scroll, .competition-years { margin-top: 0; }
+}
+.competition-scroll:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+
+/* The temple's standing, on a page about one of its boats. A statement of record, so it
+   sits with the intro rather than being dressed up as a badge. */
+.boat-record {
+  display: grid; justify-items: start; gap: .6rem;
+  margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--rule);
+  color: var(--muted); font-size: .9375rem;
+}
+.boat-record p { display: flex; align-items: center; gap: .5rem; margin: 0; }
+.boat-record svg { flex: none; width: 1rem; height: 1rem; color: var(--accent-text); }

@@ -1,13 +1,13 @@
-export const resourceKeys = ["media", "temples", "boats", "stories", "sections", "patterns", "masters", "processes", "steps", "materials", "tools", "techniques", "sources", "courses", "lessons", "qr-codes"] as const;
+export const resourceKeys = ["media", "temples", "boats", "stories", "sections", "patterns", "masters", "processes", "steps", "materials", "tools", "techniques", "sources", "competitions", "courses", "lessons", "qr-codes"] as const;
 export type ResourceKey = (typeof resourceKeys)[number];
 
 export type AdminField = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "date" | "media" | "hotspot" | "upload" | "videoUpload" | "relations" | "blocks" | "quiz";
+  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "date" | "media" | "hotspot" | "upload" | "videoUpload" | "relations" | "blocks" | "quiz" | "ranking";
   required?: boolean;
   help?: string;
-  optionSource?: "temples" | "boats" | "media" | "processes" | "patterns" | "masters" | "steps" | "materials" | "tools" | "techniques" | "courses";
+  optionSource?: "temples" | "boats" | "media" | "processes" | "patterns" | "masters" | "steps" | "materials" | "tools" | "techniques" | "courses" | "sources";
   options?: Array<{ value: string; label: string }>;
 };
 
@@ -90,6 +90,13 @@ export const resources: Record<ResourceKey, { label: string; singular: string; f
   sources: { label: "แหล่งองค์ความรู้", singular: "แหล่งข้อมูล", fields: [
     {name:"title",label:"ชื่อแหล่งข้อมูล",required:true},{name:"kind",label:"ประเภท",type:"select",options:[{value:"FIELD_INTERVIEW",label:"สัมภาษณ์ภาคสนาม"},{value:"FIELD_OBSERVATION",label:"สังเกตการณ์"},{value:"PUBLICATION",label:"สิ่งพิมพ์"},{value:"ARCHIVAL_DOCUMENT",label:"เอกสารจดหมายเหตุ"},{value:"DEMO",label:"ข้อมูลสาธิต"}]},
     {name:"informant",label:"ผู้ให้ข้อมูล"},{name:"interviewDate",label:"วันที่สัมภาษณ์",type:"date"},{name:"fieldNote",label:"บันทึกภาคสนาม",type:"textarea"},{name:"citation",label:"การอ้างอิง",type:"textarea"},{name:"status",label:"สถานะเนื้อหา",type:"select",options:[]},
+  ] },
+  competitions: { label: "ผลการประกวด", singular: "ปีการประกวด", fields: [
+    {name:"year",label:"พุทธศักราช",type:"number",required:true,help:"หนึ่งปีต่อหนึ่งรายการ บันทึกปีที่ไม่ได้จัดงานไว้ด้วย เพื่อให้เห็นว่าไม่ใช่ข้อมูลขาด"},
+    {name:"status",label:"การจัดงานปีนี้",type:"select",options:[{value:"JUDGED",label:"จัดประกวดและประกาศผล"},{value:"NOT_HELD",label:"ไม่ได้จัดงาน"}]},
+    {name:"note",label:"หมายเหตุ",type:"textarea",help:"ถ้าเป็นปีที่ไม่ได้จัดงาน ให้เขียนตามถ้อยคำที่บันทึกต้นทางใช้"},
+    {name:"sourceId",label:"แหล่งที่มา",type:"select",optionSource:"sources"},
+    {name:"resultsJson",label:"อันดับ",type:"ranking",help:"เรียงจากที่ 1 ลงไป ปีที่ไม่ได้จัดงานเว้นว่างไว้"},
   ] },
   courses: { label: "ชุดบทเรียน", singular: "ชุดบทเรียน", fields: [
     {name:"title",label:"ชื่อชุดบทเรียน",required:true},{name:"slug",label:"Slug",required:true},

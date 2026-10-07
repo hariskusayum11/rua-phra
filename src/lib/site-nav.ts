@@ -9,6 +9,7 @@ export const primaryNav: NavItem[] = [
   { href: "/craft", label: "จากกระดาษสู่เรือพระ" },
   { href: "/#patterns", label: "คลังลวดลาย" },
   { href: "/learn", label: "เรียนรู้" },
+  { href: "/competition", label: "ผลการประกวด" },
 ];
 
 export const secondaryNav: NavItem[] = [

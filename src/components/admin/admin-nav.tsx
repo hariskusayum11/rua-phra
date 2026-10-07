@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Archive, BookOpenText, Boxes, ChevronDown, DraftingCompass, GraduationCap, HardDrive,
+  Trophy,
   Image as ImageIcon, Landmark, LayoutDashboard, Library, MapPin, NotebookPen, Palette,
   QrCode, ScrollText, Ship, Users, Wrench,
 } from "lucide-react";
@@ -45,6 +46,7 @@ export function AdminNav({ labels }: { labels: Record<string, string> }) {
         { key: "sections", href: "/admin/sections", label: label("sections"), icon: MapPin },
         { key: "stories", href: "/admin/stories", label: label("stories"), icon: BookOpenText },
         { key: "masters", href: "/admin/masters", label: label("masters"), icon: Users },
+        { key: "competitions", href: "/admin/competitions", label: label("competitions"), icon: Trophy },
       ],
     },
     {

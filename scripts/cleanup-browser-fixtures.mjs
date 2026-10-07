@@ -15,6 +15,9 @@ try {
   const media = await client.query(`DELETE FROM "Media" WHERE alt LIKE 'ภาพทดสอบการอัปโหลด%'`);
   // Lesson contents, quizzes and verification rows cascade from the lesson itself.
   const lessons = await client.query(`DELETE FROM "Lesson" WHERE slug LIKE 'browser-lesson-%'`);
+  // The competition tests use a year far outside the recorded range, so a leftover can
+  // never be mistaken for a real one. Placings cascade from the year.
+  const years = await client.query(`DELETE FROM "CompetitionYear" WHERE year >= 2690`);
 
   /**
    * Files the tests uploaded, which now land in object storage rather than on disk.
@@ -64,6 +67,7 @@ try {
     temples: temples.rowCount,
     media: media.rowCount,
     lessons: lessons.rowCount,
+    competitionYears: years.rowCount,
     bucketFiles: orphans,
   };
 } finally {

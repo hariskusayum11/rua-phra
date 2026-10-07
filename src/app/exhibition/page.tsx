@@ -2,7 +2,7 @@ import { connection } from "next/server";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BackNav } from "@/components/site/back-nav";
-import { ArrowRight, BookOpenText, DraftingCompass, Play, ScrollText, Ship, Users } from "lucide-react";
+import { ArrowRight, BookOpenText, DraftingCompass, Play, ScrollText, Ship, Trophy, Users } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
 import { award, partners, projectTitle, team, workTitle } from "@/lib/site-info";
 import { getExhibitionContent } from "@/lib/services/exhibition";
@@ -21,6 +21,7 @@ const doors = [
   { href: "/#master", icon: Users, label: "ช่างผู้สืบสาน", note: "คนที่ยังทำงานนี้อยู่ในปากพะยูน" },
   { href: "/learn", icon: BookOpenText, label: "บทเรียน", note: "เรียนตามจังหวะตัวเอง ไม่ต้องสมัครสมาชิก" },
   { href: "/#procession", icon: Play, label: "วันชักพระ", note: "วิดีโอจากพื้นที่จริง" },
+  { href: "/competition", icon: Trophy, label: "ผลการประกวด", note: "เรือพระที่ติดอันดับ ตั้งแต่ปีแรกที่ชิงถ้วยพระราชทาน" },
 ];
 
 /**

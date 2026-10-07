@@ -8,6 +8,7 @@ import { isResourceKey, type ResourceKey } from "@/lib/admin/resources";
 import { adminSchemas, type ActionState } from "@/lib/validations/admin";
 import { relationsFor } from "@/lib/admin/relations";
 import { lessonBlocks, lessonQuiz, parseJsonField } from "@/lib/learning/authoring";
+import { rankingRows } from "@/lib/admin/ranking";
 
 async function adminUser() {
   const session = await auth();
@@ -137,6 +138,30 @@ export async function saveResource(resource: ResourceKey, id: string | null, val
       case "tools": { const data=adminSchemas.tools.parse(values);const row=id?await db.tool.update({where:{id},data}):await db.tool.create({data});savedId=row.id;break; }
       case "techniques": { const data=adminSchemas.techniques.parse(values);const row=id?await db.technique.update({where:{id},data}):await db.technique.create({data});savedId=row.id;break; }
       case "sources": { const {status,...raw}=adminSchemas.sources.parse(values); const data={...raw,interviewDate:raw.interviewDate?new Date(`${raw.interviewDate}T00:00:00Z`):null};const row=id?await db.knowledgeSource.update({where:{id},data}):await db.knowledgeSource.create({data});savedId=row.id;await setVerification("source",row.id,status,user.id);break; }
+      case "competitions": {
+        const { resultsJson, ...data } = adminSchemas.competitions.parse(values);
+        const placings = rankingRows.safeParse(parseJsonField(resultsJson) ?? []);
+        if (!placings.success) return { ok:false, message:"รายการอันดับยังไม่ถูกต้อง", fieldErrors:{ resultsJson: placings.error.issues.map(i=>i.message) } };
+        // The two halves of a year have to agree. A judged year with no placings and an
+        // unheld year with three are both records that would read as facts on the public
+        // page, and neither is one.
+        if (data.status === "JUDGED" && placings.data.length === 0) return { ok:false, message:"ปีที่จัดประกวดต้องมีอย่างน้อยหนึ่งอันดับ", fieldErrors:{ resultsJson:["ยังไม่ได้ใส่อันดับ"] } };
+        if (data.status === "NOT_HELD" && placings.data.length > 0) return { ok:false, message:"ปีที่ไม่ได้จัดงานต้องไม่มีอันดับ", fieldErrors:{ resultsJson:["ลบอันดับออกให้หมด หรือเปลี่ยนสถานะเป็นจัดประกวด"] } };
+        const temples = placings.data.map(p=>p.templeId);
+        if (new Set(temples).size !== temples.length) return { ok:false, message:"วัดเดียวกันถูกใส่ไว้มากกว่าหนึ่งอันดับในปีเดียวกัน", fieldErrors:{ resultsJson:["วัดซ้ำกัน"] } };
+
+        const row = id ? await db.competitionYear.update({where:{id},data}) : await db.competitionYear.create({data});
+        savedId = row.id;
+        // Placings have no identity an editor ever sees — the rank is their position — so
+        // they are replaced wholesale rather than matched up and patched.
+        await db.competitionResult.deleteMany({ where: { yearId: row.id } });
+        if (placings.data.length > 0) {
+          await db.competitionResult.createMany({
+            data: placings.data.map((placing, index) => ({ yearId: row.id, rank: index + 1, templeId: placing.templeId, note: placing.note ?? null })),
+          });
+        }
+        break;
+      }
       case "courses": { const data=adminSchemas.courses.parse(values); const row=id?await db.course.update({where:{id},data}):await db.course.create({data}); savedId=row.id; break; }
       case "lessons": {
         // Lesson has no isDemo column of its own — a lesson is demo because its course is.
@@ -186,7 +211,7 @@ export async function saveResource(resource: ResourceKey, id: string | null, val
       }
     }
     if (savedId) await syncRelations(resource, savedId, parsed.data as Record<string, unknown>);
-    revalidatePath("/admin"); revalidatePath(`/admin/${resource}`); revalidatePath("/", "page"); revalidatePath("/boats", "layout"); revalidatePath("/craft", "layout"); revalidatePath("/learn", "layout");
+    revalidatePath("/admin"); revalidatePath(`/admin/${resource}`); revalidatePath("/", "page"); revalidatePath("/boats", "layout"); revalidatePath("/craft", "layout"); revalidatePath("/learn", "layout"); revalidatePath("/competition");
     return { ok: true, message: id ? "บันทึกการแก้ไขแล้ว" : "สร้างรายการแล้ว", id: savedId ?? undefined };
   } catch (error) { console.error("Admin save failed", error); return failure(error); }
 }
@@ -203,6 +228,7 @@ export async function deleteResource(resource: ResourceKey, id: string): Promise
       case "steps":await db.processStep.delete({where:{id}});break; case "materials":await db.material.delete({where:{id}});break;
       case "tools":await db.tool.delete({where:{id}});break; case "techniques":await db.technique.delete({where:{id}});break;
       case "sources":await db.knowledgeSource.delete({where:{id}});break; case "qr-codes":await db.qRCode.delete({where:{id}});break;
+      case "competitions":await db.competitionYear.delete({where:{id}});break;
       case "courses":await db.course.delete({where:{id}});break; case "lessons":await db.lesson.delete({where:{id}});break;
     }
     revalidatePath(`/admin/${resource}`); return {ok:true,message:"ลบรายการแล้ว"};

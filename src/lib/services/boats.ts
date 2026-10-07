@@ -11,7 +11,7 @@ export async function getBoatExplorer(slug: string) {
       concept: true,
       summary: true,
       isDemo: true,
-      temple: { select: { name: true } },
+      temple: { select: { id: true, name: true } },
       coverMedia: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
       masters: { select: { master: { select: { slug: true, name: true } } } },
       sections: {

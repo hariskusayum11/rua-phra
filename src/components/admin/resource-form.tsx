@@ -10,6 +10,7 @@ import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { deleteResource, saveResource } from "@/app/admin/actions";
 import { uploadMediaFile } from "@/app/admin/upload";
 import { BlocksField, QuizField } from "@/components/admin/lesson-editors";
+import { RankingField } from "@/components/admin/ranking-field";
 import { flashMessage } from "@/components/admin/admin-flash";
 import { downscaleImage, MAX_UPLOAD_BYTES } from "@/lib/admin/downscale";
 import { VideoUploadField } from "@/components/admin/video-upload";
@@ -87,9 +88,12 @@ function Field({field,resource,register,errors,watched,setValue,options}:{field:
   }}/>;
   if(field.type==="blocks") return <BlocksField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} mediaOptions={options.media||[]} stepOptions={options.stepSlugs||[]} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
   if(field.type==="quiz") return <QuizField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
+  if(field.type==="ranking") return <RankingField label={field.label} help={field.help} error={errors[field.name]?.message?.toString()} value={String(watched[field.name]??"")} templeOptions={options.temples||[]} onChange={(next)=>setValue(field.name,next,{shouldDirty:true})}/>;
   if(field.type==="relations") return <RelationField field={field} value={(watched[field.name] as string[]|undefined)??[]} options={options[field.optionSource||""]||[]} setValue={setValue}/>;
   if(field.type==="hotspot") return <HotspotEditor key="hotspot" boatId={String(watched.boatId||"")} x={Number(watched.x)||0} y={Number(watched.y)||0} boats={options.boats||[]} onChange={(x,y)=>{setValue("x",x,{shouldDirty:true,shouldValidate:true});setValue("y",y,{shouldDirty:true,shouldValidate:true});}}/>;
-  let fieldOptions=field.name==="status"?statuses:(field.options||options[field.optionSource||""]||[]);
+  // Most "status" fields are the shared verification vocabulary and carry an empty options
+  // list as a placeholder. A resource whose status is its own enum supplies real ones.
+  let fieldOptions=field.name==="status"&&(field.options?.length??0)===0?statuses:(field.options||options[field.optionSource||""]||[]);
   if(resource==="qr-codes") {
     const kind=String(watched.targetKind||"BOAT");
     // A page code has a path and no record; a record code has the reverse. Showing both

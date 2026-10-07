@@ -23,6 +23,7 @@ export async function getAdminList(resource: ResourceKey): Promise<AdminListRow[
     case "tools": return (await db.tool.findMany({orderBy:{updatedAt:"desc"}})).map(x=>({id:x.id,title:x.name,detail:x.slug,updatedAt:x.updatedAt}));
     case "techniques": return (await db.technique.findMany({orderBy:{updatedAt:"desc"}})).map(x=>({id:x.id,title:x.name,detail:x.slug,updatedAt:x.updatedAt}));
     case "sources": return (await db.knowledgeSource.findMany({orderBy:{updatedAt:"desc"},include:{verification:true}})).map(x=>({id:x.id,title:x.title,detail:x.informant||x.kind,status:x.verification?.status??"DRAFT",updatedAt:x.updatedAt}));
+    case "competitions": return (await db.competitionYear.findMany({orderBy:{year:"desc"},include:{results:{orderBy:{rank:"asc"},select:{rank:true,temple:{select:{name:true}}}}}})).map(x=>({id:x.id,title:`พ.ศ. ${x.year}`,detail:x.status==="JUDGED"?x.results.map(r=>`${r.rank}. ${r.temple.name}`).join(" · "):(x.note??"ไม่ได้จัดงาน"),status:x.status==="JUDGED"?`${x.results.length} อันดับ`:"ไม่ได้จัดงาน",updatedAt:x.updatedAt}));
     case "courses": return (await db.course.findMany({orderBy:{updatedAt:"desc"},include:{_count:{select:{lessons:true}}}})).map(x=>({id:x.id,title:x.title,detail:`${x._count.lessons} บทเรียน · /learn/${x.slug}`,updatedAt:x.updatedAt}));
     case "lessons": return (await db.lesson.findMany({orderBy:[{course:{title:"asc"}},{position:"asc"}],include:{course:true,verification:true,_count:{select:{contents:true,quizzes:true}}}})).map(x=>({id:x.id,title:`${x.position}. ${x.title}`,detail:`${x.course.title} · ${x._count.contents} ส่วน${x._count.quizzes>0?" · มีแบบฝึกหัด":""}`,status:x.verification?.status??"DRAFT",updatedAt:x.updatedAt}));
     case "qr-codes": return (await db.qRCode.findMany({orderBy:{updatedAt:"desc"}})).map(x=>({id:x.id,title:x.label,detail:`/q/${x.code} · ${x.targetKind}${x.path?` ${x.path}`:""} · ${x.scanCount} scans`,status:x.active?"ACTIVE":"INACTIVE",updatedAt:x.updatedAt}));
@@ -45,6 +46,7 @@ export async function getAdminRecord(resource: ResourceKey, id: string): Promise
     case "tools": row=await db.tool.findUnique({where:{id}});break;
     case "techniques": row=await db.technique.findUnique({where:{id}});break;
     case "sources": row=await db.knowledgeSource.findUnique({where:{id},include:{verification:true}});break;
+    case "competitions": row=await db.competitionYear.findUnique({where:{id}});break;
     case "courses": row=await db.course.findUnique({where:{id}});break;
     case "lessons": row=await db.lesson.findUnique({where:{id},include:{verification:true}});break;
     case "qr-codes": row=await db.qRCode.findUnique({where:{id}});break;
@@ -53,6 +55,14 @@ export async function getAdminRecord(resource: ResourceKey, id: string): Promise
   const verification=row.verification as {status?:string}|undefined;
   const result: Record<string,unknown>={...row,status:verification?.status??"DRAFT",isDemo:Boolean(row.isDemo)};
   delete result.verification;
+  if(resource==="competitions") {
+    // The generic line above overwrites `status` with a verification status, which a year
+    // does not have — its status is its own column and says whether the year was judged.
+    result.status=row.status;
+    result.sourceId=row.sourceId??"";
+    const results=await db.competitionResult.findMany({where:{yearId:id},orderBy:{rank:"asc"},select:{templeId:true,note:true}});
+    result.resultsJson=JSON.stringify(results.map(r=>({templeId:r.templeId,note:r.note??""})));
+  }
   if(resource==="steps") result.instructionsText=parseInstructions(row.instructions).map(x=>x.text).join("\n");
   if(resource==="sources" && row.interviewDate instanceof Date) result.interviewDate=row.interviewDate.toISOString().slice(0,10);
   if(resource==="qr-codes") {
@@ -89,7 +99,7 @@ export async function getAdminRecord(resource: ResourceKey, id: string): Promise
 }
 
 export async function getAdminOptions() {
-  const db=getDb(); const [temples,boats,media,processes,patterns,masters,steps,materials,tools,techniques,courses]=await Promise.all([
+  const db=getDb(); const [temples,boats,media,processes,patterns,masters,steps,materials,tools,techniques,courses,sources]=await Promise.all([
     db.temple.findMany({orderBy:{name:"asc"},select:{id:true,name:true}}),
     db.boat.findMany({orderBy:[{name:"asc"},{year:"desc"}],select:{id:true,name:true,year:true,coverMedia:{select:{url:true}}}}),
     db.media.findMany({orderBy:{createdAt:"desc"},select:{id:true,alt:true,url:true,kind:true}}),
@@ -101,6 +111,7 @@ export async function getAdminOptions() {
     db.tool.findMany({orderBy:{name:"asc"},select:{id:true,name:true}}),
     db.technique.findMany({orderBy:{name:"asc"},select:{id:true,name:true}}),
     db.course.findMany({orderBy:{title:"asc"},select:{id:true,title:true}}),
+    db.knowledgeSource.findMany({orderBy:{title:"asc"},select:{id:true,title:true}}),
   ]);
   return {
     temples:temples.map(x=>({value:x.id,label:x.name})), boats:boats.map(x=>({value:x.id,label:`${x.name} · พ.ศ. ${x.year}`,imageUrl:x.coverMedia?.url})),
@@ -114,6 +125,7 @@ export async function getAdminOptions() {
     tools:tools.map(x=>({value:x.id,label:x.name})),
     techniques:techniques.map(x=>({value:x.id,label:x.name})),
     courses:courses.map(x=>({value:x.id,label:x.title})),
+    sources:sources.map(x=>({value:x.id,label:x.title})),
   } satisfies Record<string,AdminOption[]>;
 }
 

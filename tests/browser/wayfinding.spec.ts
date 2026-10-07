@@ -19,12 +19,12 @@ test("no page in the site or the admin is a dead end", async ({ page }) => {
   await page.getByRole("button", { name: "เข้าสู่ระบบ" }).click();
   await expect(page).toHaveURL(/\/admin$/);
 
-  const resources = ["media","temples","boats","stories","sections","patterns","masters","processes","steps","materials","tools","techniques","sources","courses","lessons","qr-codes"];
+  const resources = ["media","temples","boats","stories","sections","patterns","masters","processes","steps","materials","tools","techniques","sources","competitions","courses","lessons","qr-codes"];
   const paths = [
     "/", "/craft", "/craft/paper-cutting-demo", "/boats/rua-phra-wat-rattanaram-2568",
     "/patterns/lai-dok-bon-thaeb-kradat", "/masters/chang-lai-kradat-rattanaram",
     "/learn", "/learn/paper-craft-path-demo", "/learn/paper-craft-path-demo/lesson-1-demo",
-    "/exhibition", "/about", "/login",
+    "/exhibition", "/about", "/competition", "/login",
     "/admin", "/admin/storage", "/admin/qr-print",
     ...resources.map(r => `/admin/${r}`),
     ...resources.map(r => `/admin/${r}/new`),

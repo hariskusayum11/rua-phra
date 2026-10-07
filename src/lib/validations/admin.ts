@@ -47,6 +47,14 @@ export const adminSchemas = {
   tools: z.object({ name:text,slug,description:text,...commonDemo }),
   techniques: z.object({ name:text,slug,description:text,...commonDemo }),
   sources: z.object({ title:text,kind:z.enum(["FIELD_INTERVIEW","FIELD_OBSERVATION","PUBLICATION","ARCHIVAL_DOCUMENT","DEMO"]),informant:optionalText,interviewDate:z.preprocess(emptyToUndefined,z.string().optional()),fieldNote:optionalText,citation:optionalText,status,...commonDemo }),
+  competitions: z.object({
+    year: z.coerce.number().int().min(2400, "ใช้ปีพุทธศักราช").max(2700, "ใช้ปีพุทธศักราช"),
+    status: z.enum(["JUDGED", "NOT_HELD"]),
+    note: optionalText,
+    sourceId: optionalUuid,
+    resultsJson: z.string().default(""),
+    ...commonDemo,
+  }),
   courses: z.object({ title:text, slug, description:text, ...commonDemo }),
   // The two JSON fields arrive as strings from hidden inputs; their contents are checked
   // against the block and quiz schemas in the save action, where a failure can be reported
