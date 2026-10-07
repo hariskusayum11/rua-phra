@@ -159,3 +159,34 @@ test("the storage page says where files are kept and warns before any charge", a
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await expect(page.getByRole("link", { name: "พื้นที่เก็บไฟล์" })).toBeVisible();
 });
+
+test("the menu is grouped, marks the page you are on, and fits the screen", async ({ page }) => {
+  await login(page);
+  await page.goto("/admin/materials");
+
+  // The group holding the current page is open; the other three are folded away. That is
+  // the whole reason the menu fits, so it is worth asserting rather than assuming.
+  const groups = page.locator(".admin-nav-group");
+  await expect(groups).toHaveCount(4);
+  await expect(page.locator(".admin-nav-group[open]")).toHaveCount(1);
+  await expect(page.locator(".admin-nav-group[open] summary")).toHaveText(/งานช่างและภูมิปัญญา/);
+
+  const current = page.locator('.admin-sidebar nav a[aria-current="page"]');
+  await expect(current).toHaveCount(1);
+  await expect(current).toHaveText(/วัสดุ/);
+
+  // Eighteen links in one column overflowed every laptop screen. If a future group pushes
+  // it past the viewport again, this is where it shows up.
+  const fits = await page.locator(".admin-sidebar").evaluate((node) => node.scrollHeight <= node.clientHeight);
+  expect(fits, "the admin menu should fit without scrolling").toBe(true);
+
+  // A link in a folded group is still reachable: open the group, click, and the menu
+  // follows you there.
+  await page.locator(".admin-nav-group summary").filter({ hasText: "บทเรียนและแหล่งอ้างอิง" }).click();
+  await page.getByRole("link", { name: "ชุดบทเรียน" }).click();
+  await expect(page).toHaveURL(/\/admin\/courses$/);
+  await expect(page.locator(".admin-nav-group[open] summary")).toHaveText(/บทเรียนและแหล่งอ้างอิง/);
+  await expect(page.locator('.admin-sidebar nav a[aria-current="page"]')).toHaveText(/ชุดบทเรียน/);
+
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});

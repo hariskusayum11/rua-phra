@@ -41,7 +41,7 @@ export function AdminResourceForm({resource,id,initialValues={},options}:{resour
     startTransition(async()=>{
       const result=await saveResource(resource,recordId??null,values);
       if(!result.ok){setFeedback(result);window.scrollTo({top:0,behavior:"smooth"});return;}
-      flashMessage(recordId?`บันทึกการแก้ไข${config.singular}แล้ว`:`เพิ่ม${config.singular}แล้ว`);
+      flashMessage(recordId?`บันทึกการแก้ไข${config.singular}แล้ว`:`เพิ่ม${config.singular}แล้ว`,`/admin/${resource}`);
       router.replace(`/admin/${resource}`);
       router.refresh();
     });
@@ -51,7 +51,7 @@ export function AdminResourceForm({resource,id,initialValues={},options}:{resour
     startTransition(async()=>{
       const result=await deleteResource(resource,recordId);
       if(!result.ok){setFeedback(result);return;}
-      flashMessage(`ลบ${config.singular}แล้ว`);
+      flashMessage(`ลบ${config.singular}แล้ว`,`/admin/${resource}`);
       router.replace(`/admin/${resource}`);
       router.refresh();
     });

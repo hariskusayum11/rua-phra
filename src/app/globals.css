@@ -501,9 +501,45 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .admin-sidebar { position:sticky; top:0; height:100dvh; display:flex; flex-direction:column; padding:1.5rem 1rem; background:#132f29; color:#f4f7f5; overflow-y:auto; }
 .admin-brand { padding:.25rem .65rem 1.4rem; border-bottom:1px solid rgba(255,255,255,.14); }
 .admin-brand span { display:block; font-weight:500; }.admin-brand small { color:#aebdb7; font-size:.6rem; letter-spacing:.12em; }
-.admin-sidebar nav { display:grid; gap:.15rem; margin-top:1.25rem; }
-.admin-sidebar nav a { display:flex; min-height:2.55rem; align-items:center; gap:.7rem; padding:.45rem .65rem; border-radius:.35rem; color:#dce6e2; text-decoration:none; font-size:.86rem; }
+.admin-sidebar nav { margin-top:1.1rem; }
+.admin-nav-list { display:grid; gap:.1rem; margin:0; padding:0; list-style:none; }
+/* The gap, not a border, separates the groups: eighteen links already carry eighteen
+   icons, and a rule between every group would be four more lines to read past. */
+.admin-nav-group { margin-top:1.15rem; }
+.admin-nav-group > summary { display:flex; align-items:center; gap:.45rem; padding:.3rem .65rem; border-radius:.35rem; color:var(--craft); font-size:.72rem; font-weight:600; cursor:pointer; list-style:none; }
+.admin-nav-group > summary::-webkit-details-marker { display:none; }
+.admin-nav-group > summary:hover { background:rgba(255,255,255,.07); }
+.admin-nav-group > summary svg { width:.85rem; height:.85rem; flex:none; transition:transform .15s ease; transform:rotate(-90deg); }
+.admin-nav-group[open] > summary svg { transform:rotate(0deg); }
+/* A rule running to the end of the row, so a collapsed group still reads as a divider
+   between sections rather than as one more link in the list. */
+.admin-nav-group > summary::after { content:""; flex:1; height:1px; background:rgba(255,255,255,.14); }
+.admin-nav-group > .admin-nav-list { margin-top:.2rem; }
+@media (prefers-reduced-motion:reduce) { .admin-nav-group > summary svg { transition:none; } }
+/* A 1280x720 laptop is the shortest screen this will be used on, and the menu has to fit
+   it without scrolling or the folding was for nothing. Rather than making every row small
+   enough for that height everywhere, the squeeze is applied only where the room runs out. */
+@media (max-height:820px) {
+  .admin-sidebar { padding-block:1rem; }
+  .admin-brand { padding:.15rem .65rem .8rem; }
+  /* The name stays; the decorative line under it is what gives way for a menu row. */
+  .admin-brand small { display:none; }
+  .admin-view-site { padding-block:.45rem; margin-bottom:.6rem; }
+  .admin-nav-list { gap:.05rem; }
+  .admin-sidebar nav { margin-top:.8rem; }
+  .admin-sidebar nav a { min-height:2.1rem; padding-block:.28rem; }
+  .admin-nav-group { margin-top:.75rem; }
+  .admin-nav-group > summary { padding-block:.22rem; }
+  .admin-sidebar form { padding-top:.7rem; }
+  .admin-sidebar form button { padding:.45rem; }
+}
+.admin-sidebar nav a { position:relative; display:flex; min-height:2.4rem; align-items:center; gap:.7rem; padding:.4rem .65rem; border-radius:.35rem; color:#dce6e2; text-decoration:none; font-size:.86rem; }
 .admin-sidebar nav a:hover,.admin-sidebar nav a:focus-visible { background:rgba(255,255,255,.09); color:#fff; }
+/* Where you are. The menu could previously say where you could go but not that, and on a
+   narrow screen — where the sidebar becomes a grid of small links above the page — it was
+   the only orientation available. */
+.admin-sidebar nav a[aria-current="page"] { background:rgba(255,255,255,.14); color:#fff; font-weight:500; }
+.admin-sidebar nav a[aria-current="page"]::before { content:""; position:absolute; inset-block:.45rem; inset-inline-start:0; width:3px; border-radius:0 2px 2px 0; background:var(--craft); }
 .admin-sidebar nav svg { width:1rem; }.admin-sidebar form { margin-top:auto; padding-top:1rem; }.admin-sidebar form button { width:100%; padding:.55rem; border:1px solid rgba(255,255,255,.2); background:transparent; color:#fff; }
 .admin-workspace { min-width:0; }.admin-topbar { min-height:3.75rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem clamp(1rem,3vw,2.5rem); border-bottom:1px solid var(--admin-line); background:var(--admin-panel); color:var(--admin-muted); font-size:.78rem; }
 .admin-main { width:min(100% - 2rem,78rem); margin-inline:auto; padding-block:clamp(1.75rem,4vw,3.5rem); }
@@ -536,8 +572,8 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .hotspot-editor { grid-column:1/-1; margin:0; padding:1rem; border:1px solid var(--admin-line); border-radius:.35rem; }.hotspot-editor legend { padding-inline:.35rem;font-weight:500; }.hotspot-editor > p,.hotspot-editor output { color:var(--admin-muted);font-size:.75rem; }.hotspot-canvas { position:relative; width:100%; margin-top:.75rem; overflow:hidden; background:#173b33; cursor:crosshair; }.hotspot-canvas > img { display:block;width:100%;height:auto;user-select:none;pointer-events:auto; }.hotspot-admin-point { position:absolute;display:grid;place-items:center;width:3rem;height:3rem;transform:translate(-50%,-50%);border:2px solid #fff;border-radius:50%;background:#c28a2f;color:#fff;box-shadow:0 0 0 .4rem rgba(255,255,255,.25);touch-action:none;cursor:grab; }.hotspot-admin-point:active { cursor:grabbing; }.hotspot-admin-point svg { width:1rem; }.hotspot-admin-empty { grid-column:1/-1;min-height:10rem;display:grid;place-content:center;justify-items:center;gap:.5rem;border:1px dashed #bfc9c4;color:var(--admin-muted); }
 .login-page { min-height:100dvh;display:grid;place-items:center;align-content:center;justify-items:center;padding:1rem;background:#eef2f0; }.login-panel { width:min(100%,28rem);display:grid;gap:1rem;padding:2rem;border:1px solid #d5ddda;border-radius:.6rem;background:#fff;color:#17231f;box-shadow:0 1rem 3rem rgba(20,48,40,.08); }.login-panel h1 { font-family:"Noto Sans Thai",sans-serif;font-size:1.5rem; }.login-panel label { display:grid;gap:.35rem;font-size:.8rem; }.login-panel button { min-height:2.8rem;border:0;border-radius:.35rem;background:#17634f;color:#fff;font:inherit; }.form-alert { padding:.6rem .75rem;border-radius:.3rem;font-size:.8rem; }
 .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
-@media (max-width:900px) { .admin-shell { grid-template-columns:1fr; }.admin-sidebar { position:static;height:auto; }.admin-sidebar nav { grid-template-columns:repeat(3,minmax(0,1fr)); }.admin-sidebar nav a { justify-content:center;text-align:center; }.admin-sidebar form { margin-top:1rem; }.admin-topbar { display:none; }.admin-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media (max-width:600px) { .admin-sidebar nav { grid-template-columns:repeat(2,minmax(0,1fr)); }.admin-page-head { align-items:start;flex-direction:column;gap:1rem; }.admin-primary { width:100%; }.admin-form-grid { grid-template-columns:1fr;padding:1rem; }.admin-field-wide { grid-column:auto; }.admin-stats { grid-template-columns:1fr 1fr; }.admin-form-actions { flex-direction:column-reverse; }.admin-form-actions button { width:100%; }.hotspot-editor { grid-column:auto; }.admin-table { min-width:42rem; } }
+@media (max-width:900px) { .admin-shell { grid-template-columns:1fr; }.admin-sidebar { position:static;height:auto; }.admin-nav-list { grid-template-columns:repeat(3,minmax(0,1fr)); }.admin-nav-group { margin-top:.9rem; }.admin-sidebar nav a { justify-content:center;text-align:center; }.admin-sidebar nav a[aria-current="page"]::before { inset-block:auto 0; inset-inline:.9rem; width:auto; height:2px; border-radius:2px 2px 0 0; }.admin-sidebar form { margin-top:1rem; }.admin-topbar { display:none; }.admin-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px) { .admin-nav-list { grid-template-columns:repeat(2,minmax(0,1fr)); }.admin-page-head { align-items:start;flex-direction:column;gap:1rem; }.admin-primary { width:100%; }.admin-form-grid { grid-template-columns:1fr;padding:1rem; }.admin-field-wide { grid-column:auto; }.admin-stats { grid-template-columns:1fr 1fr; }.admin-form-actions { flex-direction:column-reverse; }.admin-form-actions button { width:100%; }.hotspot-editor { grid-column:auto; }.admin-table { min-width:42rem; } }
 
 /* ===========================================================================
    QR print sheet — screen view and the printed page.
