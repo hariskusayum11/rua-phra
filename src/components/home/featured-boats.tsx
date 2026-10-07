@@ -8,10 +8,14 @@ import { Tilt } from "@/components/motion/tilt";
 import type { HomeBoat } from "@/lib/services/home";
 
 /**
- * Section 04 — a magazine spread, one boat at a time.
+ * Section 03 — a magazine spread, one boat at a time.
  *
  * The reader moves between boats; nothing advances on its own. A small live region
  * announces the change, so the whole spread is not re-read on every step.
+ *
+ * The strip under the spread exists because stepping one boat at a time tells you nothing
+ * about how many there are or how far along you got. With nine boats recorded, an arrow
+ * and a counter ask the reader to keep a tally in their head.
  */
 export function FeaturedBoats({ boats }: { boats: HomeBoat[] }) {
   const [index, setIndex] = useState(0);
@@ -108,6 +112,28 @@ export function FeaturedBoats({ boats }: { boats: HomeBoat[] }) {
             </dl>
           </div>
         </article>
+
+        {total > 1 && (
+          <nav className="home-featured-strip" aria-label="เลือกเรือพระ">
+            {boats.map((option, position) => (
+              <button
+                key={option.slug}
+                type="button"
+                aria-current={position === index ? "true" : undefined}
+                onClick={() => setIndex(position)}
+              >
+                <MediaFrame
+                  image={option.coverMedia}
+                  ratio="3/2"
+                  sizes="8rem"
+                  className="home-featured-thumb"
+                />
+                <span>{option.temple.name}</span>
+                <small>พ.ศ. {option.year}</small>
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
     </section>
   );

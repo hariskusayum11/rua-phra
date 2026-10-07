@@ -188,3 +188,64 @@ test("hero photography is reserved before it loads, so nothing shifts", async ({
   );
   expect(shifted).toBeLessThan(0.1);
 });
+
+test("every recorded boat is reachable from the homepage, not just the first", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await settle(page);
+
+  // Section 03 — the strip has to list every boat the carousel can step through, or the
+  // reader has no way of knowing how many there are without clicking through them all.
+  const counter = page.locator(".home-featured-controls p");
+  const strip = page.locator(".home-featured-strip button");
+  if (await counter.count()) {
+    const total = Number((await counter.innerText()).split("/")[1].trim());
+    await expect(strip).toHaveCount(total);
+
+    const spread = page.locator(".home-featured-spread");
+    const first = await spread.getByRole("heading", { level: 3 }).innerText();
+    await strip.last().scrollIntoViewIfNeeded();
+    await strip.last().click();
+    await expect(spread.getByRole("heading", { level: 3 })).not.toHaveText(first);
+    await expect(strip.last()).toHaveAttribute("aria-current", "true");
+  }
+
+  // Section 04 — one tab per surveyed boat, and choosing one swaps the boat being read.
+  const tabs = page.getByRole("tab");
+  const tabCount = await tabs.count();
+  if (tabCount > 1) {
+    const caption = await page.locator(".home-reader-foot").innerText();
+    const slug = await tabs.nth(1).evaluate((node) => node.id);
+
+    await tabs.nth(1).click();
+    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+    await expect(page.locator(".home-reader-foot")).not.toHaveText(caption);
+    // The stage names the tab it belongs to, so this is the swap reaching the photograph
+    // and its hotspots rather than only the caption underneath it. Counting hotspots would
+    // not do: two boats can have the same number of survey points.
+    await expect(page.locator("#reader-stage")).toHaveAttribute("aria-labelledby", slug);
+    await expect(page.locator(".home-reader-hotspots .home-hotspot")).not.toHaveCount(0);
+
+    // Arrow keys move between tabs, as a tab list is expected to.
+    await tabs.nth(1).press("ArrowLeft");
+    await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  }
+});
+
+test("switching the boat being read closes the panel describing the old one", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await settle(page);
+
+  const tabs = page.getByRole("tab");
+  if ((await tabs.count()) < 2) return;
+
+  const hotspot = page.locator(".home-hotspot").first();
+  await hotspot.scrollIntoViewIfNeeded();
+  await hotspot.click();
+  await expect(page.getByRole("dialog", { name: /รายละเอียด/ })).toBeVisible();
+
+  await tabs.nth(1).click();
+  // The panel described a point on the boat that is no longer on screen.
+  await expect(page.getByRole("dialog", { name: /รายละเอียด/ })).toHaveCount(0);
+});

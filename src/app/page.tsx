@@ -43,7 +43,7 @@ export default async function HomePage() {
       <Introduction />
       <UniqueCraft image={content.craftImage} step={content.craftStep} />
       <FeaturedBoats boats={content.featuredBoats} />
-      <BoatReader boat={content.readerBoat} />
+      <BoatReader boats={content.readerBoats} />
       <CraftProcess process={content.process} />
       <PatternArchive patterns={content.patterns} />
       <MasterArtisan master={content.master} />

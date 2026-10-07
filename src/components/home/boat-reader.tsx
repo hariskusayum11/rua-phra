@@ -7,13 +7,18 @@ import { MediaFrame } from "@/components/media/media-frame";
 import type { HomeBoat } from "@/lib/services/home";
 
 /**
- * Section 05 — a preview of the boat reader.
+ * Section 04 — the boat reader.
  *
  * Hotspots are real buttons, reachable and operable from the keyboard. The panel is not
  * modal: it sits next to the image on a wide screen and rises as a sheet on a narrow one,
  * and it follows the buttons in document order so tabbing stays predictable.
+ *
+ * Every surveyed boat is reachable from here. Showing one and leaving the others to be
+ * found elsewhere made the survey work look like it had been done once; the chooser is the
+ * only place on the page that says how many boats have actually been read through.
  */
-export function BoatReader({ boat }: { boat: HomeBoat | null }) {
+export function BoatReader({ boats }: { boats: HomeBoat[] }) {
+  const [chosen, setChosen] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const hotspotRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -32,6 +37,14 @@ export function BoatReader({ boat }: { boat: HomeBoat | null }) {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [activeId, close]);
+
+  const boat = boats[chosen] ?? null;
+
+  function choose(index: number) {
+    // The open panel describes a hotspot on the boat being replaced, so it goes with it.
+    setActiveId(null);
+    setChosen(index);
+  }
 
   if (!boat) {
     return (
@@ -60,9 +73,42 @@ export function BoatReader({ boat }: { boat: HomeBoat | null }) {
         <p className="lead">แตะจุดต่าง ๆ บนเรือ เพื่อค้นพบความหมายที่ซ่อนอยู่ในแต่ละส่วน</p>
       </div>
 
+      {boats.length > 1 && (
+        <div className="shell">
+          {/* A scrolling row rather than a dropdown: the number of boats is the point, and
+              a closed dropdown shows one name and hides the count. */}
+          <div className="home-reader-switch" role="tablist" aria-label="เลือกเรือพระที่จะอ่าน">
+            {boats.map((option, index) => (
+              <button
+                key={option.slug}
+                type="button"
+                role="tab"
+                id={`reader-tab-${option.slug}`}
+                aria-selected={index === chosen}
+                aria-controls="reader-stage"
+                tabIndex={index === chosen ? 0 : -1}
+                onClick={() => choose(index)}
+                onKeyDown={(event) => {
+                  const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                  if (!step) return;
+                  event.preventDefault();
+                  const next = (index + step + boats.length) % boats.length;
+                  choose(next);
+                  document.getElementById(`reader-tab-${boats[next].slug}`)?.focus();
+                }}
+              >
+                <span>{option.temple.name}</span>
+                <small>พ.ศ. {option.year} · {option.sections.length} จุด</small>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="shell home-reader-stage-wrap">
-        <div className="home-reader-stage">
+        <div className="home-reader-stage" id="reader-stage" role="tabpanel" aria-labelledby={boats.length > 1 ? `reader-tab-${boat.slug}` : undefined}>
           <MediaFrame
+            key={boat.slug}
             image={boat.coverMedia}
             ratio="16/9"
             sizes="(max-width: 63.99rem) 100vw, 1280px"

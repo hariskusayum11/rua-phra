@@ -200,6 +200,30 @@
 .home-featured-controls p { color: var(--on-dark-muted); font-size: .875rem; letter-spacing: .12em; }
 .home-featured-controls p span { color: var(--craft); }
 
+/* Every recorded boat, visible at once. The arrows above step through them one at a
+   time, which is fine for moving but tells a reader nothing about how many there are —
+   with nine boats on record, a counter asks them to keep a tally in their head. */
+.home-featured-strip {
+  display: flex; gap: .85rem; margin-top: clamp(2rem, 4vw, 3rem);
+  padding-bottom: .75rem; overflow-x: auto; scroll-snap-type: x proximity;
+}
+.home-featured-strip button {
+  flex: none; display: grid; gap: .35rem; width: 9rem; padding: 0;
+  border: 0; background: transparent; color: var(--on-dark-muted);
+  text-align: start; cursor: pointer; scroll-snap-align: start;
+}
+.home-featured-strip .home-featured-thumb {
+  border: 1px solid transparent; opacity: .5;
+  transition: opacity var(--micro) var(--ease), border-color var(--micro) var(--ease);
+}
+.home-featured-strip button:hover .home-featured-thumb,
+.home-featured-strip button:focus-visible .home-featured-thumb { opacity: .85; }
+.home-featured-strip button[aria-current="true"] { color: var(--on-dark); }
+.home-featured-strip button[aria-current="true"] .home-featured-thumb { border-color: var(--craft); opacity: 1; }
+.home-featured-strip span { font-size: .8125rem; line-height: 1.4; }
+.home-featured-strip small { font-size: .75rem; }
+@media (prefers-reduced-motion: reduce) { .home-featured-strip .home-featured-thumb { transition: none; } }
+
 .home-featured-spread { display: grid; gap: clamp(1.75rem, 4vw, 3rem); }
 .home-featured-image { animation: soft-in var(--ui) var(--ease) both; }
 @keyframes soft-in { from { opacity: .35; } to { opacity: 1; } }
@@ -245,6 +269,27 @@
 .home-reader-head > * { max-width: var(--measure); }
 .home-reader-head h2 { margin-top: 1rem; }
 .home-reader-head .lead { margin-top: 1.5rem; }
+/* Which boat is being read. A row rather than a dropdown, because how many boats have
+   been surveyed is part of what this section is saying, and a closed dropdown shows one
+   name and hides the count. */
+.home-reader-switch {
+  display: flex; gap: .6rem; margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  padding-bottom: .6rem; overflow-x: auto; scroll-snap-type: x proximity;
+}
+.home-reader-switch button {
+  flex: none; display: grid; gap: .15rem; min-height: 44px; padding: .55rem .9rem;
+  border: 1px solid var(--rule); border-radius: .4rem; background: var(--surface);
+  color: var(--muted); text-align: start; cursor: pointer; scroll-snap-align: start;
+  transition: border-color var(--micro) var(--ease);
+}
+.home-reader-switch button:hover { border-color: var(--rule-strong); }
+.home-reader-switch button[aria-selected="true"] {
+  border-color: var(--accent-text); background: var(--surface-warm); color: var(--foreground);
+}
+.home-reader-switch span { font-size: .9375rem; font-weight: 500; }
+.home-reader-switch small { color: var(--muted); font-size: .75rem; }
+@media (prefers-reduced-motion: reduce) { .home-reader-switch button { transition: none; } }
+
 .home-reader-stage-wrap { position: relative; margin-top: clamp(2.5rem, 5vw, 4rem); }
 .home-reader-stage { position: relative; }
 .home-reader-image { background: var(--dark); }

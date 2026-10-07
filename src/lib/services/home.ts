@@ -163,8 +163,13 @@ export async function getHomeContent() {
   const craftStep = steps.length > 0 ? steps[Math.floor(steps.length / 2)] : null;
   const finalStep = steps.at(-1) ?? null;
 
-  /** The interactive preview needs hotspots and an image; the first boat that has both wins. */
-  const readerBoat = rankedBoats.find((boat) => boat.coverMedia?.url && boat.sections.length > 0) ?? null;
+  /**
+   * Every boat the reader can actually open: it needs a photograph to place hotspots on and
+   * at least one hotspot to place. The homepage used to take the first of these and show
+   * only that one, which quietly hid the rest of the survey work from anyone who did not
+   * think to go looking in the archive.
+   */
+  const readerBoats = rankedBoats.filter((boat) => boat.coverMedia?.url && boat.sections.length > 0);
 
   /** Procession footage belongs to a boat, so it follows whichever boat the page leads with. */
   const processionBoat = rankedBoats.find((boat) => boat.processionMedia?.url) ?? null;
@@ -173,7 +178,8 @@ export async function getHomeContent() {
     boats: rankedBoats,
     heroBoat: rankedBoats.find((boat) => boat.coverMedia?.url) ?? null,
     featuredBoats: rankedBoats.filter((boat) => boat.coverMedia?.url),
-    readerBoat,
+    readerBoats,
+    readerBoat: readerBoats[0] ?? null,
     processionBoat,
     process: process ? { slug: process.slug, title: process.title, description: process.description, isDemo: process.isDemo, steps } : null,
     craftImage: craftStep ? preferCloseup(craftStep) : null,
