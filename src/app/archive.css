@@ -25,7 +25,7 @@
 .archive-quote-block { max-width: 46rem; }
 .archive-quote {
   margin: 0; padding: 0;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.6vw, 2.5rem);
   font-weight: 500; line-height: 1.45; letter-spacing: -.015em;
   color: var(--foreground); text-wrap: balance;
@@ -65,7 +65,7 @@
 .archive-card-list a { display: grid; gap: .75rem; text-decoration: none; }
 .archive-card-list .media-frame { transition: transform var(--ui) var(--ease); }
 .archive-card-list a:hover .media-frame { transform: scale(1.015); }
-.archive-card-title { font-family: "Noto Serif Thai", serif; font-size: 1.25rem; font-weight: 500; }
+.archive-card-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; }
 .archive-card-meta { color: var(--accent-text); font-size: .8125rem; }
 .archive-card-note { color: var(--muted); font-size: .875rem; }
 
@@ -75,7 +75,7 @@
   gap: .25rem 1rem; min-height: 56px; padding-block: .85rem;
   border-bottom: 1px solid var(--rule); text-decoration: none;
 }
-.archive-link-list span { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; }
+.archive-link-list span { font-family: var(--font-display); font-size: 1.125rem; }
 .archive-link-list small { grid-column: 1; color: var(--muted); font-size: .8125rem; }
 .archive-link-list svg {
   grid-column: 2; grid-row: 1 / -1; width: 1rem; height: 1rem;
@@ -133,7 +133,7 @@
 
 .about-status-list { max-width: 48rem; margin: 1.75rem 0 0; }
 .about-status-list > div { padding-block: 1.25rem; border-bottom: 1px solid var(--rule); }
-.about-status-list dt { font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; font-weight: 500; }
+.about-status-list dt { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 500; }
 .about-status-list dd { margin: .5rem 0 0; color: var(--muted); font-size: .9375rem; line-height: 1.7; }
 
 .about-contacts { margin: 1.75rem 0 0; padding: 0; list-style: none; max-width: 30rem; }
@@ -142,12 +142,12 @@
   gap: .25rem 1.5rem; min-height: 48px; padding-block: .85rem;
   border-bottom: 1px solid var(--rule);
 }
-.about-contacts span { font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; }
+.about-contacts span { font-family: var(--font-display); font-size: 1.0625rem; }
 .about-contacts a { color: var(--accent-text); font-variant-numeric: tabular-nums; text-underline-offset: .3em; }
 
 .about-partner-groups { display: grid; gap: 2rem; margin-top: 1.75rem; }
 .about-partner-group { display: grid; gap: .3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--rule); }
-.about-partner-group strong { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; font-weight: 500; }
+.about-partner-group strong { font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; }
 .about-partner-parent { color: var(--muted); font-size: .875rem; }
 .about-partner-role { margin-top: .35rem; color: var(--accent-text); font-size: .875rem; }
 .about-partner-group ul { margin: .85rem 0 0; padding: 0; list-style: none; }
@@ -200,7 +200,7 @@
 .competition-table { width: 100%; min-width: 30rem; border-collapse: collapse; font-size: .9375rem; }
 .competition-table th, .competition-table td { padding: .85rem .75rem; border-bottom: 1px solid var(--rule); text-align: start; }
 .competition-table thead th { border-bottom: 1px solid var(--rule-strong); color: var(--muted); font-size: .8125rem; font-weight: 500; }
-.competition-table tbody th { font-family: "Noto Serif Thai", serif; font-size: 1rem; font-weight: 500; }
+.competition-table tbody th { font-family: var(--font-display); font-size: 1rem; font-weight: 500; }
 .competition-num { text-align: end; font-variant-numeric: tabular-nums; }
 .competition-total { font-weight: 500; }
 .competition-zero { color: var(--rule-strong); }
@@ -212,7 +212,7 @@
 
 .competition-years { margin: 1.75rem 0 0; padding: 0; list-style: none; }
 .competition-year { padding-block: 1.5rem; border-bottom: 1px solid var(--rule); }
-.competition-year h3 { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; font-weight: 500; }
+.competition-year h3 { font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; }
 .competition-places { margin: .9rem 0 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
 .competition-places li { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
 .competition-rank {

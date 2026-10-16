@@ -41,7 +41,7 @@
 .learn-lesson-list a:hover svg { transform: translate(.15rem, -.15rem); }
 
 .learn-course-title,
-.learn-lesson-title { font-family: "Noto Serif Thai", serif; font-size: clamp(1.125rem, 2vw, 1.5rem); font-weight: 500; }
+.learn-lesson-title { font-family: var(--font-display); font-size: clamp(1.125rem, 2vw, 1.5rem); font-weight: 500; }
 .learn-course-count { grid-column: 1; color: var(--accent-text); font-size: .8125rem; }
 .learn-course-list .demo-notice { margin-top: .75rem; }
 
@@ -90,7 +90,7 @@
 }
 .lesson-step-title {
   display: inline-flex; align-items: center; gap: .5rem; margin-top: .75rem;
-  font-family: "Noto Serif Thai", serif; font-size: 1.25rem; font-weight: 500; text-decoration: none;
+  font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; text-decoration: none;
 }
 .lesson-step-title svg { width: 1rem; height: 1rem; color: var(--accent-text); transition: transform var(--micro) var(--ease); }
 .lesson-step-title:hover { color: var(--accent-text); }
@@ -112,7 +112,7 @@
 .lesson-quiz-list { margin: 2rem 0 0; padding: 0; list-style: none; }
 .lesson-quiz-item + .lesson-quiz-item { margin-top: 2rem; }
 .lesson-quiz-item fieldset { margin: 0; padding: 0; border: 0; }
-.lesson-quiz-prompt { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; font-weight: 500; line-height: 1.6; }
+.lesson-quiz-prompt { font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; line-height: 1.6; }
 .lesson-quiz-unsupported { margin-top: .6rem; color: var(--muted); font-size: .875rem; }
 
 .lesson-quiz-choices { display: grid; gap: .5rem; margin-top: 1rem; }
@@ -137,7 +137,7 @@
 .lesson-quiz-actions button { display: inline-flex; align-items: center; gap: .5rem; border: 0; cursor: pointer; }
 .lesson-quiz-actions button svg { width: 1rem; height: 1rem; }
 .lesson-quiz-actions button:disabled { opacity: .5; cursor: not-allowed; }
-.lesson-quiz-score { font-family: "Noto Serif Thai", serif; font-size: 1.125rem; }
+.lesson-quiz-score { font-family: var(--font-display); font-size: 1.125rem; }
 .lesson-quiz-remaining { color: var(--muted); font-size: .8125rem; }
 
 /* --- finished + next ------------------------------------------------------ */
@@ -166,7 +166,7 @@
   min-height: 56px; text-decoration: none;
 }
 .lesson-nav-link small { display: block; color: var(--muted); font-size: .75rem; }
-.lesson-nav-link > span { font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; }
+.lesson-nav-link > span { font-family: var(--font-display); font-size: 1.0625rem; }
 .lesson-nav-link svg { flex: none; width: 1.1rem; height: 1.1rem; color: var(--accent-text); transition: transform var(--micro) var(--ease); }
 .lesson-nav-link:hover { color: var(--accent-text); }
 .lesson-nav-link:hover svg { transform: translateX(-.15rem); }

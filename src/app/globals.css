@@ -48,6 +48,11 @@
   --rule-strong: #b0d0e8;
   --rule-dark: rgba(243, 250, 254, 0.18);
 
+  /* Type — one family throughout, with the display weight carrying the headings.
+     The serif it replaces read as an archive; this reads as the reference. */
+  --font-body: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+  --font-display: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
+
   /* Shape — the reference rounds every surface and floats it on a soft shadow. */
   --radius: 1rem;
   --radius-sm: .55rem;
@@ -102,7 +107,7 @@ img, svg, video { max-width: 100%; }
 [data-theme="dark"] :focus-visible, .on-dark :focus-visible { outline-color: var(--craft); }
 
 h1, h2, h3, h4, p, figure, dl, dd { margin: 0; }
-h1, h2, h3 { font-family: "Noto Serif Thai", serif; font-weight: 500; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -.01em; }
 /* Thai tone and vowel marks stack above and below the baseline, so display line-height
    stays near 1.15 rather than the 0.98 a Latin face would take. */
 h1 { font-size: clamp(2.75rem, 6.5vw, 6rem); line-height: 1.15; letter-spacing: -.02em; }
@@ -218,7 +223,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .wordmark {
   display: inline-flex; flex-direction: column; justify-content: center;
   min-height: 44px; text-decoration: none;
-  font-family: "Noto Serif Thai", serif; font-size: 1.375rem; font-weight: 500; line-height: 1.25;
+  font-family: var(--font-display); font-size: 1.375rem; font-weight: 500; line-height: 1.25;
   letter-spacing: -.01em;
 }
 .wordmark small {
@@ -271,7 +276,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .site-menu-group a {
   display: flex; min-height: 56px; align-items: center; justify-content: space-between; gap: 1rem;
   padding-block: .35rem; border-bottom: 1px solid var(--rule-dark);
-  font-family: "Noto Serif Thai", serif; font-size: clamp(1.375rem, 3.5vw, 1.875rem);
+  font-family: var(--font-display); font-size: clamp(1.375rem, 3.5vw, 1.875rem);
   text-decoration: none;
 }
 .site-menu-group a svg { width: 1.1rem; height: 1.1rem; color: var(--craft); flex: 0 0 auto; }
@@ -316,22 +321,22 @@ body:has(.home-page) .header-spacer { display: none; }
 /* Aspect ratios are the images' own, so each band keeps its proportions at every width
    instead of being squashed by a fixed height. */
 .site-footer-band {
-  aspect-ratio: 1983 / 545;
+  aspect-ratio: 1983 / 360;
   background-image: url("/decor/footer-top.webp");
 }
 .site-footer-foot {
-  aspect-ratio: 1983 / 248;
+  aspect-ratio: 1983 / 228;
   background-image: url("/decor/footer-bottom.webp");
   background-position: center top;
 }
-.site-footer > .shell { padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem); }
+.site-footer > .shell { padding-block: clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.25rem); }
 
 .site-footer-grid {
   display: grid; grid-template-columns: 1fr; gap: 2.5rem;
-  padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule-dark);
+  padding-bottom: 2rem; border-bottom: 1px solid var(--rule-dark);
 }
 .site-footer-brand p { margin-top: .5rem; color: var(--on-dark-muted); font-size: .9375rem; }
-.site-footer-brand strong { font-family: "Noto Serif Thai", serif; font-size: 1.375rem; font-weight: 500; }
+.site-footer-brand strong { font-family: var(--font-display); font-size: 1.375rem; font-weight: 500; }
 .site-footer nav { display: grid; gap: .1rem; align-content: start; }
 .site-footer nav p { margin-bottom: .6rem; color: var(--craft); font-size: .75rem; letter-spacing: .1em; }
 .site-footer nav a {
@@ -341,7 +346,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .site-footer nav a:hover { color: var(--craft); text-decoration: underline; }
 .site-footer-partners {
   display: grid; gap: .75rem;
-  padding-top: 2rem;
+  padding-top: 1.5rem;
 }
 .site-footer-partners-label { color: var(--craft); font-size: .75rem; letter-spacing: .14em; }
 .site-footer-partners ul {
@@ -349,7 +354,7 @@ body:has(.home-page) .header-spacer { display: none; }
   margin: 0; padding: 0; list-style: none;
 }
 .site-footer-partners li {
-  font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; color: var(--on-dark);
+  font-family: var(--font-display); font-size: 1.0625rem; color: var(--on-dark);
 }
 /* The district centre sits under the provincial office; naming one without the other
    credits the wrong body. */
@@ -359,7 +364,7 @@ body:has(.home-page) .header-spacer { display: none; }
   font-size: .8125rem; color: var(--on-dark-muted);
 }
 .site-footer-legal {
-  display: grid; gap: .5rem; margin-top: 2rem; padding-top: 1.75rem;
+  display: grid; gap: .5rem; margin-top: 1.5rem; padding-top: 1.25rem;
   border-top: 1px solid var(--rule-dark);
   color: var(--on-dark-muted); font-size: .8125rem; line-height: 1.7;
 }
@@ -403,7 +408,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .boat-intro, .explorer { width: min(100% - 3rem, 76rem); margin-inline: auto; }
 .boat-intro { max-width: 58rem; margin-left: max(1.5rem, calc((100% - 76rem) / 2)); }
 .boat-intro > p:not(.eyebrow, .demo-notice) { max-width: 48rem; color: var(--muted); }
-.boat-concept { margin-block: 1rem; font-family: "Noto Serif Thai", serif; font-size: clamp(1.2rem, 2.5vw, 1.75rem); color: var(--accent-text) !important; }
+.boat-concept { margin-block: 1rem; font-family: var(--font-display); font-size: clamp(1.2rem, 2.5vw, 1.75rem); color: var(--accent-text) !important; }
 .demo-notice { display: inline-block; margin-top: 1.5rem; padding: .35rem .7rem; border: 1px solid var(--rule); color: var(--muted); font-size: .8rem; }
 .explorer { margin-top: clamp(4rem, 9vw, 8rem); }
 .explorer-heading { display: grid; grid-template-columns: minmax(14rem, .7fr) 1fr; gap: clamp(1.5rem, 5vw, 7rem); align-items: end; margin-bottom: 1.75rem; }
@@ -432,7 +437,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .panel-close svg { width: 1.15rem; }
 .panel-image { position: relative; aspect-ratio: 16 / 9; margin-bottom: 1.75rem; overflow: hidden; background: var(--surface-warm); }
 .panel-image img { object-fit: cover; }
-.panel-inner h3 { font-family: "Noto Serif Thai", serif; font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 500; line-height: 1.45; }
+.panel-inner h3 { font-family: var(--font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 500; line-height: 1.45; }
 .panel-description { margin-top: .75rem; color: var(--muted); }
 .panel-section { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
 .panel-section h4 { margin: 0 0 .7rem; font-size: .75rem; font-weight: 500; letter-spacing: .06em; color: var(--accent-text); }
@@ -476,7 +481,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .timeline-image img { object-fit: cover; transition: transform .5s ease; }
 .timeline-entry:hover .timeline-image img { transform: scale(1.015); }
 .step-number, .section-kicker { color: var(--accent-text); font-size: .75rem; letter-spacing: .07em; }
-.timeline-copy h3 { margin: .25rem 0 .65rem; font-family: "Noto Serif Thai", serif; font-size: clamp(1.55rem, 3vw, 2.2rem); font-weight: 500; line-height: 1.5; }
+.timeline-copy h3 { margin: .25rem 0 .65rem; font-family: var(--font-display); font-size: clamp(1.55rem, 3vw, 2.2rem); font-weight: 500; line-height: 1.5; }
 .timeline-copy > p:not(.step-number) { color: var(--muted); }
 .step-glance { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0 0; padding-top: 1rem; border-top: 1px solid var(--rule); }
 .step-glance dt { color: var(--accent-text); font-size: .7rem; }
@@ -496,7 +501,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .step-hero-image figcaption { position: absolute; right: .75rem; bottom: .6rem; padding: .2rem .5rem; background: rgba(6,48,111,.88); color: #fff; font-size: .68rem; }
 .step-content-grid { display: grid; grid-template-columns: minmax(14rem, .6fr) 1.6fr; gap: clamp(3rem, 8vw, 9rem); margin-top: clamp(5rem, 10vw, 9rem); }
 .step-context { align-self: start; position: sticky; top: 2rem; padding-top: 1.25rem; border-top: 2px solid var(--accent); }
-.step-context > p:last-child { font-family: "Noto Serif Thai", serif; font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.9; }
+.step-context > p:last-child { font-family: var(--font-display); font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.9; }
 .step-main-content { min-width: 0; }
 .step-section + .step-section { margin-top: clamp(4rem, 9vw, 7rem); }
 .step-section > h2 { margin: .2rem 0 1.5rem; font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.45; }
@@ -529,7 +534,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .knowledge-connections a { position: relative; display: grid; min-height: 10rem; align-content: end; padding: 1.25rem; background: var(--paper); text-decoration: none; }
 .knowledge-connections a:hover { background: var(--surface-warm); }
 .knowledge-connections span { color: var(--accent-text); font-size: .72rem; }
-.knowledge-connections strong { margin-top: .35rem; font-family: "Noto Serif Thai", serif; font-size: 1.25rem; font-weight: 500; }
+.knowledge-connections strong { margin-top: .35rem; font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; }
 .knowledge-connections small { color: var(--muted); }
 .knowledge-connections svg { position: absolute; top: 1rem; right: 1rem; width: 1rem; }
 .inline-empty { color: var(--muted); }
@@ -756,7 +761,7 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .storage-card[data-level="warn"] .storage-status { color:#8a5a00; }
 .storage-card[data-level="danger"] .storage-status { color:#9a3412; }
 
-.storage-figure { margin-top:1rem; font-family:"Noto Serif Thai",serif; font-size:clamp(2rem,5vw,3rem); font-weight:500; line-height:1.1; }
+.storage-figure { margin-top:1rem; font-family:var(--font-display); font-size:clamp(2rem,5vw,3rem); font-weight:500; line-height:1.1; }
 .storage-figure span { display:block; margin-top:.4rem; font-family:"IBM Plex Sans Thai","Noto Sans Thai",sans-serif; font-size:.875rem; font-weight:400; color:var(--admin-muted); }
 
 .storage-bar { height:.6rem; margin-top:1.25rem; background:#e8e6e0; border-radius:999px; overflow:hidden; }

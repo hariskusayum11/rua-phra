@@ -91,7 +91,7 @@
 }
 .home-hero-tagline {
   margin-top: 1.5rem;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.375rem, 4.6vw, 2.125rem);
   font-weight: 500;
   line-height: 1.45;
@@ -138,7 +138,7 @@
 }
 .home-pillars span {
   display: block;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(2rem, 9vw, 4.5rem);
   font-weight: 500;
   line-height: 1.25;
@@ -246,7 +246,7 @@
 }
 .home-featured-concept {
   margin-top: 1.25rem;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.125rem, 2vw, 1.5rem);
   line-height: 1.6;
   color: var(--craft);
@@ -358,7 +358,7 @@
 .home-reader-panel-text { color: var(--muted); font-size: .9375rem; }
 .home-reader-panel-meaning {
   margin-top: 1rem; padding-left: 1rem; border-left: 2px solid var(--accent);
-  color: var(--foreground); font-family: "Noto Serif Thai", serif; font-size: 1rem; line-height: 1.75;
+  color: var(--foreground); font-family: var(--font-display); font-size: 1rem; line-height: 1.75;
 }
 .home-reader-panel-patterns { margin-top: 1.25rem; color: var(--muted); font-size: .875rem; }
 .home-reader-panel-patterns span {
@@ -500,7 +500,7 @@
 .home-master-kicker { font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif; font-weight: 500; color: var(--craft); }
 .home-master-quote {
   margin: 1.5rem 0 0; padding: 0;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.75rem, 5vw, 3.25rem);
   font-weight: 500;
   line-height: 1.4;
@@ -553,7 +553,7 @@
 .home-journey li {
   display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem; align-items: baseline;
   padding-block: 1rem; border-bottom: 1px solid var(--rule);
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.125rem, 2.2vw, 1.5rem);
   line-height: 1.5;
 }
@@ -656,7 +656,7 @@
 }
 .home-closing-lead {
   max-width: 32ch; margin-top: 1.75rem; text-wrap: balance;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.25rem, 3.2vw, 1.875rem);
   line-height: 1.55;
   color: var(--craft);

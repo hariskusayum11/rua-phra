@@ -17,7 +17,7 @@
 }
 .exhibit-tagline {
   margin-top: .85rem;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.125rem, 4.4vw, 1.5rem);
   font-weight: 500;
   color: var(--accent-text);
@@ -61,7 +61,7 @@
 .exhibit-counts dt { color: var(--muted); font-size: .8125rem; line-height: 1.5; }
 .exhibit-counts dd {
   margin: 0;
-  font-family: "Noto Serif Thai", serif;
+  font-family: var(--font-display);
   font-size: clamp(1.75rem, 7vw, 2.5rem); font-weight: 500;
   line-height: 1.1; font-variant-numeric: tabular-nums;
 }
@@ -82,7 +82,7 @@
 .exhibit-doors a:hover { border-color: var(--primary); transform: translateY(-1px); }
 .exhibit-doors a > svg:first-child { width: 1.35rem; height: 1.35rem; color: var(--accent-text); }
 .exhibit-doors span {
-  font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; font-weight: 500;
+  font-family: var(--font-display); font-size: 1.0625rem; font-weight: 500;
 }
 .exhibit-doors small {
   display: block; margin-top: .2rem;
@@ -100,7 +100,7 @@
 .exhibit-credits { padding-top: clamp(2rem, 5vw, 3rem); border-top: 1px solid var(--rule); }
 .exhibit-credit-group { margin-top: 1.5rem; }
 .exhibit-credit-group strong {
-  display: block; font-family: "Noto Serif Thai", serif; font-size: 1rem; font-weight: 500;
+  display: block; font-family: var(--font-display); font-size: 1rem; font-weight: 500;
 }
 .exhibit-credit-group span { display: block; margin-top: .15rem; color: var(--muted); font-size: .8125rem; }
 .exhibit-credit-group p { margin-top: .4rem; color: var(--muted); font-size: .875rem; line-height: 1.7; }
