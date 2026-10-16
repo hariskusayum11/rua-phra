@@ -11,6 +11,12 @@ import { partners, projectTitle } from "@/lib/site-info";
 export function SiteFooter() {
   return (
     <footer className="site-footer">
+      {/* Two bands rather than one picture. The footer's height changes with the viewport —
+          three stacked columns on a phone, one row on a desktop — so a single image would
+          have to stretch or crop. Split at a row the artwork had already settled to a flat
+          blue, the top band hangs from the top, the bottom band sits on the floor, and the
+          solid colour between them takes up whatever slack the content needs. */}
+      <div className="site-footer-band" aria-hidden="true" />
       <div className="shell">
         <div className="site-footer-grid">
           <div className="site-footer-brand">
@@ -51,6 +57,7 @@ export function SiteFooter() {
           </p>
         </div>
       </div>
+      <div className="site-footer-foot" aria-hidden="true" />
     </footer>
   );
 }

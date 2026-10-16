@@ -12,8 +12,12 @@
 .media-frame {
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius);
   background: var(--surface-warm);
 }
+/* A frame that fills its parent inherits that parent's corners instead of rounding
+   independently — a rounded photograph inside a square hero reads as a mistake. */
+.media-frame-fill { border-radius: inherit; }
 .media-frame-fill { position: absolute; inset: 0; }
 .media-frame img { object-fit: cover; object-position: var(--focal-x, 50%) var(--focal-y, 50%); }
 .media-frame-empty {

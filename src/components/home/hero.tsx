@@ -37,7 +37,7 @@ export function Hero({ boat }: { boat: HomeContent["heroBoat"] }) {
             <br />
             และการส่งต่อสู่คนรุ่นใหม่
           </p>
-          <Link className="button-solid" href="#introduction">
+          <Link className="button-solid" data-tone="accent" href="#introduction">
             สำรวจเรื่องราว
             <ArrowRight aria-hidden="true" />
           </Link>

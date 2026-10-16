@@ -48,6 +48,17 @@
   --rule-strong: #b0d0e8;
   --rule-dark: rgba(243, 250, 254, 0.18);
 
+  /* Shape — the reference rounds every surface and floats it on a soft shadow. */
+  --radius: 1rem;
+  --radius-sm: .55rem;
+  --shadow-card: 0 .75rem 2rem rgba(4, 22, 55, .10);
+  --shadow-lift: 0 1.25rem 3rem rgba(4, 22, 55, .16);
+
+  /* The edge a band is cut with. Used as a mask, so the pseudo-element is painted in
+     whatever colour the neighbouring section is and then clipped to this shape — one
+     drawing serves every colour pair instead of one image per transition. */
+  --wave-edge: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201440%20120%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M0%200H1440V44C1200%2096%20960%208%20720%2042C480%2076%20240%2010%200%2056Z%22%2F%3E%3C%2Fsvg%3E");
+
   /* Layout */
   --max-w: 80rem;
   --measure: 40rem;
@@ -122,14 +133,18 @@ h3 { font-size: clamp(1.375rem, 2vw, 1.875rem); line-height: 1.45; letter-spacin
 
 .text-action, .button-solid {
   display: inline-flex; min-height: 52px; align-items: center; gap: .75rem;
-  padding: .85rem 1.75rem; border: 0; background: var(--primary); color: var(--background);
+  padding: .85rem 1.9rem; border: 0; border-radius: 999px;
+  background: var(--primary); color: var(--background);
+  box-shadow: var(--shadow-card);
   text-decoration: none; font-weight: 500;
-  transition: background var(--micro) var(--ease), transform var(--micro) var(--ease);
+  transition: background var(--micro) var(--ease), transform var(--micro) var(--ease), box-shadow var(--micro) var(--ease);
 }
+.text-action:hover, .button-solid:hover { box-shadow: var(--shadow-lift); }
 .text-action:hover, .button-solid:hover { background: var(--dark-raised); }
-.button-solid[data-tone="accent"] { background: var(--accent); }
-.button-solid[data-tone="accent"]:hover { background: var(--accent-deep); }
-.button-solid[data-tone="paper"] { background: var(--background); color: var(--primary); }
+.button-solid[data-tone="accent"] { background: var(--accent); color: #3b1702; }
+.button-solid[data-tone="accent"]:hover { background: #ffa052; }
+.button-solid[data-tone="accent"] svg { color: #7a3708; }
+.button-solid[data-tone="paper"] { background: var(--background); color: var(--dark); }
 .button-solid[data-tone="paper"]:hover { background: #fff; }
 .button-solid svg { width: 1.05rem; height: 1.05rem; flex: 0 0 auto; color: var(--accent-soft); transition: transform var(--micro) var(--ease); }
 .button-solid:hover svg { transform: translateX(.2rem); }
@@ -263,44 +278,90 @@ body:has(.home-page) .header-spacer { display: none; }
 .site-menu-group a:hover { color: var(--craft); }
 .site-menu-foot { color: var(--on-dark-muted); font-size: .8125rem; }
 
+/* --------------------------- section wave edges -------------------------- */
+/* The page colour spills into the dark band with a wave edge, and out of it again at the
+   bottom. Painted rather than drawn: the pseudo-element is the neighbouring colour, cut to
+   the wave by a mask, so changing a palette value changes the waves with it. */
+.on-dark { position: relative; }
+.on-dark::before, .on-dark::after {
+  content: ""; position: absolute; inset-inline: 0; z-index: 1;
+  height: clamp(1.75rem, 4vw, 4rem);
+  background: var(--background);
+  -webkit-mask: var(--wave-edge) center / 100% 100% no-repeat;
+  mask: var(--wave-edge) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.on-dark::before { top: 0; }
+.on-dark::after { bottom: 0; transform: rotate(180deg); }
+/* The footer provides its own edge with the band artwork, and the hero sits under the
+   header rather than against the page, so neither takes a cut. */
+.site-footer::before, .site-footer::after, .home-hero::before, .home-hero::after { content: none; }
+
 /* -------------------------------- footer -------------------------------- */
-.site-footer { padding-block: clamp(3rem, 6vw, 5rem) 2.5rem; border-top: 1px solid var(--rule); }
+/* The seam colour the two band images were faded to. Anything between them is this, so
+   the join is invisible however tall the footer grows. */
+.site-footer {
+  --footer-seam: #0040a1;
+  position: relative;
+  padding-block: 0 0;
+  background: var(--footer-seam);
+  color: var(--on-dark);
+}
+.site-footer-band, .site-footer-foot {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: cover;
+}
+/* Aspect ratios are the images' own, so each band keeps its proportions at every width
+   instead of being squashed by a fixed height. */
+.site-footer-band {
+  aspect-ratio: 1983 / 545;
+  background-image: url("/decor/footer-top.webp");
+}
+.site-footer-foot {
+  aspect-ratio: 1983 / 248;
+  background-image: url("/decor/footer-bottom.webp");
+  background-position: center top;
+}
+.site-footer > .shell { padding-block: clamp(2rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem); }
+
 .site-footer-grid {
   display: grid; grid-template-columns: 1fr; gap: 2.5rem;
-  padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule);
+  padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule-dark);
 }
-.site-footer-brand p { margin-top: .5rem; color: var(--muted); font-size: .9375rem; }
+.site-footer-brand p { margin-top: .5rem; color: var(--on-dark-muted); font-size: .9375rem; }
 .site-footer-brand strong { font-family: "Noto Serif Thai", serif; font-size: 1.375rem; font-weight: 500; }
 .site-footer nav { display: grid; gap: .1rem; align-content: start; }
-.site-footer nav p { margin-bottom: .6rem; color: var(--muted); font-size: .75rem; letter-spacing: .1em; }
+.site-footer nav p { margin-bottom: .6rem; color: var(--craft); font-size: .75rem; letter-spacing: .1em; }
 .site-footer nav a {
   display: inline-flex; min-height: 40px; align-items: center;
-  font-size: .9375rem; text-decoration: none;
+  color: var(--on-dark); font-size: .9375rem; text-decoration: none;
 }
-.site-footer nav a:hover { color: var(--accent-text); text-decoration: underline; }
+.site-footer nav a:hover { color: var(--craft); text-decoration: underline; }
 .site-footer-partners {
   display: grid; gap: .75rem;
   padding-top: 2rem;
 }
-.site-footer-partners-label { color: var(--muted); font-size: .75rem; letter-spacing: .14em; }
+.site-footer-partners-label { color: var(--craft); font-size: .75rem; letter-spacing: .14em; }
 .site-footer-partners ul {
   display: flex; flex-wrap: wrap; gap: .6rem 2rem;
   margin: 0; padding: 0; list-style: none;
 }
 .site-footer-partners li {
-  font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; color: var(--foreground);
+  font-family: "Noto Serif Thai", serif; font-size: 1.0625rem; color: var(--on-dark);
 }
 /* The district centre sits under the provincial office; naming one without the other
    credits the wrong body. */
 .site-footer-partners li small {
   display: block; margin-top: .15rem;
   font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
-  font-size: .8125rem; color: var(--muted);
+  font-size: .8125rem; color: var(--on-dark-muted);
 }
 .site-footer-legal {
   display: grid; gap: .5rem; margin-top: 2rem; padding-top: 1.75rem;
-  border-top: 1px solid var(--rule);
-  color: var(--muted); font-size: .8125rem; line-height: 1.7;
+  border-top: 1px solid var(--rule-dark);
+  color: var(--on-dark-muted); font-size: .8125rem; line-height: 1.7;
 }
 .site-footer-legal p { max-width: 46rem; }
 @media (min-width: 48rem) {
