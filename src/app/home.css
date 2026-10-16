@@ -80,13 +80,13 @@
   animation: hero-rise var(--entrance) var(--ease) both;
   text-shadow: 0 1px 18px rgba(4, 22, 55, .6);
 }
-.home-hero-copy > .button-solid { text-shadow: none; }
+.home-hero-copy > .home-hero-actions { text-shadow: none; }
 @keyframes hero-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
 .home-hero-title {
   font-size: var(--fs-display);
-  font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -.03em;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.02em;
   animation-delay: 120ms;
 }
 .home-hero-tagline {
@@ -106,7 +106,11 @@
   line-height: 1.8;
   animation-delay: 380ms;
 }
-.home-hero-copy .button-solid { margin-top: 2.5rem; animation-delay: 500ms; }
+/* The pair enters as one beat, so the secondary button never arrives before the primary. */
+.home-hero-actions {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1rem;
+  margin-top: 2.5rem; animation-delay: 500ms;
+}
 .home-hero-scroll {
   display: inline-flex; min-height: 44px; align-items: center; gap: .6rem;
   color: var(--on-dark-muted); font-size: var(--fs-xs); letter-spacing: .1em;

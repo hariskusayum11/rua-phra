@@ -184,6 +184,22 @@ h3 { font-size: var(--fs-2xl); line-height: 1.4; letter-spacing: -.01em; }
 .button-solid svg { width: 1.05rem; height: 1.05rem; flex: 0 0 auto; color: var(--accent-soft); transition: transform var(--micro) var(--ease); }
 .button-solid:hover svg { transform: translateX(.2rem); }
 
+/* Secondary action. Same height and shape as the solid button so the two line up, but no
+   fill and no shadow — it sits on the surface instead of above it, which is what keeps the
+   solid one first in the eye. */
+.button-outline {
+  display: inline-flex; min-height: 52px; align-items: center; gap: .6rem;
+  padding: calc(.85rem - 1.5px) 1.75rem; border: 1.5px solid var(--primary); border-radius: var(--radius-pill);
+  background: transparent; color: var(--primary);
+  text-decoration: none; font-weight: 500;
+  transition: background var(--micro) var(--ease), border-color var(--micro) var(--ease), color var(--micro) var(--ease);
+}
+.button-outline:hover { background: var(--surface-warm); }
+/* Over a photograph or a navy band. */
+.button-outline[data-tone="on-dark"] { border-color: rgba(243, 250, 254, .72); color: var(--on-dark); }
+.button-outline[data-tone="on-dark"]:hover { border-color: var(--on-dark); background: rgba(243, 250, 254, .12); }
+@media (prefers-reduced-motion: reduce) { .button-outline { transition: none; } }
+
 .editorial-link {
   display: inline-flex; min-height: 44px; align-items: center; gap: .5rem;
   font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .35em;

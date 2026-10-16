@@ -37,10 +37,18 @@ export function Hero({ boat }: { boat: HomeContent["heroBoat"] }) {
             <br />
             และการส่งต่อสู่คนรุ่นใหม่
           </p>
-          <Link className="button-solid" data-tone="accent" href="#introduction">
-            สำรวจเรื่องราว
-            <ArrowRight aria-hidden="true" />
-          </Link>
+          {/* Two ways in, of unequal weight. The orange one stays the obvious choice —
+              filled, raised, carrying the arrow — and the outline one is there for the
+              visitor who came to learn rather than to browse. */}
+          <div className="home-hero-actions">
+            <Link className="button-solid" data-tone="accent" href="#introduction">
+              สำรวจเรื่องราว
+              <ArrowRight aria-hidden="true" />
+            </Link>
+            <Link className="button-outline" data-tone="on-dark" href="/learn">
+              เส้นทางการเรียนรู้
+            </Link>
+          </div>
         </div>
 
         <a className="home-hero-scroll" href="#introduction">
