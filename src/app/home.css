@@ -282,7 +282,7 @@
 }
 .home-reader-switch button {
   flex: none; display: grid; gap: .15rem; min-height: 44px; padding: .55rem .9rem;
-  border: 1px solid var(--rule); border-radius: .4rem; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: var(--radius-xs); background: var(--surface);
   color: var(--muted); text-align: start; cursor: pointer; scroll-snap-align: start;
   transition: border-color var(--micro) var(--ease);
 }

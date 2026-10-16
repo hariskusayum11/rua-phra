@@ -234,7 +234,7 @@
 .competition-pending { color: var(--accent-text); }
 
 @media (min-width: 40rem) {
-  .competition-year[data-held="false"] { padding-inline: 1.25rem; border-radius: .5rem; }
+  .competition-year[data-held="false"] { padding-inline: 1.25rem; border-radius: var(--radius-xs); }
 }
 @media (min-width: 64rem) {
   .competition-block {
