@@ -128,11 +128,11 @@
 .lesson-quiz-icon { width: 1.1rem; height: 1.1rem; }
 /* Result state is carried by an icon and a border as well as colour, so it survives being
    read by someone who cannot tell the two greens apart. */
-.lesson-quiz-choice[data-state="answer"] { border-color: var(--primary); background: #eaf1ee; color: var(--primary); }
-.lesson-quiz-choice[data-state="picked-wrong"] { border-color: #9a3412; background: #fdf3ee; color: #7c2d12; }
+.lesson-quiz-choice[data-state="answer"] { border-color: var(--primary); background: #e3effa; color: var(--primary); }
+.lesson-quiz-choice[data-state="picked-wrong"] { border-color: #b91c1c; background: #fef2f2; color: #991b1b; }
 .lesson-quiz-choice:has(input:disabled) { cursor: default; }
 
-.lesson-quiz-error { margin-top: 1.5rem; color: #7c2d12; font-size: .875rem; }
+.lesson-quiz-error { margin-top: 1.5rem; color: #991b1b; font-size: .875rem; }
 .lesson-quiz-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: 2rem; }
 .lesson-quiz-actions button { display: inline-flex; align-items: center; gap: .5rem; border: 0; cursor: pointer; }
 .lesson-quiz-actions button svg { width: 1rem; height: 1rem; }

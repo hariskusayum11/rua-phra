@@ -29,22 +29,24 @@ test("media returns null for absent assets and unsafe URL forms", () => {
 });
 
 test("every palette pair that carries text clears WCAG AA", () => {
-  const { background, surfaceWarm, dark, primary, foreground, muted, onDark, onDarkMuted, accentText, craft } = palette;
+  const { background, surfaceWarm, dark, darkRaised, primary, foreground, muted, onDark, onDarkMuted, accentText, craft } = palette;
   const text: [string, string, string][] = [
-    ["body copy on off-white", foreground, background],
-    ["body copy on the warm surface", foreground, surfaceWarm],
-    ["body copy on the gallery surface", foreground, palette.surface],
-    ["secondary copy on the gallery surface", muted, palette.surface],
-    ["section index on the gallery surface", accentText, palette.surface],
-    ["secondary copy on off-white", muted, background],
-    ["secondary copy on the warm surface", muted, surfaceWarm],
-    ["section index on off-white", accentText, background],
-    ["section index on the warm surface", accentText, surfaceWarm],
-    ["heritage green headings on off-white", primary, background],
-    ["off-white on the heritage green band", onDark, dark],
-    ["secondary copy on the heritage green band", onDarkMuted, dark],
-    ["craft gold labels on the heritage green band", craft, dark],
-    ["off-white on the heritage green button", background, primary],
+    ["body copy on the pale blue page", foreground, background],
+    ["body copy on the tinted surface", foreground, surfaceWarm],
+    ["body copy on the card surface", foreground, palette.surface],
+    ["secondary copy on the card surface", muted, palette.surface],
+    ["section index on the card surface", accentText, palette.surface],
+    ["secondary copy on the pale blue page", muted, background],
+    ["secondary copy on the tinted surface", muted, surfaceWarm],
+    ["section index on the pale blue page", accentText, background],
+    ["section index on the tinted surface", accentText, surfaceWarm],
+    ["brand blue headings on the pale blue page", primary, background],
+    ["page text on the navy band", onDark, dark],
+    ["secondary copy on the navy band", onDarkMuted, dark],
+    ["craft gold labels on the navy band", craft, dark],
+    ["page text on the raised navy band", onDark, darkRaised],
+    ["page text on the brand blue button", background, primary],
+    ["white on the deep orange button", palette.surface, palette.accentDeep],
   ];
   for (const [name, foregroundColour, backgroundColour] of text) {
     const ratio = contrastRatio(foregroundColour, backgroundColour);
@@ -53,12 +55,19 @@ test("every palette pair that carries text clears WCAG AA", () => {
 });
 
 test("the decorative tones are kept away from text", () => {
-  // Craft gold is 2.47:1 on the off-white and terracotta is 3.54:1, which is why the gold
-  // is limited to rules and markers on light, and small accent text uses --accent-text.
+  // Craft gold is 1.73:1 on the pale blue page and the vivid orange is 2.27:1, which is why
+  // the gold is limited to the navy bands, the orange to fills, rules and rings on light,
+  // and every small accent label uses --accent-text instead.
   assert.ok(contrastRatio(palette.craft, palette.background) < 4.5);
   assert.ok(contrastRatio(palette.accent, palette.background) < 4.5);
-  // Terracotta cannot carry text on the heritage green either; the gold does that there.
-  assert.ok(contrastRatio(palette.accent, palette.dark) < 4.5);
+  assert.ok(contrastRatio(palette.accent, palette.surface) < 4.5);
+});
+
+test("the vivid orange earns its place as text on the navy bands", () => {
+  // Unlike the terracotta it replaced, which failed on both the light and the dark ground,
+  // this orange clears AA on navy. That is what lets a button label, a link and a marker on
+  // a dark band all be the same colour rather than the gold standing in for the accent.
+  assert.ok(contrastRatio(palette.accent, palette.dark) >= 4.5);
 });
 
 test("media storage falls back to disk unless every credential is present", async () => {
