@@ -127,7 +127,7 @@
 
 /* ========================= 02 · INTRODUCTION ============================ */
 /* Quiet by design: this is the breath between the hero and the craft. */
-.home-introduction { padding-block: clamp(5rem, 12vw, 13rem); }
+.home-introduction { padding-block: var(--section-y); }
 .home-introduction-inner { display: grid; gap: 2rem; }
 .home-introduction-body h2 { max-width: 14ch; }
 .home-introduction-lead { margin-top: 2rem; }
@@ -182,7 +182,7 @@
 
 /* ========================= 04 · FEATURED BOAT ========================== */
 .home-featured {
-  padding-block: var(--section-y);
+  padding-block: var(--section-y-band);
   background: var(--dark);
   color: var(--on-dark);
 }
@@ -381,7 +381,7 @@
 }
 
 /* ========================= 06 · CRAFT PROCESS ========================== */
-.home-process { padding-block: var(--section-y); background-color: var(--surface-warm); background-image: var(--paper-grain); }
+.home-process { padding-block: var(--section-y-story); background-color: var(--surface-warm); background-image: var(--paper-grain); }
 .home-process-head > * { max-width: var(--measure); }
 .home-process-head h2 { margin-top: 1rem; }
 .home-process-head .lead { margin-top: 1.5rem; }
@@ -546,7 +546,7 @@
 
 /* ========================= 09 · LEARNING PATH ========================== */
 /* Quiet: the invitation, not a sales page. */
-.home-learning { padding-block: clamp(4.5rem, 10vw, 10rem); }
+.home-learning { padding-block: var(--section-y); }
 .home-learning-inner { display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); align-items: start; }
 .home-learning-copy h2 { margin-top: 1rem; }
 .home-journey { margin: clamp(2.5rem, 5vw, 3.5rem) 0 0; padding: 0; list-style: none; display: grid; }
@@ -615,7 +615,7 @@
 }
 
 /* ========================= 11 · PROCESSION ============================= */
-.home-procession { padding-block: var(--section-y); background: var(--dark); color: var(--on-dark); }
+.home-procession { padding-block: var(--section-y-band); background: var(--dark); color: var(--on-dark); }
 .home-procession-head > * { max-width: var(--measure); }
 .home-procession-head .section-index { color: var(--craft); }
 .home-procession-head h2 { margin-top: 1rem; color: var(--on-dark); }
@@ -636,7 +636,7 @@
   min-height: min(100svh, 46rem);
   display: grid; align-items: center;
   isolation: isolate;
-  padding-block: var(--section-y);
+  padding-block: var(--section-y-band);
   background: var(--dark); color: var(--on-dark);
   text-align: center;
 }

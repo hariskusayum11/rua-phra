@@ -85,7 +85,16 @@
   --max-w: 80rem;
   --measure: 40rem;
   --gutter: clamp(1.25rem, 4vw, 4.5rem);
-  --section-y: clamp(4.5rem, 10vw, 11rem);
+  /* Section rhythm, by what a section is doing rather than one value for all of them.
+     The old single value put 288px between two sections on a laptop, so a reader crossed
+     a screen of nothing between every pair. */
+  --section-y: clamp(3.5rem, 7vw, 6.5rem);          /* standard: 56 on a phone, 90–104 on a desktop */
+  --wave-h: clamp(1.75rem, 4vw, 4rem);              /* the wave edge a dark band is cut with */
+  /* A navy band loses the top of its padding to the wave, and carries the large boat
+     photographs — so it keeps a little more room, enough to read as an exhibition wall. */
+  --section-y-band: calc(var(--section-y) + var(--wave-h) * .5);
+  /* Sticky storytelling: the scroll length is the animation, so this one is left as it was. */
+  --section-y-story: clamp(4.5rem, 10vw, 11rem);
   --header-h: 4.5rem;
 
   /* Motion */
@@ -307,7 +316,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .on-dark { position: relative; }
 .on-dark::before, .on-dark::after {
   content: ""; position: absolute; inset-inline: 0; z-index: 1;
-  height: clamp(1.75rem, 4vw, 4rem);
+  height: var(--wave-h);
   background: var(--background);
   -webkit-mask: var(--wave-edge) center / 100% 100% no-repeat;
   mask: var(--wave-edge) center / 100% 100% no-repeat;
