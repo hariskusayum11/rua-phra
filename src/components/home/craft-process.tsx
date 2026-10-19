@@ -50,8 +50,8 @@ export function CraftProcess({ process }: { process: HomeContent["process"] }) {
     return (
       <section className="home-process" id="process" aria-labelledby="process-title">
         <div className="shell">
-          <p className="section-index">05 / จากกระดาษ สู่เรือพระ</p>
-          <h2 id="process-title">ภูมิปัญญาไม่ได้เกิดขึ้นในขั้นตอนเดียว</h2>
+          <p className="section-index">จากกระดาษ สู่เรือพระ</p>
+          <h2 id="process-title">ขั้นตอนงานกระดาษบนเรือพระ</h2>
           <p className="empty-note">ยังไม่มีกระบวนการที่บันทึกไว้ในคลัง ลำดับขั้นตอนจะปรากฏเมื่อทีมภาคสนามบันทึกข้อมูล</p>
         </div>
       </section>
@@ -61,9 +61,10 @@ export function CraftProcess({ process }: { process: HomeContent["process"] }) {
   return (
     <section className="home-process" id="process" aria-labelledby="process-title">
       <div className="shell home-process-head">
-        <p className="section-index">05 / จากกระดาษ สู่เรือพระ</p>
-        <h2 id="process-title">ภูมิปัญญาไม่ได้เกิดขึ้นในขั้นตอนเดียว</h2>
+        <p className="section-index">จากกระดาษ สู่เรือพระ</p>
+        <h2 id="process-title">ขั้นตอนงานกระดาษบนเรือพระ</h2>
         <p className="lead">{process.description}</p>
+        <p className="demo-flag">{process.isDemo ? "ข้อมูลสาธิต · ลำดับและรายละเอียดรอการตรวจสอบภาคสนาม" : "บันทึกภาคสนาม · ดูสถานะการตรวจสอบในรายละเอียดขั้นตอน"}</p>
       </div>
 
       <div className="shell home-process-layout">

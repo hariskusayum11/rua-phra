@@ -29,7 +29,7 @@ export default async function BoatDetailPage({ params }: Props) {
       <header className="boat-intro">
         <p className="eyebrow">{boat.temple.name} · พ.ศ. {boat.year}</p>
         <h1>{boat.name}</h1>
-        <p className="boat-concept">“{boat.concept}”</p>
+        <p className="caption">แนวคิดการออกแบบ: {boat.concept}</p>
         <p>{boat.summary}</p>
         {record && (
           <div className="boat-record">

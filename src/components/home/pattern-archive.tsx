@@ -22,7 +22,7 @@ export function PatternArchive({ patterns }: { patterns: HomePattern[] }) {
     <section className="home-patterns" id="patterns" aria-labelledby="patterns-title">
       <div className="shell home-patterns-head">
         <div>
-          <p className="section-index">06 / คลังลวดลาย</p>
+          <p className="section-index">คลังลวดลาย</p>
           <h2 id="patterns-title">ลวดลายที่บันทึกเรื่องราว</h2>
         </div>
         <p className="home-patterns-count">{patterns.length} ลวดลายในคลัง</p>

@@ -54,7 +54,7 @@
 .archive-group h3 {
   padding-bottom: .75rem; border-bottom: 1px solid var(--rule);
   font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
-  font-size: var(--fs-xs); font-weight: 500; letter-spacing: .14em; color: var(--muted);
+  font-size: var(--fs-xs); font-weight: 500; letter-spacing: .02em; color: var(--muted);
 }
 .archive-group .empty-note { margin-top: 1.25rem; }
 
@@ -206,7 +206,7 @@
 .competition-zero { color: var(--rule-strong); }
 .competition-wins {
   display: inline-flex; align-items: center; gap: .3rem; margin-inline-start: .6rem;
-  color: var(--accent-text); font-family: "Noto Sans Thai", sans-serif; font-size: var(--fs-xs); font-weight: 500;
+  color: var(--accent-text); font-family: var(--font-body); font-size: var(--fs-xs); font-weight: 500;
 }
 .competition-wins svg { width: .9rem; height: .9rem; }
 

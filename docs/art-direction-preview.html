@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>ตัวอย่างลายเส้นงานศิลป์ · เรือพระเล่าเรื่อง</title>
+  <style>
+    @font-face{font-family:PlexThai;src:url('../node_modules/@fontsource/ibm-plex-sans-thai/files/ibm-plex-sans-thai-thai-400-normal.woff2') format('woff2');font-weight:400;font-display:swap}
+    @font-face{font-family:PlexThai;src:url('../node_modules/@fontsource/ibm-plex-sans-thai/files/ibm-plex-sans-thai-thai-600-normal.woff2') format('woff2');font-weight:600;font-display:swap}
+    @font-face{font-family:PlexThai;src:url('../node_modules/@fontsource/ibm-plex-sans-thai/files/ibm-plex-sans-thai-thai-700-normal.woff2') format('woff2');font-weight:700;font-display:swap}
+    :root{font-family:PlexThai,'Noto Sans Thai',sans-serif;color:#102a43;background:#fff;--blue:#105b9e;--orange:#b64a19;--ink:#122b43;--quiet:#53687d}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}h1,h2,p,figure{margin:0}svg{display:block}img{display:block;width:100%;height:100%;object-fit:cover}
+    .preview-note{background:#08346b;color:#fff;padding:9px 24px;text-align:center;font-size:13px;line-height:1.5}
+    .masthead{height:85px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 clamp(20px,5.5vw,92px);border-bottom:1px solid #dce6ef;position:relative;z-index:5;background:#fff}
+    .brand{display:flex;align-items:center;gap:14px;color:#a8491e;font-size:21px;font-weight:700;line-height:1.2}
+    .brand small{display:block;margin-top:5px;color:#506578;font-size:10px;letter-spacing:.16em;font-weight:600}
+    .brand-mark{width:43px;height:46px;flex:none;color:#aa491e}
+    .masthead-label{font-size:14px;color:#456177;letter-spacing:.04em}
+    .hero{position:relative;min-height:650px;display:grid;grid-template-columns:minmax(0,46%) minmax(0,54%);background:#f6f9fb;overflow:hidden}
+    .hero-copy{position:relative;z-index:2;padding:clamp(55px,7vw,105px) 5vw 90px max(6vw,30px);display:flex;flex-direction:column;justify-content:center}
+    .eyebrow{font-size:13px;letter-spacing:.14em;color:var(--orange);font-weight:600}
+    .hero h1{margin-top:20px;color:#08346b;font-size:clamp(48px,5.3vw,88px);font-weight:700;line-height:1.18;letter-spacing:-.02em}
+    .hero h1 span{color:var(--orange)}
+    .hero-lead{margin-top:24px;max-width:480px;color:#334c62;font-size:clamp(18px,1.65vw,23px);line-height:1.75}
+    .hero-path{margin-top:38px;display:flex;align-items:center;gap:14px;font-size:16px;font-weight:600;color:#08346b}
+    .hero-path span{width:52px;height:2px;background:#e47730}
+    .hero-photo{position:relative;min-height:650px;overflow:hidden}
+    .hero-photo img{object-position:50% 49%}
+    .hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#f6f9fb 0%,rgba(246,249,251,.75) 12%,transparent 35%)}
+    .photo-note{position:absolute;z-index:2;right:36px;bottom:105px;color:#fff;font-size:13px;text-shadow:0 2px 6px #172637;background:rgba(8,52,107,.72);padding:6px 11px}
+    .hero-line{position:absolute;z-index:2;left:-70px;top:28px;width:245px;height:380px;color:#b64a19;opacity:.13;transform:rotate(-8deg)}
+    .hero-line.right{left:auto;right:-76px;top:auto;bottom:44px;transform:rotate(15deg);color:#fff;opacity:.35}
+    .wave-divider{position:absolute;left:0;right:0;bottom:-1px;height:116px;z-index:3;pointer-events:none}
+    .intro{max-width:1360px;margin:auto;padding:90px clamp(22px,6vw,92px) 95px;position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:8vw;align-items:center;overflow:hidden}
+    .intro-copy{position:relative;z-index:2}.section-number{font-size:13px;font-weight:600;color:var(--orange);letter-spacing:.12em}
+    .intro h2{margin-top:16px;max-width:560px;color:#08346b;font-size:clamp(34px,3.3vw,55px);line-height:1.28}
+    .intro p.text{margin-top:22px;color:#42576c;font-size:18px;line-height:1.8;max-width:580px}
+    .source{display:block;margin-top:26px;color:#52667a;font-size:13px;line-height:1.6}
+    .craft-figure{position:relative;height:440px;background:#e8edf0;margin:0;overflow:hidden}
+    .craft-figure img{object-position:50% 50%}.craft-figure figcaption{position:absolute;left:0;bottom:0;background:#fff;color:#445a6c;padding:8px 12px;font-size:12px}
+    .motif-side{position:absolute;top:35px;right:-130px;width:300px;color:#d5a577;opacity:.28;transform:rotate(24deg);pointer-events:none}
+    .intro::after{content:"";position:absolute;left:5%;right:5%;bottom:34px;height:1px;background:#dce6ef}
+    .bottom-band{background:#eaf3f9;padding:35px 6vw 46px;position:relative;overflow:hidden}
+    .bottom-band .wave-graphic{position:absolute;bottom:-4px;left:0;width:100%;height:120px;color:#4784aa;opacity:.32}
+    .band-inner{position:relative;z-index:1;max-width:1200px;margin:auto;display:flex;justify-content:space-between;gap:20px;color:#0a497b;font-size:14px;line-height:1.6}
+    @media(max-width:760px){
+      .masthead{height:72px;padding-inline:20px}.brand{font-size:17px}.brand-mark{width:35px;height:38px}.brand small{font-size:8px}.masthead-label{display:none}
+      .hero{min-height:0;display:flex;flex-direction:column-reverse}.hero-photo{height:325px;min-height:0}.hero-photo img{object-position:50% 64%}.hero-photo:after{background:linear-gradient(0deg,#f6f9fb 0%,transparent 25%)}
+      .hero-copy{padding:12px 24px 100px}.hero h1{font-size:clamp(45px,12vw,68px);margin-top:11px}.hero-lead{font-size:18px;margin-top:16px}.hero-path{margin-top:22px}.photo-note{right:15px;bottom:35px;font-size:11px}
+      .hero-line{left:auto;right:-70px;top:340px;width:185px;height:260px;opacity:.1}.hero-line.right{display:none}.wave-divider{height:75px}
+      .intro{padding:57px 24px 70px;display:flex;flex-direction:column;gap:30px;align-items:stretch}.intro h2{font-size:38px}.intro p.text{font-size:17px}.craft-figure{height:310px}.motif-side{width:185px;right:-110px;top:45px}.intro::after{bottom:27px}
+      .bottom-band{padding:25px 24px 50px}.band-inner{display:block}.band-inner span{display:block;margin-bottom:4px}.bottom-band .wave-graphic{height:72px}
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-note">ตัวอย่างทิศทางภาพ · ใช้ภาพถ่ายในโครงการ · ลายเส้นที่วาดประกอบยังเป็นต้นแบบสำหรับตรวจร่วมกับภาพลายจริง</div>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+    <symbol id="flame" viewBox="0 0 220 310"><g fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M112 295C62 255 29 204 51 154c11-25 45-51 50-88 12 25 4 49-4 63 41-27 61-70 66-118 38 74-16 122-3 160 19-29 27-66 26-91 28 74-18 133-74 215Z"/>
+      <path d="M111 287C82 258 63 221 77 187c11-26 38-39 43-75 15 35-7 61-1 80 23-26 39-54 43-85 11 50-7 89-40 123"/>
+      <path d="M110 274c-13-27-14-49 2-64 16-15 27-31 27-51 15 41-11 72-29 115Z"/>
+      <path d="M49 166c-8 26-26 34-39 31 17 18 36 12 52 2M167 197c18-4 31-17 39-33-1 26-12 45-38 59"/>
+      <path d="M73 114c-22-16-21-38-10-56 1 20 9 30 24 37M179 78c16-14 21-31 20-53 12 31 2 53-22 73"/>
+      <path d="M109 275c-29-8-47-23-57-42M111 275c30-6 53-27 67-54"/>
+      <circle cx="77" cy="160" r="4"/><circle cx="157" cy="126" r="3"/><path d="M96 202c-13 7-22 16-26 29m64-27c9-10 20-16 31-19"/>
+    </g></symbol>
+    <symbol id="waves" viewBox="0 0 1440 120"><g fill="none" stroke="currentColor" stroke-width="2" opacity=".9"><path d="M-25 61c82-54 161-48 245-8s167 43 255 0 154-46 244 3 158 51 236 4 165-55 265-10 151 41 246-2"/><path d="M-24 74c91-50 160-39 245 0s163 37 250-6 154-37 243 10 162 40 243-3 161-47 264-5 151 30 245-12"/><path d="M-20 91c95-47 167-29 244 8s171 24 253-14 160-26 239 16 162 23 243-15 172-37 261 0 163 21 242-18"/></g></symbol>
+  </defs></svg>
+  <header class="masthead"><div class="brand"><svg class="brand-mark" viewBox="0 0 52 55" aria-hidden="true"><path d="M5 43q21 12 42 0M8 48q18 9 36 0M25 5l5 17 8 6-2 14H14l-2-14 8-6zM25 17l-3 10 3-2 4 2zM10 31l8 10M42 31l-8 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><div>เรือพระเล่าเรื่อง<small>PAK PHAYUN · CULTURAL ARCHIVE</small></div></div><span class="masthead-label">ต้นแบบลายเส้นและพื้นหลัง</span></header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow">ภาพบันทึก · อำเภอปากพะยูน</p><h1 id="hero-title">เรือพระ<br><span>เล่าเรื่อง</span></h1><p class="hero-lead">ชมเรือพระจากภาพบันทึกจริง ดูลวดลายระยะใกล้ และตามไปดูขั้นตอนงานกระดาษ</p><p class="hero-path"><span aria-hidden="true"></span> เริ่มจากเรือหนึ่งลำ</p></div>
+      <figure class="hero-photo"><img src="../public/photos/boats/field-boat-rattanaram-2568-cover.webp" alt="ภาพเรือพระวัดรัตนาราม พ.ศ. 2568"><figcaption class="photo-note">ภาพบันทึกเรือพระวัดรัตนาราม พ.ศ. 2568</figcaption></figure>
+      <svg class="hero-line" aria-hidden="true"><use href="#flame"/></svg><svg class="hero-line right" aria-hidden="true"><use href="#flame"/></svg>
+      <svg class="wave-divider" viewBox="0 0 1440 116" preserveAspectRatio="none" aria-hidden="true"><path d="M0 68Q110 35 220 64T440 65T660 62T880 72T1100 56T1440 65V116H0Z" fill="#fff"/><use href="#waves" x="0" y="2" width="1440" height="112" color="#3283ab" opacity=".6"/></svg>
+    </section>
+    <section class="intro" aria-labelledby="craft-title"><div class="intro-copy"><p class="section-number">01 / งานกระดาษ</p><h2 id="craft-title">ลายที่ช่างทำ<br>ทีละช่องไฟ</h2><p class="text">ภาพบันทึกชิ้นกระดาษฉลุบนโต๊ะทำงานช่วยให้เห็นเส้น รอยตัด และจังหวะที่เกิดซ้ำ ก่อนนำชิ้นงานไปประกอบบนเรือพระ</p><span class="source">ลายเส้นด้านข้างเป็นภาพร่างเชิงตกแต่ง · ต้องตรวจรูปแบบกับช่างก่อนใช้จริง</span></div><figure class="craft-figure"><img src="../public/photos/patterns/field-pattern-chalu.webp" alt="ภาพกระดาษฉลุที่บันทึกจากพื้นที่"><figcaption>ภาพบันทึกชิ้นงานกระดาษฉลุ</figcaption></figure><svg class="motif-side" aria-hidden="true"><use href="#flame"/></svg></section>
+    <div class="bottom-band"><div class="band-inner"><span>แนวทาง: เส้นคลื่น + ลายฉลุ + ภาพถ่ายจริง</span><span>ใช้เป็นจังหวะพักสายตา ไม่วางลายใต้ข้อความสำคัญ</span></div><svg class="wave-graphic" aria-hidden="true"><use href="#waves" width="100%" height="100%"/></svg></div>
+  </main>
+</body>
+</html>

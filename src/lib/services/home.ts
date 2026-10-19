@@ -9,14 +9,10 @@ import { getDb } from "@/lib/db";
 
 const imageSelect = { url: true, alt: true, width: true, height: true, credit: true, focalX: true, focalY: true } as const;
 
-/**
- * Demo fixtures stay in the database because the test suite runs against them, but the
- * moment real field records exist for a kind of content, the fixtures stop being shown.
- * A half-real page is worse than either a real one or an honestly empty one.
- */
+/** Public showcases contain field records only. Demo lessons are labelled separately. */
 function preferField<T extends { isDemo: boolean }>(records: T[]) {
   const field = records.filter((record) => !record.isDemo);
-  return field.length > 0 ? field : records;
+  return field;
 }
 
 /**
@@ -55,6 +51,7 @@ export async function getHomeContent() {
           },
         },
         sections: {
+          where: { isDemo: false },
           orderBy: { position: "asc" },
           select: {
             id: true,
@@ -65,14 +62,14 @@ export async function getHomeContent() {
             description: true,
             meaning: true,
             closeupMedia: { select: imageSelect },
-            patterns: { select: { pattern: { select: { slug: true, name: true, localName: true } } } },
+            patterns: { where: { pattern: { isDemo: false } }, select: { pattern: { select: { slug: true, name: true, localName: true } } } },
           },
         },
         _count: { select: { sections: true, stories: true, patterns: true } },
       },
     }),
     db.knowledgeProcess.findFirst({
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
       select: {
         slug: true,
         title: true,
@@ -87,14 +84,14 @@ export async function getHomeContent() {
             importance: true,
             position: true,
             coverMedia: { select: imageSelect },
-            media: { orderBy: { position: "asc" }, select: { media: { select: imageSelect } } },
+            media: { where: { media: { isDemo: false } }, orderBy: { position: "asc" }, select: { media: { select: imageSelect } } },
           },
         },
       },
     }),
     db.pattern.findMany({
       // Recording order, so the first pattern the field team entered anchors the wall.
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
       select: {
         slug: true,
         name: true,
@@ -123,7 +120,7 @@ export async function getHomeContent() {
       },
     }),
     db.course.findFirst({
-      orderBy: { createdAt: "asc" },
+      orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
       select: {
         slug: true,
         title: true,
@@ -133,8 +130,8 @@ export async function getHomeContent() {
       },
     }),
     db.studentWork.findMany({
-      where: { published: true },
-      orderBy: { createdAt: "asc" },
+      where: { published: true, isDemo: false },
+      orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
       take: 6,
       select: {
         slug: true,

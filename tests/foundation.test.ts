@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { archiveQuery, hotspotCoordinates } from "../src/lib/validations/archive";
 import { mediaUrl } from "../src/lib/services/media";
@@ -47,6 +48,9 @@ test("every palette pair that carries text clears WCAG AA", () => {
     ["page text on the raised navy band", onDark, darkRaised],
     ["page text on the brand blue button", background, primary],
     ["white on the deep orange button", palette.surface, palette.accentDeep],
+    ["dark text on the orange action and active hotspot", palette.accentInk, palette.accent],
+    ["light labels on the raised blue surface", craft, darkRaised],
+    ["keyboard focus on white", primary, background],
   ];
   for (const [name, foregroundColour, backgroundColour] of text) {
     const ratio = contrastRatio(foregroundColour, backgroundColour);
@@ -54,20 +58,23 @@ test("every palette pair that carries text clears WCAG AA", () => {
   }
 });
 
-test("the decorative tones are kept away from text", () => {
-  // Craft gold is 1.73:1 on the pale blue page and the vivid orange is 2.27:1, which is why
-  // the gold is limited to the navy bands, the orange to fills, rules and rings on light,
-  // and every small accent label uses --accent-text instead.
+test("light orange tones are not used as text on white", () => {
   assert.ok(contrastRatio(palette.craft, palette.background) < 4.5);
   assert.ok(contrastRatio(palette.accent, palette.background) < 4.5);
   assert.ok(contrastRatio(palette.accent, palette.surface) < 4.5);
 });
 
-test("the vivid orange earns its place as text on the navy bands", () => {
-  // Unlike the terracotta it replaced, which failed on both the light and the dark ground,
-  // this orange clears AA on navy. That is what lets a button label, a link and a marker on
-  // a dark band all be the same colour rather than the gold standing in for the accent.
+test("orange remains readable against the blue bands", () => {
   assert.ok(contrastRatio(palette.accent, palette.dark) >= 4.5);
+});
+
+test("contrast checks use the colours actually shipped in CSS", () => {
+  const css = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  for (const [name, colour] of Object.entries(palette)) {
+    const token = name.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+    const match = css.match(new RegExp(`--${token}:\\s*(#[0-9a-fA-F]{6})\\s*;`));
+    assert.equal(match?.[1].toLowerCase(), colour, `contrast palette differs from --${token}`);
+  }
 });
 
 test("media storage falls back to disk unless every credential is present", async () => {

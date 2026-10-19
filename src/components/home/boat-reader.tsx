@@ -50,8 +50,8 @@ export function BoatReader({ boats }: { boats: HomeBoat[] }) {
     return (
       <section className="home-reader" id="reader" aria-labelledby="reader-title">
         <div className="shell">
-          <p className="section-index">04 / อ่านเรือพระ</p>
-          <h2 id="reader-title">เรือหนึ่งลำ ประกอบขึ้นจากเรื่องราวมากมาย</h2>
+          <p className="section-index">อ่านเรือพระ</p>
+          <h2 id="reader-title">สำรวจส่วนประกอบเรือพระ</h2>
           <p className="empty-note">ยังไม่มีเรือที่บันทึกทั้งภาพและจุดสำรวจไว้ครบ จุดอ่านเรือจะเปิดใช้งานเมื่อข้อมูลพร้อม</p>
         </div>
       </section>
@@ -64,13 +64,11 @@ export function BoatReader({ boats }: { boats: HomeBoat[] }) {
   return (
     <section className="home-reader" id="reader" aria-labelledby="reader-title">
       <div className="shell home-reader-head">
-        <p className="section-index">04 / อ่านเรือพระ</p>
+        <p className="section-index">อ่านเรือพระ</p>
         <h2 id="reader-title">
-          เรือหนึ่งลำ
-          <br />
-          ประกอบขึ้นจากเรื่องราวมากมาย
+          สำรวจส่วนประกอบเรือพระ
         </h2>
-        <p className="lead">แตะจุดต่าง ๆ บนเรือ เพื่อค้นพบความหมายที่ซ่อนอยู่ในแต่ละส่วน</p>
+        <p className="lead">แตะจุดบนภาพเพื่อดูชื่อส่วนประกอบและภาพระยะใกล้</p>
       </div>
 
       {boats.length > 1 && (

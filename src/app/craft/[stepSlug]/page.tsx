@@ -34,7 +34,7 @@ export default async function CraftStepPage({ params }: Props) {
           <p className="step-number">ขั้นที่ {String(step.position).padStart(2, "0")}</p>
           <h1>{step.title}</h1>
           <p className="step-lead">{step.description}</p>
-          {step.verification?.status !== "VERIFIED" && step.verification?.status !== "PUBLISHED" && (
+          {(step.isDemo || (step.verification?.status !== "VERIFIED" && step.verification?.status !== "PUBLISHED")) && (
             <p className="demo-notice">
               {step.isDemo
                 ? "เนื้อหาสาธิต · ยังไม่ผ่านการตรวจสอบจากผู้รู้ในพื้นที่"
@@ -59,7 +59,7 @@ export default async function CraftStepPage({ params }: Props) {
         <div className="step-main-content">
           <section className="step-section" aria-labelledby="method-title">
             <p className="section-kicker">ลำดับงาน</p>
-            <h2 id="method-title">มองกระบวนการทีละจังหวะ</h2>
+            <h2 id="method-title">วิธีทำทีละขั้น</h2>
             {instructions.length > 0 ? (
               <ol className="instruction-list">
                 {instructions.map((instruction, index) => (
@@ -106,7 +106,7 @@ export default async function CraftStepPage({ params }: Props) {
 
           {(step.tips || step.warnings) && (
             <section className="knowledge-notes" aria-label="คำแนะนำและข้อควรระวัง">
-              {step.tips && <div><Lightbulb aria-hidden="true" /><h2>คำแนะนำจากช่าง</h2><p>{step.tips}</p></div>}
+              {step.tips && <div><Lightbulb aria-hidden="true" /><h2>ข้อแนะนำที่บันทึกไว้</h2><p>{step.tips}</p></div>}
               {step.warnings && <div className="warning-note"><AlertTriangle aria-hidden="true" /><h2>ข้อควรระวัง</h2><p>{step.warnings}</p></div>}
             </section>
           )}
@@ -147,7 +147,7 @@ function ResourceList({ title, entries }: { title: string; entries: Array<{ name
   return (
     <section>
       <h3>{title}</h3>
-      {entries.length > 0 ? <ul>{entries.map((entry) => <li key={entry.name}><strong>{entry.name}</strong><p>{entry.description}</p>{entry.note && <small>{entry.note}</small>}</li>)}</ul> : <p className="inline-empty">ยังไม่มีข้อมูล</p>}
+      {entries.length > 0 ? <ul>{entries.map((entry) => <li key={entry.name}><strong>{entry.name}</strong><p>{entry.description}</p>{entry.note && <small>{entry.note}</small>}</li>)}</ul> : <p className="inline-empty">รายการอยู่ระหว่างตรวจสอบ</p>}
     </section>
   );
 }

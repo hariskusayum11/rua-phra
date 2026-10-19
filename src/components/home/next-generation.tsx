@@ -7,10 +7,10 @@ export function NextGeneration({ works }: { works: HomeWork[] }) {
   return (
     <section className="home-next" id="next-generation" aria-labelledby="next-title">
       <div className="shell home-next-head">
-        <p className="section-index">09 / คนรุ่นใหม่</p>
-        <h2 id="next-title">เมื่อภูมิปัญญาถูกส่งต่อ</h2>
+        <p className="section-index">คนรุ่นใหม่</p>
+        <h2 id="next-title">ผลงานของผู้เรียน</h2>
         <p className="lead">
-          จากการเรียนรู้ภูมิปัญญาเดิม สู่การตีความและสร้างสรรค์ของคนรุ่นใหม่
+          ชมงานกระดาษที่ผู้เรียนส่งเข้ามาและอนุญาตให้เผยแพร่
         </p>
       </div>
 
@@ -42,9 +42,6 @@ export function NextGeneration({ works }: { works: HomeWork[] }) {
               </Reveal>
             ))}
           </ul>
-          <p className="upcoming-link home-next-more">
-            ชมผลงานทั้งหมด <span>เปิดพร้อมระบบเรียนรู้</span>
-          </p>
         </div>
       )}
     </section>

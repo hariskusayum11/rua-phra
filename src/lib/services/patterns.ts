@@ -43,7 +43,7 @@ export async function getPatternDetail(slug: string) {
           },
         },
       },
-      masters: { select: { master: { select: { slug: true, name: true, portraitMedia: { select: imageSelect } } } } },
+      masters: { where: { master: { isDemo: false } }, select: { master: { select: { slug: true, name: true, portraitMedia: { select: imageSelect } } } } },
       steps: { select: { step: { select: { slug: true, title: true, position: true } } } },
     },
   });

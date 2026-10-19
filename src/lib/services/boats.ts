@@ -13,7 +13,7 @@ export async function getBoatExplorer(slug: string) {
       isDemo: true,
       temple: { select: { id: true, name: true } },
       coverMedia: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
-      masters: { select: { master: { select: { slug: true, name: true } } } },
+      masters: { where: { master: { isDemo: false } }, select: { master: { select: { slug: true, name: true } } } },
       sections: {
         orderBy: { position: "asc" },
         select: {
@@ -26,6 +26,7 @@ export async function getBoatExplorer(slug: string) {
           meaning: true,
           closeupMedia: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
           patterns: {
+            where: { pattern: { isDemo: false } },
             select: {
               pattern: {
                 select: {
@@ -33,7 +34,7 @@ export async function getBoatExplorer(slug: string) {
                   name: true,
                   localName: true,
                   imageMedia: { select: { url: true, alt: true } },
-                  masters: { select: { master: { select: { slug: true, name: true } } } },
+                  masters: { where: { master: { isDemo: false } }, select: { master: { select: { slug: true, name: true } } } },
                   steps: { select: { step: { select: { slug: true, title: true } } } },
                 },
               },

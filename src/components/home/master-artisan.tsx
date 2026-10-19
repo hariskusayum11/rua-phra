@@ -1,4 +1,3 @@
-import { Play } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
 import { Reveal } from "@/components/motion/reveal";
 import type { HomeContent } from "@/lib/services/home";
@@ -23,8 +22,8 @@ export function MasterArtisan({ master }: { master: HomeContent["master"] }) {
     return (
       <section className="home-master" id="master" aria-labelledby="master-title">
         <div className="shell">
-          <p className="section-index">07 / คนผู้ส่งต่อ</p>
-          <h2 id="master-title">ภูมิปัญญาไม่ได้อยู่เพียงในตำรา แต่อยู่ในคน</h2>
+          <p className="section-index">คนผู้ส่งต่อ</p>
+          <h2 id="master-title">ช่างผู้ทำงานกระดาษ</h2>
           <p className="empty-note">ยังไม่มีข้อมูลช่างที่บันทึกไว้ในคลัง</p>
         </div>
       </section>
@@ -48,7 +47,7 @@ export function MasterArtisan({ master }: { master: HomeContent["master"] }) {
         <div className="home-master-veil" aria-hidden="true" />
 
         <div className="shell home-master-quote-block">
-          <h2 className="section-index home-master-kicker" id="master-title">07 / คนผู้ส่งต่อ</h2>
+          <h2 className="section-index home-master-kicker" id="master-title">คนผู้ส่งต่อ</h2>
           {/* A quote is only a quote when someone actually said it. Until the interview is
               recorded, the section carries the archive's own statement, unattributed, and
               names the person in a caption instead of under quotation marks. */}
@@ -63,11 +62,11 @@ export function MasterArtisan({ master }: { master: HomeContent["master"] }) {
           ) : (
             <>
               <p className="home-master-quote" data-unattributed="true">
-                ภูมิปัญญาไม่ได้อยู่เพียงในตำรา แต่อยู่ในคน
+                ช่างผู้ทำงานกระดาษ
               </p>
               <p className="home-master-attribution">
                 ในภาพ: {master.name}
-                {years ? ` · สืบทอดงานกระดาษมาแล้วราว ${years} ปี` : " · ยังไม่ได้บันทึกชื่อและคำบอกเล่าของช่าง"}
+                {years ? ` · สืบทอดงานกระดาษมาแล้วราว ${years} ปี` : " · บทสัมภาษณ์อยู่ระหว่างจัดทำ"}
               </p>
             </>
           )}
@@ -94,10 +93,7 @@ export function MasterArtisan({ master }: { master: HomeContent["master"] }) {
               <audio controls preload="none" src={interview} aria-label={`บันทึกเสียงสัมภาษณ์ ${master.name}`} />
             </figure>
           ) : (
-            <p className="upcoming-link">
-              <Play aria-hidden="true" width={16} height={16} />
-              ฟังเรื่องจากช่าง <span>รอการบันทึกและขออนุญาต</span>
-            </p>
+            <p className="caption">บทสัมภาษณ์อยู่ระหว่างการบันทึกและขออนุญาตเผยแพร่</p>
           )}
 
           {master.isDemo && <p className="demo-flag">ข้อมูลสาธิต · บุคคลสมมติสำหรับทดสอบระบบ</p>}

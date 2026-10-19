@@ -86,7 +86,7 @@
 .lesson-step-kicker,
 .lesson-activity-kicker {
   font-family: "IBM Plex Sans Thai", "Noto Sans Thai", sans-serif;
-  font-size: var(--fs-2xs); font-weight: 500; letter-spacing: .14em; color: var(--accent-text);
+  font-size: var(--fs-2xs); font-weight: 500; letter-spacing: .02em; color: var(--accent-text);
 }
 .lesson-step-title {
   display: inline-flex; align-items: center; gap: .5rem; margin-top: .75rem;

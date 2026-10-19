@@ -27,13 +27,11 @@ export function LearningPath({ course, stepCount }: { course: HomeContent["cours
       <div className="shell home-learning-inner">
         <div className="home-learning-copy">
           <Reveal>
-            <p className="section-index">08 / เรียนรู้</p>
+            <p className="section-index">เรียนรู้</p>
           </Reveal>
           <Reveal delay={80}>
             <h2 id="learning-title">
-              จากการมองเห็น
-              <br />
-              สู่การลงมือทำ
+              รู้จักลายกระดาษทีละขั้น
             </h2>
           </Reveal>
           <Reveal delay={140}>
@@ -48,11 +46,12 @@ export function LearningPath({ course, stepCount }: { course: HomeContent["cours
           </Reveal>
         </div>
 
-        <Reveal className="home-learning-card" delay={120}>
+        <Reveal className="home-learning-card on-dark" delay={120}>
           <p className="home-learning-card-kicker">เส้นทางการเรียนรู้</p>
           {course ? (
             <>
               <h3>{course.title}</h3>
+              {course.isDemo && <p className="demo-flag">บทเรียนสาธิต · ใช้ทดลองระบบ ยังไม่ใช่เนื้อหาที่ผ่านการตรวจสอบ</p>}
               <p className="home-learning-card-text">{course.description}</p>
               <p className="home-learning-card-count">
                 {lessonCount} บทเรียน · เรียนตามจังหวะของคุณ
@@ -68,7 +67,7 @@ export function LearningPath({ course, stepCount }: { course: HomeContent["cours
             </>
           )}
           <Link className="button-solid" href={href}>
-            เริ่มเรียนรู้
+            {course?.isDemo ? "ดูบทเรียนสาธิต" : course ? "ดูบทเรียน" : "ดูขั้นตอนงานกระดาษ"}
             <ArrowRight aria-hidden="true" />
           </Link>
         </Reveal>

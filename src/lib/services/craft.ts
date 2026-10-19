@@ -22,9 +22,11 @@ export function getKnowledgeProcesses() {
           importance: true,
           position: true,
           isDemo: true,
-          coverMedia: { select: mediaSelect },
-          materials: { select: { material: { select: { name: true } } } },
-          tools: { select: { tool: { select: { name: true } } } },
+          coverMedia: { where: { isDemo: false }, select: mediaSelect },
+          materials: {
+            where: { material: { isDemo: false } }, select: { material: { select: { name: true } } } },
+          tools: {
+            where: { tool: { isDemo: false } }, select: { tool: { select: { name: true } } } },
         },
       },
     },
@@ -52,25 +54,31 @@ export function getProcessStep(slug: string) {
           steps: { orderBy: { position: "asc" }, select: { slug: true, title: true, position: true } },
         },
       },
-      coverMedia: { select: mediaSelect },
-      videoMedia: { select: { url: true, alt: true, mimeType: true, credit: true } },
+      coverMedia: { where: { isDemo: false }, select: mediaSelect },
+      videoMedia: { where: { isDemo: false }, select: { url: true, alt: true, mimeType: true, credit: true } },
       media: {
+        where: { media: { isDemo: false } },
         orderBy: { position: "asc" },
         select: { role: true, position: true, caption: true, media: { select: mediaSelect } },
       },
       materials: {
+        where: { material: { isDemo: false } },
         select: { quantityNote: true, material: { select: { slug: true, name: true, description: true } } },
       },
       tools: {
+        where: { tool: { isDemo: false } },
         select: { usageNote: true, tool: { select: { slug: true, name: true, description: true } } },
       },
       techniques: {
+        where: { technique: { isDemo: false } },
         select: { note: true, technique: { select: { slug: true, name: true, description: true } } },
       },
       patterns: {
+        where: { pattern: { isDemo: false } },
         select: { pattern: { select: { slug: true, name: true, localName: true, imageMedia: { select: mediaSelect } } } },
       },
       masters: {
+        where: { master: { isDemo: false } },
         select: { contribution: true, master: { select: { slug: true, name: true, quote: true, portraitMedia: { select: mediaSelect } } } },
       },
     },

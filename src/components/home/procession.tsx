@@ -26,7 +26,7 @@ export function Procession({ boat }: { boat: HomeContent["processionBoat"] }) {
   return (
     <section className="home-procession on-dark" id="procession" aria-labelledby="procession-title">
       <div className="shell home-procession-head">
-        <p className="section-index">10 / วันชักพระ</p>
+        <p className="section-index">วันชักพระ</p>
         <h2 id="procession-title">
           เรือออกจากโรง
           <br />

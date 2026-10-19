@@ -14,13 +14,11 @@ export function Closing({ image, boatSlug }: { image: HomeContent["closingImage"
 
       <div className="shell home-closing-inner">
         <h2 id="closing-title" className="home-closing-title">
-          เรือพระไม่ได้มีชีวิต
-          <br />
-          เพราะถูกเก็บไว้
+          ดูเรือพระให้ใกล้ขึ้น
         </h2>
-        <p className="home-closing-lead">แต่เพราะยังมีคนเรียนรู้ และส่งต่อ</p>
+        <p className="home-closing-lead">เลือกดูส่วนประกอบ ลวดลาย และภาพบันทึกของเรือแต่ละลำ</p>
         <Link className="button-solid" data-tone="paper" href={boatSlug ? `/boats/${boatSlug}` : "/craft"}>
-          เริ่มสำรวจเรื่องราว
+          {boatSlug ? "สำรวจเรือพระ" : "ดูขั้นตอนงานกระดาษ"}
           <ArrowRight aria-hidden="true" />
         </Link>
         <p className="home-closing-tagline">ทุกลายมีเรื่อง ทุกเรื่องมีคนส่งต่อ</p>

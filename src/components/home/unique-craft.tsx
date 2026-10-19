@@ -26,7 +26,7 @@ export function UniqueCraft({ image, step }: { image: HomeContent["craftImage"];
 
         <div className="home-craft-copy">
           <Reveal>
-            <p className="section-index">02 / ภูมิปัญญา</p>
+            <p className="section-index">ภูมิปัญญา</p>
           </Reveal>
           <Reveal delay={80}>
             <h2 id="craft-title">
@@ -37,9 +37,7 @@ export function UniqueCraft({ image, step }: { image: HomeContent["craftImage"];
           </Reveal>
           <Reveal delay={140}>
             <p className="home-craft-text">
-              ลวดลายบนเรือพระไม่ได้เกิดจากการพิมพ์ แต่เกิดจากมือ กระดาษถูกออกแบบ ตอก อัด
-              และประกอบทีละชิ้น ความรู้เรื่องแรงกด จังหวะช่องไฟ และการอ่านลายในระยะไกล
-              ล้วนอยู่ในตัวช่าง ไม่ได้อยู่ในตำรา
+              ดูภาพและลำดับงาน ตั้งแต่เตรียมกระดาษ ทำลาย ไปจนถึงประกอบบนเรือพระ รายละเอียดแต่ละขั้นมีสถานะการตรวจสอบกำกับไว้
             </p>
           </Reveal>
           {step && (
@@ -51,7 +49,7 @@ export function UniqueCraft({ image, step }: { image: HomeContent["craftImage"];
           )}
           <Reveal delay={240}>
             <Link className="editorial-link" href="/craft">
-              ค้นพบวิธีสร้าง
+              ดูขั้นตอนทำลายกระดาษ
               <ArrowUpRight aria-hidden="true" />
             </Link>
           </Reveal>

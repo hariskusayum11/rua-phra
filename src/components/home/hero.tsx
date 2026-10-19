@@ -33,20 +33,18 @@ export function Hero({ boat }: { boat: HomeContent["heroBoat"] }) {
             ทุกเรื่องมีคนส่งต่อ
           </p>
           <p className="home-hero-sub">
-            เรื่องราวของเรือพระ ภูมิปัญญาที่อยู่ในมือของช่าง
-            <br />
-            และการส่งต่อสู่คนรุ่นใหม่
+            ชมเรือพระปากพะยูน ดูลายกระดาษใกล้ ๆ และรู้จักงานช่าง
           </p>
           {/* Two ways in, of unequal weight. The orange one stays the obvious choice —
               filled, raised, carrying the arrow — and the outline one is there for the
               visitor who came to learn rather than to browse. */}
           <div className="home-hero-actions">
-            <Link className="button-solid" data-tone="accent" href="#introduction">
-              สำรวจเรื่องราว
+            <Link className="button-solid" data-tone="accent" href="#reader">
+              สำรวจส่วนประกอบ
               <ArrowRight aria-hidden="true" />
             </Link>
             <Link className="button-outline" data-tone="on-dark" href="/learn">
-              เส้นทางการเรียนรู้
+              ดูบทเรียน
             </Link>
           </div>
         </div>

@@ -26,7 +26,7 @@ export function FeaturedBoats({ boats }: { boats: HomeBoat[] }) {
     return (
       <section className="home-featured on-dark" aria-labelledby="featured-title">
         <div className="shell">
-          <p className="section-index">03 / เรือหนึ่งลำ หนึ่งเรื่องราว</p>
+          <p className="section-index">เรือหนึ่งลำ หนึ่งเรื่องราว</p>
           <h2 id="featured-title" className="home-featured-title">เรือหนึ่งลำ หนึ่งเรื่องราว</h2>
           <p className="empty-note">ยังไม่มีเรือพระที่บันทึกภาพไว้ในคลัง เมื่อทีมภาคสนามบันทึกข้อมูลแล้ว เรือจะปรากฏในพื้นที่นี้</p>
         </div>
@@ -40,7 +40,7 @@ export function FeaturedBoats({ boats }: { boats: HomeBoat[] }) {
     <section className="home-featured on-dark" id="boats" aria-labelledby="featured-title">
       <div className="shell home-featured-head">
         <div>
-          <p className="section-index">03 / เรื่องเล่าเรือพระ</p>
+          <p className="section-index">เรื่องเล่าเรือพระ</p>
           <h2 id="featured-title" className="home-featured-title">เรือหนึ่งลำ หนึ่งเรื่องราว</h2>
         </div>
         {total > 1 && (
@@ -84,7 +84,7 @@ export function FeaturedBoats({ boats }: { boats: HomeBoat[] }) {
               </h3>
               {/* Labelled rather than quoted: a boat whose concept is not yet recorded
                   would otherwise read as though the archive were quoting the note. */}
-              <p className="home-featured-concept">
+              <p className="caption">
                 <span>แนวคิด</span>
                 {boat.concept}
               </p>

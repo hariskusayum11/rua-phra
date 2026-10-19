@@ -21,7 +21,7 @@ export default async function CraftPage() {
       <header className="craft-hero">
         <p className="eyebrow">คลังภูมิปัญญางานกระดาษ</p>
         <h1>จากกระดาษ<br /><span>สู่เรือพระ</span></h1>
-        <p>ติดตามร่องรอยของวัสดุ เส้น และฝีมือ ผ่านแต่ละช่วงของการสร้างงานประดับบนเรือพระ</p>
+        <p>ดูภาพ ลำดับงาน และอุปกรณ์ที่บันทึกไว้ในแต่ละขั้นตอนของงานกระดาษ</p>
       </header>
 
       {processes.length === 0 ? (
@@ -38,7 +38,7 @@ export default async function CraftPage() {
               <p>{process.description}</p>
               {/* Anything not yet verified says so, whether it is a fixture or a real
                   field record. Silence would read as confirmation. */}
-              {process.verification?.status !== "VERIFIED" && process.verification?.status !== "PUBLISHED" && (
+              {(process.isDemo || (process.verification?.status !== "VERIFIED" && process.verification?.status !== "PUBLISHED")) && (
                 <p className="demo-notice">
                   {process.isDemo
                     ? "ข้อมูลสาธิต · ลำดับและรายละเอียดรอการตรวจสอบภาคสนาม"
@@ -61,10 +61,11 @@ export default async function CraftPage() {
                   <div className="timeline-copy">
                     <p className="step-number">ขั้นที่ {String(step.position).padStart(2, "0")}</p>
                     <h3>{step.title}</h3>
+                    {step.isDemo && <p className="demo-notice">ขั้นตอนสาธิต · รอการตรวจสอบภาคสนาม</p>}
                     <p>{step.description}</p>
                     <dl className="step-glance">
-                      <div><dt>วัสดุ</dt><dd>{step.materials.map(({ material }) => material.name).join(" · ") || "รอบันทึก"}</dd></div>
-                      <div><dt>เครื่องมือ</dt><dd>{step.tools.map(({ tool }) => tool.name).join(" · ") || "รอบันทึก"}</dd></div>
+                      <div><dt>วัสดุ</dt><dd>{step.materials.map(({ material }) => material.name).join(" · ") || "รายการอยู่ระหว่างตรวจสอบ"}</dd></div>
+                      <div><dt>เครื่องมือ</dt><dd>{step.tools.map(({ tool }) => tool.name).join(" · ") || "รายการอยู่ระหว่างตรวจสอบ"}</dd></div>
                     </dl>
                     <Link className="editorial-link" href={`/craft/${step.slug}`}>
                       อ่านรายละเอียดขั้นตอน <ArrowUpRight aria-hidden="true" />
