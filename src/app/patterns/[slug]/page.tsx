@@ -3,18 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
+import { patternCategoryLabel } from "@/lib/pattern-categories";
 import { VerificationNote } from "@/components/archive/verification-note";
 import { getPatternDetail } from "@/lib/services/patterns";
 
 type Props = { params: Promise<{ slug: string }> };
 
-const categoryLabels: Record<string, string> = {
-  FLORAL: "ลายดอก",
-  FOLIAGE: "ลายใบ",
-  GEOMETRIC: "ลายเรขาคณิต",
-  MYTHICAL: "ลายสัตว์หิมพานต์",
-  OTHER: "อื่น ๆ",
-};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pattern = await getPatternDetail((await params).slug);
@@ -34,7 +28,7 @@ export default async function PatternDetailPage({ params }: Props) {
   return (
     <main id="main-content" className="archive-page" tabIndex={-1}>
       <article className="shell archive-lede">
-        <p className="section-index">คลังลวดลาย / {categoryLabels[pattern.category] ?? pattern.category}</p>
+        <p className="section-index">คลังลวดลาย / {patternCategoryLabel(pattern.category)}</p>
         <h1>{pattern.localName || pattern.name}</h1>
         {pattern.localName && <p className="archive-alt-name">ชื่อที่บันทึกไว้ · {pattern.name}</p>}
         <p className="lead archive-lede-text">{pattern.characteristics}</p>

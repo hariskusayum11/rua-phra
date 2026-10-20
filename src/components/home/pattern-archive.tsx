@@ -1,17 +1,11 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
+import { patternCategoryLabel } from "@/lib/pattern-categories";
 import { Reveal } from "@/components/motion/reveal";
 import { Tilt } from "@/components/motion/tilt";
 import type { HomePattern } from "@/lib/services/home";
 
-const categoryLabels: Record<string, string> = {
-  FLORAL: "ลายดอก",
-  FOLIAGE: "ลายใบ",
-  GEOMETRIC: "ลายเรขาคณิต",
-  MYTHICAL: "ลายสัตว์หิมพานต์",
-  OTHER: "อื่น ๆ",
-};
 
 /**
  * Section 07 — patterns at varying weight rather than an even grid. Metadata is printed
@@ -63,7 +57,7 @@ export function PatternArchive({ patterns }: { patterns: HomePattern[] }) {
                     <figcaption>
                       <h3>{pattern.localName || pattern.name}</h3>
                       <p className="home-pattern-meta">
-                        {categoryLabels[pattern.category] ?? pattern.category}
+                        {patternCategoryLabel(pattern.category)}
                         {pattern.localName ? ` · ${pattern.name}` : ""}
                       </p>
                       <p className="home-pattern-text">{pattern.characteristics}</p>

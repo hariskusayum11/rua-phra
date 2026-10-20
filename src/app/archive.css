@@ -259,3 +259,62 @@
 }
 .boat-record p { display: flex; align-items: center; gap: .5rem; margin: 0; }
 .boat-record svg { flex: none; width: 1rem; height: 1rem; color: var(--accent-text); }
+
+/* ===========================================================================
+   Collection pages — /boats /patterns /masters /works
+   The level between the homepage and a single record. Each card is a way into
+   an entry, so it reads as one: a lifted surface, one image, name, one line of
+   context. The cards are navigation, which is the case the shadow is for.
+   =========================================================================== */
+.collection-page { padding-block: clamp(2rem, 5vw, 4rem) clamp(3.5rem, 8vw, 6.5rem); }
+.collection-page > * + * { margin-top: clamp(2rem, 5vw, 3.5rem); }
+
+.page-crumbs ol { display: flex; flex-wrap: wrap; gap: .35rem .6rem; margin: 0; padding: 0; list-style: none; font-size: var(--fs-sm); color: var(--muted); }
+.page-crumbs li + li::before { content: "›"; margin-right: .6rem; color: var(--rule-strong); }
+.page-crumbs a { display: inline-flex; min-height: 44px; align-items: center; color: var(--primary); text-decoration: none; }
+.page-crumbs a:hover { color: var(--sea); text-decoration: underline; }
+.page-crumbs [aria-current="page"] { display: inline-flex; min-height: 44px; align-items: center; color: var(--foreground); font-weight: 500; }
+
+.page-header h1 { margin-top: .5rem; font-size: var(--fs-4xl); }
+.page-header-lead { max-width: var(--measure); margin-top: 1.25rem; }
+.collection-status { max-width: var(--measure); margin-top: 1rem; color: var(--muted); font-size: var(--fs-sm); }
+.collection-status a { color: var(--primary); text-decoration: underline; text-underline-offset: .2em; }
+
+.collection-grid { margin-top: 0; }
+.collection-grid > li { display: flex; }
+.collection-grid a, .collection-work {
+  flex: 1; display: grid; align-content: start; gap: .6rem;
+  padding: .75rem .75rem 1.25rem; border-radius: var(--radius);
+  background: var(--surface); box-shadow: var(--shadow-card);
+  color: var(--foreground); text-decoration: none;
+  transition: box-shadow var(--micro) var(--ease), transform var(--micro) var(--ease);
+}
+.collection-grid a:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+.collection-grid a:focus-visible { outline-offset: 3px; }
+.collection-grid .archive-card-title, .collection-grid .archive-card-meta, .collection-grid .archive-card-note { padding-inline: .35rem; }
+.collection-grid .media-frame { border-radius: calc(var(--radius) - .25rem); }
+/* The hover scale on the shared card list zooms the photograph inside a frame that is
+   itself lifting — one movement is enough. */
+.collection-grid a:hover .media-frame { transform: none; }
+.collection-excerpt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.collection-work img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: calc(var(--radius) - .25rem); }
+
+.collection-empty {
+  max-width: 40rem; padding: clamp(1.75rem, 4vw, 2.75rem);
+  border-radius: var(--radius); background: var(--surface-mist);
+}
+.collection-empty h2 { font-size: var(--fs-2xl); }
+.collection-empty p { margin-top: .85rem; color: var(--muted); }
+.collection-empty .button-solid { margin-top: 1.5rem; }
+
+@media (min-width: 48rem) {
+  .collection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 64rem) {
+  .collection-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .collection-grid-people { grid-template-columns: repeat(auto-fill, minmax(16rem, 20rem)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .collection-grid a { transition: none; }
+  .collection-grid a:hover { transform: none; }
+}
