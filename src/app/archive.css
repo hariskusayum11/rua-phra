@@ -228,7 +228,7 @@
 
 /* A year with no competition is a record, not an empty row, so it keeps its place in the
    list and says what happened instead of being skipped. */
-.competition-year[data-held="false"] { background: var(--surface-warm); }
+.competition-year[data-held="false"] { background: var(--surface-mist); }
 .competition-year[data-held="false"] h3 { color: var(--muted); }
 .competition-nothing { margin-top: .5rem; color: var(--muted); font-size: var(--fs-base); }
 .competition-pending { color: var(--accent-text); }

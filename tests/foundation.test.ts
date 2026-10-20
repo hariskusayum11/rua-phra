@@ -30,27 +30,31 @@ test("media returns null for absent assets and unsafe URL forms", () => {
 });
 
 test("every palette pair that carries text clears WCAG AA", () => {
-  const { background, surfaceWarm, dark, darkRaised, primary, foreground, muted, onDark, onDarkMuted, accentText, craft } = palette;
+  const { background, surface, surfaceMist, dark, darkRaised, deep, primary, foreground, muted, onDark, onDarkMuted, accentText, craft, sea } = palette;
   const text: [string, string, string][] = [
-    ["body copy on the pale blue page", foreground, background],
-    ["body copy on the tinted surface", foreground, surfaceWarm],
-    ["body copy on the card surface", foreground, palette.surface],
-    ["secondary copy on the card surface", muted, palette.surface],
-    ["section index on the card surface", accentText, palette.surface],
-    ["secondary copy on the pale blue page", muted, background],
-    ["secondary copy on the tinted surface", muted, surfaceWarm],
-    ["section index on the pale blue page", accentText, background],
-    ["section index on the tinted surface", accentText, surfaceWarm],
-    ["brand blue headings on the pale blue page", primary, background],
-    ["page text on the navy band", onDark, dark],
-    ["secondary copy on the navy band", onDarkMuted, dark],
-    ["craft gold labels on the navy band", craft, dark],
-    ["page text on the raised navy band", onDark, darkRaised],
-    ["page text on the brand blue button", background, primary],
-    ["white on the deep orange button", palette.surface, palette.accentDeep],
-    ["dark text on the orange action and active hotspot", palette.accentInk, palette.accent],
-    ["light labels on the raised blue surface", craft, darkRaised],
-    ["keyboard focus on white", primary, background],
+    ["body copy on the cream page", foreground, background],
+    ["body copy on the lagoon mist band", foreground, surfaceMist],
+    ["body copy on a card", foreground, surface],
+    ["secondary copy on the cream page", muted, background],
+    ["secondary copy on the lagoon mist band", muted, surfaceMist],
+    ["secondary copy on a card", muted, surface],
+    ["section index on the cream page", accentText, background],
+    ["section index on the lagoon mist band", accentText, surfaceMist],
+    ["section index on a card", accentText, surface],
+    ["indigo headings and links on the cream page", primary, background],
+    ["indigo headings and links on the lagoon mist band", primary, surfaceMist],
+    ["teal link hover on the cream page", sea, background],
+    ["page text on the indigo highlight band", onDark, dark],
+    ["secondary copy on the indigo highlight band", onDarkMuted, dark],
+    ["gold labels on the indigo highlight band", craft, dark],
+    ["page text on the raised indigo surface", onDark, darkRaised],
+    ["page text on the night-water closing band", onDark, deep],
+    ["secondary copy on the night-water closing band", onDarkMuted, deep],
+    ["gold labels on the night-water closing band", craft, deep],
+    ["cream lettering on the indigo button", background, primary],
+    ["white on the deep orange button", "#ffffff", palette.accentDeep],
+    ["dark lettering on the sunset button and active hotspot", palette.accentInk, palette.accent],
+    ["keyboard focus ring on the cream page", primary, background],
   ];
   for (const [name, foregroundColour, backgroundColour] of text) {
     const ratio = contrastRatio(foregroundColour, backgroundColour);
@@ -58,14 +62,16 @@ test("every palette pair that carries text clears WCAG AA", () => {
   }
 });
 
-test("light orange tones are not used as text on white", () => {
-  assert.ok(contrastRatio(palette.craft, palette.background) < 4.5);
-  assert.ok(contrastRatio(palette.accent, palette.background) < 4.5);
-  assert.ok(contrastRatio(palette.accent, palette.surface) < 4.5);
+test("sunset orange and gold are never text on the light grounds", () => {
+  for (const ground of [palette.background, palette.surface, palette.surfaceMist]) {
+    assert.ok(contrastRatio(palette.accent, ground) < 4.5);
+    assert.ok(contrastRatio(palette.craft, ground) < 4.5);
+  }
 });
 
-test("orange remains readable against the blue bands", () => {
+test("sunset orange stays readable as text on both dark grounds", () => {
   assert.ok(contrastRatio(palette.accent, palette.dark) >= 4.5);
+  assert.ok(contrastRatio(palette.accent, palette.deep) >= 4.5);
 });
 
 test("contrast checks use the colours actually shipped in CSS", () => {

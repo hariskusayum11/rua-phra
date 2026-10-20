@@ -97,7 +97,7 @@
 .lesson-step-title:hover svg { transform: translate(.15rem, -.15rem); }
 .lesson-step-link > p:last-child { margin-top: .85rem; color: var(--muted); }
 
-.lesson-activity { background: var(--surface-warm); border-color: transparent; }
+.lesson-activity { background: var(--surface-mist); border-color: transparent; }
 .lesson-activity h2 { margin-top: .6rem; font-size: var(--fs-2xl); }
 .lesson-activity > p { margin-top: .85rem; color: var(--muted); }
 .lesson-activity-label { margin-top: 1.5rem; font-size: var(--fs-xs); font-weight: 500; letter-spacing: .06em; }
