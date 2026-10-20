@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BackNav } from "@/components/site/back-nav";
+import { PageCrumbs } from "@/components/site/page-header";
 import { BoatExplorer } from "@/components/boat/boat-explorer";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
@@ -27,6 +28,7 @@ export default async function BoatDetailPage({ params }: Props) {
   return (
     <main id="main-content" className="boat-page" tabIndex={-1}>
       <header className="boat-intro">
+        <PageCrumbs label={boat.name} trail={[{ href: "/boats", label: "เรื่องเล่าเรือพระ" }]} />
         <p className="eyebrow">{boat.temple.name} · พ.ศ. {boat.year}</p>
         <h1>{boat.name}</h1>
         <p className="caption">แนวคิดการออกแบบ: {boat.concept}</p>
@@ -48,7 +50,7 @@ export default async function BoatDetailPage({ params }: Props) {
       <BoatExplorer boat={boat} />
       <BackNav
         destinations={[
-          { href: "/#boats", label: "เรือพระลำอื่น" },
+          { href: "/boats", label: "เรือพระลำอื่น" },
           { href: "/craft", label: "ขั้นตอนงานช่าง" },
           { href: "/", label: "หน้าหลัก" },
         ]}

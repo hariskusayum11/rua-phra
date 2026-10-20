@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageCrumbs } from "@/components/site/page-header";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, Play } from "lucide-react";
@@ -30,6 +31,7 @@ export default async function MasterDetailPage({ params }: Props) {
   return (
     <main id="main-content" className="archive-page" tabIndex={-1}>
       <article className="shell archive-lede">
+        <PageCrumbs label={master.name} trail={[{ href: "/masters", label: "ช่างผู้สืบสาน" }]} />
         <p className="section-index">ช่างผู้สืบสาน</p>
         <h1>{master.name}</h1>
         <p className="archive-alt-name">
@@ -145,8 +147,8 @@ export default async function MasterDetailPage({ params }: Props) {
       </section>
 
       <nav className="shell archive-back" aria-label="กลับไปยังหน้าแรก">
-        <Link className="editorial-link" href="/#master">
-          กลับไปส่วนช่างผู้สืบสาน
+        <Link className="editorial-link" href="/masters">
+          ดูช่างผู้สืบสานทั้งหมด
           <ArrowUpRight aria-hidden="true" />
         </Link>
       </nav>

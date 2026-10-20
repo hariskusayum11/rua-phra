@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-import { primaryNav, secondaryNav } from "@/lib/site-nav";
+import { isCurrentPath, primaryNav, secondaryNav } from "@/lib/site-nav";
 
 /**
  * The header sits over the cinematic hero in ivory-on-photograph, then becomes a solid
@@ -71,7 +71,9 @@ export function SiteHeader() {
 
           <nav className="header-nav" aria-label="เมนูหลัก">
             {primaryNav.map((item) => (
-              <Link key={item.href} href={item.href}>{item.label}</Link>
+              <Link key={item.href} href={item.href} aria-current={isCurrentPath(item.href, pathname) ? "page" : undefined}>
+                {item.label}
+              </Link>
             ))}
           </nav>
 
@@ -105,7 +107,7 @@ export function SiteHeader() {
             <div className="site-menu-group">
               <p>สำรวจ</p>
               {primaryNav.map((item) => (
-                <Link key={item.href} href={item.href} onClick={closeMenu}>
+                <Link key={item.href} href={item.href} onClick={closeMenu} aria-current={isCurrentPath(item.href, pathname) ? "page" : undefined}>
                   {item.label}
                   <ArrowUpRight aria-hidden="true" />
                 </Link>
@@ -114,7 +116,7 @@ export function SiteHeader() {
             <div className="site-menu-group">
               <p>เพิ่มเติม</p>
               {secondaryNav.map((item) => (
-                <Link key={item.href} href={item.href} onClick={closeMenu}>
+                <Link key={item.href} href={item.href} onClick={closeMenu} aria-current={isCurrentPath(item.href, pathname) ? "page" : undefined}>
                   {item.label}
                   <ArrowUpRight aria-hidden="true" />
                 </Link>

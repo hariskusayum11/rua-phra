@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import type { Metadata } from "next";
 import { Trophy } from "lucide-react";
 import { BackNav } from "@/components/site/back-nav";
+import { PageCrumbs } from "@/components/site/page-header";
 import { getCompetitionArchive } from "@/lib/services/competition";
 
 export const metadata: Metadata = {
@@ -36,7 +37,7 @@ export default async function CompetitionPage() {
   return (
     <main id="main-content" className="competition-page" tabIndex={-1}>
       <header className="shell competition-lede">
-        <p className="section-index">ผลการประกวด</p>
+        <PageCrumbs label="ผลการประกวด" />
         <h1>
           เรือพระที่ติดอันดับ
           <br />

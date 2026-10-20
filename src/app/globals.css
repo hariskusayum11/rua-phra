@@ -286,6 +286,8 @@ body:has(.home-page) .header-spacer { display: none; }
   display: inline-flex; min-height: 44px; align-items: center;
   font-size: var(--fs-base); font-weight: 500; letter-spacing: .01em;
   text-decoration: none; position: relative;
+  /* A Thai label broken across two lines ("หน้า / แรก") reads as two items. */
+  white-space: nowrap;
 }
 .header-nav a::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 1rem; height: 1px;
@@ -293,6 +295,14 @@ body:has(.home-page) .header-spacer { display: none; }
   transition: transform var(--micro) var(--ease);
 }
 .header-nav a:hover::after, .header-nav a:focus-visible::after { transform: scaleX(1); }
+/* Where you are: a thicker, coloured line that stays, so the bar reads as a map and not
+   only a list. aria-current carries the same fact to a screen reader. */
+.header-nav a[aria-current="page"] { font-weight: 600; }
+.header-nav a[aria-current="page"]::after { height: 2px; background: var(--accent); transform: scaleX(1); }
+.site-menu-group a[aria-current="page"] {
+  color: var(--craft);
+  text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: .3em;
+}
 
 .menu-toggle {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
@@ -303,7 +313,10 @@ body:has(.home-page) .header-spacer { display: none; }
 .menu-toggle:hover { opacity: 1; }
 .menu-toggle svg { width: 1.15rem; height: 1.15rem; }
 
-@media (min-width: 64rem) {
+/* Six items and the wordmark need about 1100px side by side; below that the wordmark's
+   subtitle wraps and the bar crowds it. The full menu behind the button carries every
+   item at any width, so narrower screens use that alone. */
+@media (min-width: 70rem) {
   .header-nav { display: flex; }
 }
 
@@ -540,8 +553,7 @@ body:has(.home-page) .header-spacer { display: none; }
 .editorial-link:hover svg { transform: translate(.15rem,-.15rem); }
 
 /* Craft step */
-.step-breadcrumb { display: flex; flex-wrap: wrap; gap: .5rem; color: var(--muted); font-size: var(--fs-xs); }
-.step-breadcrumb a { color: var(--ink); }
+.step-breadcrumb { display: block; }
 .step-hero { display: grid; grid-template-columns: .8fr 1.35fr; gap: clamp(2rem, 6vw, 7rem); align-items: center; margin-top: clamp(2.5rem, 6vw, 5rem); }
 .step-hero h1 { margin-top: .45rem; font-size: var(--fs-4xl); line-height: 1.25; }
 .step-lead { margin-top: 1.25rem; color: var(--muted); font-size: var(--fs-lg); }

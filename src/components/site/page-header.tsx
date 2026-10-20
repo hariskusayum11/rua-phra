@@ -7,11 +7,14 @@ import Link from "next/link";
  * poetic headline they have to map back to the button themselves. The trail is also the
  * way home for someone who arrived from a QR code with no history to go back through.
  */
-export function PageCrumbs({ label }: { label: string }) {
+export function PageCrumbs({ label, trail = [] }: { label: string; trail?: Array<{ href: string; label: string }> }) {
   return (
     <nav className="page-crumbs" aria-label="ตำแหน่งในเว็บไซต์">
       <ol>
         <li><Link href="/">หน้าแรก</Link></li>
+        {trail.map((step) => (
+          <li key={step.href}><Link href={step.href}>{step.label}</Link></li>
+        ))}
         <li aria-current="page">{label}</li>
       </ol>
     </nav>

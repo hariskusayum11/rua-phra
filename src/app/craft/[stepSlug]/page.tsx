@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageCrumbs } from "@/components/site/page-header";
 import Image from "next/image";
 import Link from "next/link";
 import { BackNav } from "@/components/site/back-nav";
@@ -25,9 +26,9 @@ export default async function CraftStepPage({ params }: Props) {
 
   return (
     <main id="main-content" className="step-page" tabIndex={-1}>
-      <nav className="step-breadcrumb" aria-label="เส้นทางนำทาง">
-        <Link href="/craft">จากกระดาษสู่เรือพระ</Link><span aria-hidden="true">/</span><span aria-current="page">{step.title}</span>
-      </nav>
+      <div className="step-breadcrumb">
+        <PageCrumbs label={step.title} trail={[{ href: "/craft", label: "จากกระดาษสู่เรือพระ" }]} />
+      </div>
 
       <header className="step-hero">
         <div className="step-hero-copy">
@@ -135,7 +136,7 @@ export default async function CraftStepPage({ params }: Props) {
       <BackNav
         destinations={[
           { href: "/craft", label: "ขั้นตอนทั้งหมด" },
-          { href: "/#patterns", label: "คลังลวดลาย" },
+          { href: "/patterns", label: "คลังลวดลาย" },
           { href: "/", label: "หน้าหลัก" },
         ]}
       />

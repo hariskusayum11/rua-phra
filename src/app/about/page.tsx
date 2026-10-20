@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageCrumbs } from "@/components/site/page-header";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { award, contacts, partners, projectTitle, team, telHref, workTitle } from "@/lib/site-info";
@@ -20,7 +21,7 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="about-page" tabIndex={-1}>
       <header className="shell about-lede">
-        <p className="section-index">เกี่ยวกับโครงการ</p>
+        <PageCrumbs label="เกี่ยวกับโครงการ" />
         <h1>คลังนี้เก็บอะไร<br />และเก็บมาอย่างไร</h1>
         <p className="lead">
           เรือพระเล่าเรื่องคือคลังองค์ความรู้ที่บันทึกงานช่างกระดาษบนเรือพระของอำเภอปากพะยูน

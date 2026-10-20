@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 
 const doors = [
   { href: "/#reader", icon: Ship, label: "อ่านเรือพระทีละจุด", note: "กดจุดบนภาพเรือเพื่อดูว่าแต่ละส่วนคืออะไร" },
-  { href: "/#patterns", icon: DraftingCompass, label: "คลังลวดลาย", note: "ลายที่บันทึกไว้ พร้อมความหมายและที่มา" },
+  { href: "/patterns", icon: DraftingCompass, label: "คลังลวดลาย", note: "ลายที่บันทึกไว้ พร้อมความหมายและที่มา" },
   { href: "/craft", icon: ScrollText, label: "จากกระดาษสู่เรือพระ", note: "ขั้นตอนงานช่างตั้งแต่เตรียมวัสดุจนประดับบนเรือ" },
-  { href: "/#master", icon: Users, label: "ช่างผู้สืบสาน", note: "คนที่ยังทำงานนี้อยู่ในปากพะยูน" },
+  { href: "/masters", icon: Users, label: "ช่างผู้สืบสาน", note: "คนที่ยังทำงานนี้อยู่ในปากพะยูน" },
   { href: "/learn", icon: BookOpenText, label: "บทเรียน", note: "เรียนตามจังหวะตัวเอง ไม่ต้องสมัครสมาชิก" },
   { href: "/#procession", icon: Play, label: "วันชักพระ", note: "วิดีโอจากพื้นที่จริง" },
   { href: "/competition", icon: Trophy, label: "ผลการประกวด", note: "เรือพระที่ติดอันดับ ตั้งแต่ปีแรกที่ชิงถ้วยพระราชทาน" },

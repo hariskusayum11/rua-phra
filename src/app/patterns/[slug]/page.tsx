@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageCrumbs } from "@/components/site/page-header";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
@@ -28,6 +29,7 @@ export default async function PatternDetailPage({ params }: Props) {
   return (
     <main id="main-content" className="archive-page" tabIndex={-1}>
       <article className="shell archive-lede">
+        <PageCrumbs label={pattern.localName || pattern.name} trail={[{ href: "/patterns", label: "คลังลวดลาย" }]} />
         <p className="section-index">คลังลวดลาย / {patternCategoryLabel(pattern.category)}</p>
         <h1>{pattern.localName || pattern.name}</h1>
         {pattern.localName && <p className="archive-alt-name">ชื่อที่บันทึกไว้ · {pattern.name}</p>}
@@ -129,7 +131,7 @@ export default async function PatternDetailPage({ params }: Props) {
       </section>
 
       <nav className="shell archive-back" aria-label="กลับไปยังคลัง">
-        <Link className="editorial-link" href="/#patterns">
+        <Link className="editorial-link" href="/patterns">
           กลับไปคลังลวดลาย
           <ArrowUpRight aria-hidden="true" />
         </Link>

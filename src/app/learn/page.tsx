@@ -1,4 +1,5 @@
 import { connection } from "next/server";
+import { PageCrumbs } from "@/components/site/page-header";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -27,7 +28,7 @@ export default async function LearnIndexPage() {
   return (
     <main id="main-content" className="learn-index" tabIndex={-1}>
       <header className="shell learn-lede">
-        <p className="section-index">เรียนรู้</p>
+        <PageCrumbs label="เรียนรู้" />
         <h1>เรียนตามจังหวะ<br />ของตัวเอง</h1>
         <p className="lead">
           บทเรียนสร้างจากสิ่งที่บันทึกไว้ในคลังนี้ ทั้งลวดลาย ขั้นตอน และเครื่องมือจริง

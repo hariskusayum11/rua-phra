@@ -55,3 +55,42 @@ for (const width of [390, 1440]) {
     }
   });
 }
+
+test("the menu has a way home and marks the page you are on, detail pages included", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const bar = page.getByRole("navigation", { name: "เมนูหลัก" });
+  for (const [path, current] of [
+    ["/", "หน้าแรก"],
+    ["/boats", "เรื่องเล่าเรือพระ"],
+    ["/boats/rua-phra-wat-rattanaram-2568", "เรื่องเล่าเรือพระ"],
+    ["/craft/paper-cutting-demo", "จากกระดาษสู่เรือพระ"],
+    ["/patterns", "คลังลวดลาย"],
+    ["/learn", "เรียนรู้"],
+    ["/competition", "ผลการประกวด"],
+  ] as const) {
+    await page.goto(path);
+    await expect(bar.getByRole("link", { name: "หน้าแรก" })).toHaveAttribute("href", "/");
+    // Exactly one item is current, and it is the one this page belongs to.
+    await expect(bar.locator('a[aria-current="page"]'), path).toHaveCount(1);
+    await expect(bar.locator('a[aria-current="page"]'), path).toHaveText(current);
+  }
+});
+
+test("every page a menu item opens says the menu item's name", async ({ page }) => {
+  for (const [path, label] of [
+    ["/craft", "จากกระดาษสู่เรือพระ"], ["/learn", "เรียนรู้"], ["/competition", "ผลการประกวด"],
+    ["/about", "เกี่ยวกับโครงการ"], ["/masters", "ช่างผู้สืบสาน"], ["/works", "ผลงานคนรุ่นใหม่"],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole("navigation", { name: "ตำแหน่งในเว็บไซต์" }).locator('[aria-current="page"]'), path).toHaveText(label);
+  }
+});
+
+test("menu labels stay on one line wherever the bar is shown", async ({ page }) => {
+  for (const width of [1120, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/boats");
+    const heights = await page.locator(".header-nav a").evaluateAll((links) => links.map((link) => link.getBoundingClientRect().height));
+    expect(Math.max(...heights), `${width}px`).toBeLessThanOrEqual(48);
+  }
+});

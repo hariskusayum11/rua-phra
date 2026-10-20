@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { BackNav } from "@/components/site/back-nav";
+import { PageCrumbs } from "@/components/site/page-header";
 import { getKnowledgeProcesses } from "@/lib/services/craft";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default async function CraftPage() {
   return (
     <main id="main-content" className="craft-page" tabIndex={-1}>
       <header className="craft-hero">
+        <PageCrumbs label="จากกระดาษสู่เรือพระ" />
         <p className="eyebrow">คลังภูมิปัญญางานกระดาษ</p>
         <h1>จากกระดาษ<br /><span>สู่เรือพระ</span></h1>
         <p>ดูภาพ ลำดับงาน และอุปกรณ์ที่บันทึกไว้ในแต่ละขั้นตอนของงานกระดาษ</p>
@@ -80,7 +82,7 @@ export default async function CraftPage() {
       <BackNav
         destinations={[
           { href: "/", label: "หน้าหลัก" },
-          { href: "/#patterns", label: "คลังลวดลาย" },
+          { href: "/patterns", label: "คลังลวดลาย" },
           { href: "/learn", label: "บทเรียน" },
         ]}
       />
