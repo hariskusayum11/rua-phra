@@ -27,15 +27,15 @@ test("step detail exposes every supported knowledge section with honest media st
   await page.goto("/craft/prepare-materials-demo");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("เตรียมวัสดุ");
   await expect(page.locator(".demo-notice")).toContainText("รอการตรวจสอบ");
-  await expect(page.getByRole("heading", { name: "มองกระบวนการทีละจังหวะ" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "บันทึกจากขั้นตอน" })).toBeVisible();
   await expect(page.getByText("ยังไม่มีวิดีโอภาคสนามสำหรับขั้นตอนนี้")).toBeVisible();
   await expect(page.getByRole("heading", { name: "วัสดุ", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "เครื่องมือ", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "เทคนิค", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "คำแนะนำจากช่าง" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "ข้อแนะนำที่บันทึกไว้" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "ข้อควรระวัง" })).toBeVisible();
-  await expect(page.getByText("ลายกระหนกใบเทศ")).toBeVisible();
-  await expect(page.getByText("ช่างสมชาย บุญช่วย")).toBeVisible();
+  // Fixture patterns and invented artisans are filtered out of public step pages.
+  await expect(page.getByText(/ลายกระหนกใบเทศ|ช่างสมชาย บุญช่วย/)).toHaveCount(0);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
 

@@ -25,9 +25,10 @@ test("keyboard opens the desktop side panel, traps focus, and restores it", asyn
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("heading", { name: "ยอดเรือ" })).toBeVisible();
-  await expect(dialog.getByRole("link", { name: /ลายกระหนกใบเทศ/ })).toBeVisible();
-  await expect(dialog.getByRole("link", { name: /ช่างสมชาย บุญช่วย/ })).toBeVisible();
-  await expect(dialog.getByRole("link", { name: /ออกแบบลวดลาย/ })).toBeVisible();
+  // Demo patterns and invented artisans stay in the database for the CMS, but never reach a
+  // public page as though they belonged to this boat. This boat is a fixture, so its own
+  // links are all demo ones and the panel should offer none of them.
+  await expect(dialog.getByText(/ลายกระหนกใบเทศ|ช่างสมชาย บุญช่วย/)).toHaveCount(0);
   await expect(hotspot).toHaveAttribute("aria-expanded", "true");
   expect((await dialog.boundingBox())?.width).toBeLessThan(520);
 

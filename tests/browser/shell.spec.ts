@@ -11,6 +11,11 @@ for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     await page.evaluate(() => document.fonts.ready);
+    // The hero copy fades in. axe judges colours as rendered, so a frame of the fade reads
+    // as near-white on near-white; wait for the entrance to finish, as a reader would.
+    // Looping animations (the hotspot pulse) never finish, so only the finite ones count.
+    await page.waitForFunction(() => document.getAnimations().every((a) =>
+      a.playState !== "running" || a.timeline !== document.timeline || a.effect?.getComputedTiming().iterations === Infinity), null, { timeout: 6000 });
     await expect(page.locator("html")).toHaveAttribute("lang", "th");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("เรือพระเล่าเรื่อง");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

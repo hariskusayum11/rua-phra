@@ -187,6 +187,9 @@ test("the menu is grouped, marks the page you are on, and fits the screen", asyn
   await expect(page).toHaveURL(/\/admin\/courses$/);
   await expect(page.locator(".admin-nav-group[open] summary")).toHaveText(/บทเรียนและแหล่งอ้างอิง/);
   await expect(page.locator('.admin-sidebar nav a[aria-current="page"]')).toHaveText(/ชุดบทเรียน/);
+  // The URL changes before the list has rendered; on a slow run axe used to catch the
+  // loading state in between and report a page with no heading. Judge the arrived page.
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
