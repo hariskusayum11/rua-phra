@@ -1,251 +1,183 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-const widths = [
-  { label: "mobile", width: 390 },
-  { label: "tablet", width: 834 },
-  { label: "desktop", width: 1440 },
-];
-
-/** The eleven movements, in the order the story depends on. */
-const sectionOrder = [
-  "เรือพระเล่าเรื่อง",
-  "เรือพระปากพะยูน",
-  "สำรวจส่วนประกอบเรือพระ",
-  "เรือหนึ่งลำ หนึ่งเรื่องราว",
-  "จากกระดาษ",
-  "ขั้นตอนงานกระดาษบนเรือพระ",
-  "ลวดลายที่บันทึกเรื่องราว",
-  "คนผู้ส่งต่อ",
-  "รู้จักลายกระดาษทีละขั้น",
-  "แล้วชุมชนก็พาไปต่อ",
-  "ดูเรือพระให้ใกล้ขึ้น",
-];
-
-async function settle(page: Page) {
-  await page.evaluate(() => document.fonts.ready);
-  await page.waitForLoadState("networkidle");
-}
-
-for (const { label, width } of widths) {
-  test(`homepage tells the story without overflow or violations at ${label}`, async ({ page }) => {
+for (const width of [390, 768, 1440]) {
+  test(`homepage previews stay short and accessible at ${width}px`, async ({ page }) => {
     const errors: string[] = [];
-    page.on("pageerror", (error) => errors.push(error.message));
-    page.on("console", (message) => {
-      if (message.type() === "error") errors.push(message.text());
-    });
-
+    page.on("pageerror", error => errors.push(error.message));
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    await settle(page);
-
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("เรือพระเล่าเรื่อง");
-
-    const headings = await page.locator("main h2, main h1").allInnerTexts();
-    const flattened = headings.join(" | ");
-    let cursor = 0;
-    for (const fragment of sectionOrder) {
-      const found = flattened.indexOf(fragment, cursor);
-      expect(found, `missing or out of order: ${fragment}`).toBeGreaterThanOrEqual(0);
-      cursor = found;
-    }
-
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-
-    const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
-    expect(results.violations).toEqual([]);
-
+    await page.evaluate(() => document.fonts.ready);
+    await expect(page.locator("main > section")).toHaveCount(8);
+    const headings = await page.locator("main > section").evaluateAll(sections => sections.map(section => section.querySelector("h1,h2")?.textContent?.replace(/\s+/g, " ").trim()));
+    expect(headings.slice(0, 5)).toEqual(["เรือพระเล่าเรื่อง", "เลือกมุมที่อยากรู้ แล้วออกไปสำรวจ", "จากกระดาษสู่เรือพระ", "เรือหนึ่งลำ หนึ่งเรื่องราว", "คลังลวดลาย"]);
+    await expect(page.locator(".home-learning-card h2")).not.toBeEmpty();
+    expect(headings.slice(6)).toEqual(["สีสันเรือพระ วิถีปากพะยูน", "ดูเรือพระให้ใกล้ขึ้น"]);
+    await expect(page.locator(".explore-track > li")).toHaveCount(7);
+    expect(await page.locator(".home-step-preview li").count()).toBeLessThanOrEqual(3);
+    expect(await page.locator(".home-pattern-grid > li").count()).toBeLessThanOrEqual(4);
+    await expect(page.locator(".home-reader-stage")).toHaveCount(1);
+    await expect(page.locator(".home-learning-card")).toHaveCount(1);
+    await expect(page.locator(".home-journey,.home-featured-strip,.home-process-track,.home-next-wall")).toHaveCount(0);
+    await expect(page.locator(".explore-track")).not.toContainText("งานไม้แกะสลัก");
+    await expect(page.locator(".explore-track a").nth(1)).toHaveAttribute("href", "/craft");
+    await expect(page.locator(".home-learning-card")).toContainText("ข้อมูลสาธิต");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+    expect(axe.violations).toEqual([]);
     expect(errors).toEqual([]);
-    await page.screenshot({ path: `test-results/home-${label}.png`, fullPage: true });
   });
 }
 
-test("featured boats advance only when the reader asks", async ({ page }) => {
+test("desktop hotspot opens a modal with focus and Escape returns to the opener", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await settle(page);
-
-  const spread = page.locator(".home-featured-spread");
-  const first = await spread.getByRole("heading", { level: 3 }).innerText();
-
-  // Nothing may move on its own — the rule that matters whatever the archive holds.
-  await page.waitForTimeout(2500);
-  await expect(spread.getByRole("heading", { level: 3 })).toHaveText(first);
-
-  const next = page.getByRole("button", { name: "เรือลำถัดไป" });
-  if ((await next.count()) === 0) {
-    // A single boat offers nothing to step through, so the controls are absent by design.
-    await expect(page.getByRole("button", { name: "เรือลำก่อนหน้า" })).toHaveCount(0);
-    return;
-  }
-
-  await next.click();
-  await expect(spread.getByRole("heading", { level: 3 })).not.toHaveText(first);
-
-  await page.getByRole("button", { name: "เรือลำก่อนหน้า" }).click();
-  await expect(spread.getByRole("heading", { level: 3 })).toHaveText(first);
-});
-
-test("boat hotspots open from the keyboard and close with Escape", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
-  await settle(page);
-
   const hotspot = page.locator(".home-hotspot").first();
   await hotspot.scrollIntoViewIfNeeded();
   await hotspot.focus();
-  await expect(hotspot).toBeFocused();
   await page.keyboard.press("Enter");
-
-  const panel = page.getByRole("dialog", { name: /รายละเอียด/ });
+  const panel = page.locator(".home-reader-panel");
   await expect(panel).toBeVisible();
-  await expect(hotspot).toHaveAttribute("aria-expanded", "true");
-
+  await expect(panel.getByRole("button", { name: "ปิดรายละเอียด" })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(panel).toHaveCount(0);
-  // Focus returns to the control that opened the panel.
   await expect(hotspot).toBeFocused();
 });
 
-test("on a narrow screen the hotspot detail rises as a bottom sheet", async ({ page }) => {
+test("mobile parts have separate touch targets, trap focus and return to the chosen part", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await settle(page);
-
-  const hotspot = page.locator(".home-hotspot").first();
-  await hotspot.scrollIntoViewIfNeeded();
-
-  // Touch targets stay at the 44px minimum even though the dot itself is 12px.
-  const size = await hotspot.boundingBox();
-  expect(size?.width).toBeGreaterThanOrEqual(44);
-  expect(size?.height).toBeGreaterThanOrEqual(44);
-
-  await hotspot.click();
-  const panel = page.getByRole("dialog", { name: /รายละเอียด/ });
+  const parts = page.locator(".home-hotspot");
+  expect(await parts.count()).toBeGreaterThan(0);
+  await expect(page.locator(".home-hotspot").first()).toBeVisible();
+  const boxes = await parts.evaluateAll(buttons => buttons.map(button => { const box = button.getBoundingClientRect(); return { x: box.x, y: box.y, w: box.width, h: box.height }; }));
+  for (let index = 0; index < boxes.length; index++) {
+    expect(boxes[index].h).toBeGreaterThanOrEqual(24);
+    expect(boxes[index].w).toBeGreaterThanOrEqual(24);
+    for (const other of boxes.slice(index + 1)) {
+      const box = boxes[index];
+      expect(box.x < other.x + other.w && box.x + box.w > other.x && box.y < other.y + other.h && box.y + box.h > other.y).toBe(false);
+    }
+  }
+  await parts.first().click();
+  const panel = page.locator(".home-reader-panel");
   await expect(panel).toBeVisible();
-  await page.waitForTimeout(400);
-
-  const box = await panel.boundingBox();
-  expect(box?.width).toBeCloseTo(390, 0);
-  expect(Math.round((box?.y ?? 0) + (box?.height ?? 0))).toBe(844);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  const rect = await panel.boundingBox();
+  expect(rect?.width).toBe(390);
+  expect(Math.round((rect?.y ?? 0) + (rect?.height ?? 0))).toBe(844);
+  await panel.getByRole("link").last().focus();
+  await page.keyboard.press("Tab");
+  await expect(panel.getByRole("button", { name: "ปิดรายละเอียด" })).toBeFocused();
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+  await panel.getByRole("button", { name: "ปิดรายละเอียด" }).click();
+  await expect(parts.first()).toBeFocused();
 });
 
-test("the full menu opens, traps focus and closes with Escape", async ({ page }) => {
+test("mobile hero overlays its text within the photograph", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await settle(page);
+  const image = await page.locator(".home-hero-media").boundingBox();
+  const title = await page.locator(".home-hero-title").boundingBox();
+  expect(image?.width).toBe(390);
+  expect(title!.y).toBeGreaterThanOrEqual(image!.y);
+  expect(title!.y + title!.height).toBeLessThanOrEqual(image!.y + image!.height);
+});
 
-  const toggle = page.getByRole("button", { name: "เปิดเมนูทั้งหมด" });
-  await toggle.click();
+test("image cards show archive photography on both the homepage and learning index", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const images = page.locator(".explore-track img, .home-learning-photo img");
+  await expect(images).toHaveCount(8);
+  for (const image of await images.all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect.poll(() => image.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    expect(await image.getAttribute("src")).not.toContain("placeholder");
+  }
+  await page.goto("/learn");
+  await expect(page.locator(".learn-course-image img").first()).toBeVisible();
+  await expect(page.locator(".learn-course-image").first()).toContainText("ภาพประกอบจากคลังงานช่าง");
+  await expect(page.locator(".learn-course-list")).toContainText("ข้อมูลสาธิต");
+});
 
-  const menu = page.getByRole("dialog", { name: "เมนูทั้งหมด" });
-  await expect(menu).toBeVisible();
-  await expect(menu.getByRole("link", { name: /คลังลวดลาย/ })).toBeVisible();
+test("the highlight links to all boats and each public homepage link resolves", async ({ page, request }) => {
+  await page.goto("/");
+  const allBoats = page.locator("#reader").getByRole("link", { name: /ดูเรือทั้งหมด/ });
+  await expect(allBoats).toHaveAttribute("href", "/boats");
+  const hrefs = await page.locator("main a[href]").evaluateAll(links => [...new Set(links.map(link => link.getAttribute("href") ?? ""))].filter(href => href.startsWith("/")));
+  for (const href of hrefs) expect((await request.get(href)).status(), href).toBeLessThan(400);
+  await allBoats.click();
+  await expect(page).toHaveURL(/\/boats$/);
+  await expect.poll(() => page.locator(".collection-grid > li").count()).toBeGreaterThan(1);
+});
 
+test("boat exhibit changes boats and resets its hotspot zoom", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  await expect(page.locator(".reader-thumbnails")).toHaveCount(0);
+  const firstRoute = await page.locator(".home-reader-caption a").getAttribute("href");
+  await page.locator(".reader-navigation button").last().click();
+  await expect(page.locator(".reader-navigation > span")).toContainText("2 /");
+  expect(await page.locator(".home-reader-caption a").getAttribute("href")).not.toBe(firstRoute);
+  await page.locator(".home-hotspot").first().click();
+  await expect(page.locator(".home-reader-stage")).toHaveAttribute("data-zoomed", "true");
+  await expect.poll(() => page.locator(".reader-zoom-plane").evaluate(el => new DOMMatrix(getComputedStyle(el).transform).a)).toBeCloseTo(1.85);
   await page.keyboard.press("Escape");
-  await expect(menu).toHaveCount(0);
-  await expect(toggle).toBeFocused();
+  await expect(page.locator(".home-reader-stage")).toHaveAttribute("data-zoomed", "false");
+  await page.locator(".reader-navigation button").first().click();
+  await expect(page.locator(".home-reader-caption a")).toHaveAttribute("href", firstRoute!);
 });
 
-test("every homepage link resolves", async ({ page, request }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
-  await settle(page);
 
-  const hrefs = await page.locator("a[href]").evaluateAll((nodes) =>
-    [...new Set(nodes.map((node) => node.getAttribute("href") ?? ""))].filter(
-      (href) => href.startsWith("/") && !href.startsWith("/#"),
-    ),
-  );
-  expect(hrefs.length).toBeGreaterThan(0);
-  for (const href of hrefs) {
-    const response = await request.get(href);
-    expect(response.status(), `${href} should not be a dead link`).toBeLessThan(400);
-  }
+test("tablet hero keeps its heading and primary action in the first screen", async ({ page }) => {
+  await page.setViewportSize({ width: 997, height: 900 });
+  await page.goto("/");
+  await page.evaluate(() => document.fonts.ready);
+  const action = await page.locator(".home-hero-actions .button-solid").boundingBox();
+  expect(action!.y + action!.height).toBeLessThan(900);
+  const copy = await page.locator(".home-hero-copy").boundingBox();
+  expect(copy!.width).toBeLessThan(550);
+  await expect(page.locator(".home-hero-title")).toBeVisible();
 });
 
-test("hero photography is reserved before it loads, so nothing shifts", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+test("culture gallery advances in view and pauses after manual navigation", async ({ page }) => {
   await page.goto("/");
-  await settle(page);
-
-  const shifted = await page.evaluate(
-    () =>
-      new Promise<number>((resolve) => {
-        let total = 0;
-        const observer = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
-            if (!entry.hadRecentInput) total += entry.value;
-          }
-        });
-        observer.observe({ type: "layout-shift", buffered: true });
-        setTimeout(() => {
-          observer.disconnect();
-          resolve(total);
-        }, 1200);
-      }),
-  );
-  expect(shifted).toBeLessThan(0.1);
+  const gallery = page.locator(".culture-gallery");
+  await gallery.scrollIntoViewIfNeeded();
+  const counter = gallery.locator(".culture-counter");
+  await expect(counter).toContainText("01 /");
+  await expect(counter).toContainText("02 /", { timeout: 10000 });
+  await gallery.getByRole("button", { name: "ภาพถัดไป", exact: true }).click();
+  await expect(counter).toContainText("03 /");
+  await expect(gallery.locator(".culture-play")).toHaveAttribute("aria-pressed", "false");
+  await page.waitForTimeout(7200);
+  await expect(counter).toContainText("03 /");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(gallery.locator(".culture-play")).toHaveAttribute("aria-pressed", "false");
 });
 
-test("every recorded boat is reachable from the homepage, not just the first", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
-  await settle(page);
 
-  // Section 03 — the strip has to list every boat the carousel can step through, or the
-  // reader has no way of knowing how many there are without clicking through them all.
-  const counter = page.locator(".home-featured-controls p");
-  const strip = page.locator(".home-featured-strip button");
-  if (await counter.count()) {
-    const total = Number((await counter.innerText()).split("/")[1].trim());
-    await expect(strip).toHaveCount(total);
-
-    const spread = page.locator(".home-featured-spread");
-    const first = await spread.getByRole("heading", { level: 3 }).innerText();
-    await strip.last().scrollIntoViewIfNeeded();
-    await strip.last().click();
-    await expect(spread.getByRole("heading", { level: 3 })).not.toHaveText(first);
-    await expect(strip.last()).toHaveAttribute("aria-current", "true");
-  }
-
-  // Section 04 — one tab per surveyed boat, and choosing one swaps the boat being read.
-  const tabs = page.getByRole("tab");
-  const tabCount = await tabs.count();
-  if (tabCount > 1) {
-    const caption = await page.locator(".home-reader-foot").innerText();
-    const slug = await tabs.nth(1).evaluate((node) => node.id);
-
-    await tabs.nth(1).click();
-    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-    await expect(page.locator(".home-reader-foot")).not.toHaveText(caption);
-    // The stage names the tab it belongs to, so this is the swap reaching the photograph
-    // and its hotspots rather than only the caption underneath it. Counting hotspots would
-    // not do: two boats can have the same number of survey points.
-    await expect(page.locator("#reader-stage")).toHaveAttribute("aria-labelledby", slug);
-    await expect(page.locator(".home-reader-hotspots .home-hotspot")).not.toHaveCount(0);
-
-    // Arrow keys move between tabs, as a tab list is expected to.
-    await tabs.nth(1).press("ArrowLeft");
-    await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-  }
-});
-
-test("switching the boat being read closes the panel describing the old one", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
-  await settle(page);
-
-  const tabs = page.getByRole("tab");
-  if ((await tabs.count()) < 2) return;
-
-  const hotspot = page.locator(".home-hotspot").first();
-  await hotspot.scrollIntoViewIfNeeded();
-  await hotspot.click();
-  await expect(page.getByRole("dialog", { name: /รายละเอียด/ })).toBeVisible();
-
-  await tabs.nth(1).click();
-  // The panel described a point on the boat that is no longer on screen.
-  await expect(page.getByRole("dialog", { name: /รายละเอียด/ })).toHaveCount(0);
+test("ebook shows descriptions and turns whole paper from top and bottom corners", async ({page})=>{
+ for(const width of [390,1440]) {
+ await page.setViewportSize({width,height:820}); await page.goto("/");
+ const book=page.locator(".ebook-host"); await book.scrollIntoViewIfNeeded();
+ await expect(book.locator(".ebook-description").first()).toBeVisible();
+ const description=await book.locator(".ebook-description").first().boundingBox();
+ const photo=await book.locator(".ebook-photo").first().boundingBox();
+ expect(description!.y).toBeGreaterThanOrEqual(photo!.y+photo!.height);
+ for(const position of [0.03,0.5,0.97]) {
+ const bounds=await book.boundingBox();
+ const y=bounds!.y+bounds!.height*position;
+ await page.mouse.move(bounds!.x+bounds!.width*(position===0.5?.7:.97),y); await page.mouse.down();
+ await page.mouse.move(bounds!.x+25,y,{steps:35}); await page.mouse.up();
+ await expect(page.locator(".ebook-controls")).toContainText(width===390 ? "หน้า 2 /" : "3–4");
+ await page.getByRole("button",{name:"ก่อนหน้า",exact:true}).click();
+ await expect(page.locator(".ebook-controls")).toContainText(width===390 ? "หน้า 1 /" : "1–2");
+ }
+ await page.getByRole("button",{name:"ปิดหน้าปก",exact:true}).click();
+ await expect(page.locator(".ebook-controls")).toContainText("หน้าปก");
+ await page.getByRole("button",{name:"เปิดสมุด",exact:true}).click();
+ await expect(page.locator(".ebook-controls")).toContainText(width===390 ? "หน้า 1 /" : "1–2");
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+ }
 });

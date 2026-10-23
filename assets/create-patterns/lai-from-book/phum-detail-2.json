@@ -1,0 +1,1098 @@
+{
+  "name": "phum-detail-2",
+  "viewBox": [
+    0,
+    0,
+    1000,
+    1457
+  ],
+  "hole_count": 81,
+  "motifs": {
+    "m01": [
+      "hole-01"
+    ],
+    "m02": [
+      "hole-02",
+      "hole-03",
+      "hole-04",
+      "hole-05",
+      "hole-06",
+      "hole-07"
+    ],
+    "m03": [
+      "hole-08"
+    ],
+    "m04": [
+      "hole-09",
+      "hole-10",
+      "hole-11",
+      "hole-12",
+      "hole-13"
+    ],
+    "m05": [
+      "hole-14"
+    ],
+    "m06": [
+      "hole-15",
+      "hole-16",
+      "hole-17",
+      "hole-18"
+    ],
+    "m07": [
+      "hole-19"
+    ],
+    "m08": [
+      "hole-20"
+    ],
+    "m09": [
+      "hole-21"
+    ],
+    "m10": [
+      "hole-22",
+      "hole-23",
+      "hole-24",
+      "hole-25",
+      "hole-26",
+      "hole-27",
+      "hole-28",
+      "hole-29",
+      "hole-30",
+      "hole-31",
+      "hole-32",
+      "hole-33",
+      "hole-34",
+      "hole-35",
+      "hole-36",
+      "hole-37",
+      "hole-38",
+      "hole-39",
+      "hole-40",
+      "hole-41",
+      "hole-42",
+      "hole-43",
+      "hole-44",
+      "hole-45",
+      "hole-46",
+      "hole-47",
+      "hole-48",
+      "hole-49",
+      "hole-50",
+      "hole-51",
+      "hole-52",
+      "hole-53",
+      "hole-54",
+      "hole-55",
+      "hole-56",
+      "hole-57",
+      "hole-58",
+      "hole-59",
+      "hole-60",
+      "hole-61",
+      "hole-62",
+      "hole-63",
+      "hole-64",
+      "hole-65",
+      "hole-66",
+      "hole-67",
+      "hole-68",
+      "hole-69",
+      "hole-70",
+      "hole-71",
+      "hole-72",
+      "hole-73",
+      "hole-74",
+      "hole-75",
+      "hole-76"
+    ],
+    "m11": [
+      "hole-77"
+    ],
+    "m12": [
+      "hole-78",
+      "hole-79",
+      "hole-80",
+      "hole-81"
+    ]
+  },
+  "groups": {
+    "g2": [
+      "hole-01",
+      "hole-02",
+      "hole-03",
+      "hole-04",
+      "hole-05",
+      "hole-06",
+      "hole-07",
+      "hole-08",
+      "hole-09",
+      "hole-10",
+      "hole-11",
+      "hole-12",
+      "hole-13",
+      "hole-14",
+      "hole-15",
+      "hole-16",
+      "hole-17",
+      "hole-18",
+      "hole-19",
+      "hole-20",
+      "hole-21",
+      "hole-22",
+      "hole-24",
+      "hole-25",
+      "hole-26",
+      "hole-27",
+      "hole-28",
+      "hole-30",
+      "hole-34",
+      "hole-35",
+      "hole-37",
+      "hole-38",
+      "hole-40",
+      "hole-44",
+      "hole-45",
+      "hole-47",
+      "hole-49",
+      "hole-51",
+      "hole-58",
+      "hole-60",
+      "hole-62",
+      "hole-63",
+      "hole-64",
+      "hole-65",
+      "hole-66",
+      "hole-67",
+      "hole-69",
+      "hole-72",
+      "hole-73",
+      "hole-74",
+      "hole-75",
+      "hole-77",
+      "hole-78",
+      "hole-79",
+      "hole-80"
+    ],
+    "g1": [
+      "hole-23",
+      "hole-29",
+      "hole-31",
+      "hole-32",
+      "hole-33",
+      "hole-36",
+      "hole-39",
+      "hole-41",
+      "hole-42",
+      "hole-43",
+      "hole-46",
+      "hole-48",
+      "hole-50",
+      "hole-52",
+      "hole-53",
+      "hole-54",
+      "hole-55",
+      "hole-56",
+      "hole-57",
+      "hole-59",
+      "hole-61",
+      "hole-68",
+      "hole-70",
+      "hole-71",
+      "hole-76",
+      "hole-81"
+    ]
+  },
+  "craftsman_palette": null,
+  "holes": [
+    {
+      "id": "hole-01",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 1550.0,
+      "center": [
+        432.9,
+        209.3
+      ]
+    },
+    {
+      "id": "hole-02",
+      "group": "g2",
+      "motif": "m02",
+      "color": null,
+      "area": 903.0,
+      "center": [
+        506.2,
+        97.9
+      ]
+    },
+    {
+      "id": "hole-03",
+      "group": "g2",
+      "motif": "m02",
+      "color": null,
+      "area": 958.0,
+      "center": [
+        541.3,
+        143.4
+      ]
+    },
+    {
+      "id": "hole-04",
+      "group": "g2",
+      "motif": "m02",
+      "color": null,
+      "area": 1435.0,
+      "center": [
+        583.2,
+        216.2
+      ]
+    },
+    {
+      "id": "hole-05",
+      "group": "g2",
+      "motif": "m02",
+      "color": null,
+      "area": 789.0,
+      "center": [
+        533.8,
+        235.0
+      ]
+    },
+    {
+      "id": "hole-06",
+      "group": "g2",
+      "motif": "m02",
+      "color": null,
+      "area": 581.0,
+      "center": [
+        568.1,
+        267.8
+      ]
+    },
+    {
+      "id": "hole-07",
+      "group": "g2",
+      "motif": "m02",
+      "color": null,
+      "area": 840.0,
+      "center": [
+        504.3,
+        305.9
+      ]
+    },
+    {
+      "id": "hole-08",
+      "group": "g2",
+      "motif": "m03",
+      "color": null,
+      "area": 1150.0,
+      "center": [
+        358.3,
+        334.7
+      ]
+    },
+    {
+      "id": "hole-09",
+      "group": "g2",
+      "motif": "m04",
+      "color": null,
+      "area": 1689.0,
+      "center": [
+        666.0,
+        343.9
+      ]
+    },
+    {
+      "id": "hole-10",
+      "group": "g2",
+      "motif": "m04",
+      "color": null,
+      "area": 605.0,
+      "center": [
+        591.5,
+        360.4
+      ]
+    },
+    {
+      "id": "hole-11",
+      "group": "g2",
+      "motif": "m04",
+      "color": null,
+      "area": 859.0,
+      "center": [
+        456.7,
+        403.3
+      ]
+    },
+    {
+      "id": "hole-12",
+      "group": "g2",
+      "motif": "m04",
+      "color": null,
+      "area": 875.0,
+      "center": [
+        550.0,
+        400.8
+      ]
+    },
+    {
+      "id": "hole-13",
+      "group": "g2",
+      "motif": "m04",
+      "color": null,
+      "area": 1073.0,
+      "center": [
+        508.1,
+        434.5
+      ]
+    },
+    {
+      "id": "hole-14",
+      "group": "g2",
+      "motif": "m05",
+      "color": null,
+      "area": 517.0,
+      "center": [
+        181.7,
+        630.5
+      ]
+    },
+    {
+      "id": "hole-15",
+      "group": "g2",
+      "motif": "m06",
+      "color": null,
+      "area": 1042.0,
+      "center": [
+        290.2,
+        456.3
+      ]
+    },
+    {
+      "id": "hole-16",
+      "group": "g2",
+      "motif": "m06",
+      "color": null,
+      "area": 653.0,
+      "center": [
+        254.6,
+        490.1
+      ]
+    },
+    {
+      "id": "hole-17",
+      "group": "g2",
+      "motif": "m06",
+      "color": null,
+      "area": 540.0,
+      "center": [
+        306.1,
+        499.5
+      ]
+    },
+    {
+      "id": "hole-18",
+      "group": "g2",
+      "motif": "m06",
+      "color": null,
+      "area": 691.0,
+      "center": [
+        307.9,
+        573.3
+      ]
+    },
+    {
+      "id": "hole-19",
+      "group": "g2",
+      "motif": "m07",
+      "color": null,
+      "area": 1355.0,
+      "center": [
+        507.6,
+        683.5
+      ]
+    },
+    {
+      "id": "hole-20",
+      "group": "g2",
+      "motif": "m08",
+      "color": null,
+      "area": 753.0,
+      "center": [
+        616.3,
+        549.5
+      ]
+    },
+    {
+      "id": "hole-21",
+      "group": "g2",
+      "motif": "m09",
+      "color": null,
+      "area": 579.0,
+      "center": [
+        823.1,
+        588.5
+      ]
+    },
+    {
+      "id": "hole-22",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1073.0,
+      "center": [
+        708.0,
+        483.6
+      ]
+    },
+    {
+      "id": "hole-23",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2301.0,
+      "center": [
+        756.3,
+        515.0
+      ]
+    },
+    {
+      "id": "hole-24",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 559.0,
+      "center": [
+        443.4,
+        558.8
+      ]
+    },
+    {
+      "id": "hole-25",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 2344.0,
+      "center": [
+        505.4,
+        563.3
+      ]
+    },
+    {
+      "id": "hole-26",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 506.0,
+      "center": [
+        708.0,
+        569.8
+      ]
+    },
+    {
+      "id": "hole-27",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 997.0,
+      "center": [
+        449.6,
+        623.8
+      ]
+    },
+    {
+      "id": "hole-28",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 889.0,
+      "center": [
+        564.2,
+        622.3
+      ]
+    },
+    {
+      "id": "hole-29",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1121.0,
+      "center": [
+        693.0,
+        628.6
+      ]
+    },
+    {
+      "id": "hole-30",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 556.0,
+      "center": [
+        278.8,
+        662.6
+      ]
+    },
+    {
+      "id": "hole-31",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1978.0,
+      "center": [
+        746.0,
+        678.4
+      ]
+    },
+    {
+      "id": "hole-32",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2642.0,
+      "center": [
+        414.9,
+        711.0
+      ]
+    },
+    {
+      "id": "hole-33",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2133.0,
+      "center": [
+        600.5,
+        701.6
+      ]
+    },
+    {
+      "id": "hole-34",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 3233.0,
+      "center": [
+        894.7,
+        727.7
+      ]
+    },
+    {
+      "id": "hole-35",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 3973.0,
+      "center": [
+        118.2,
+        746.0
+      ]
+    },
+    {
+      "id": "hole-36",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1927.0,
+      "center": [
+        254.4,
+        740.3
+      ]
+    },
+    {
+      "id": "hole-37",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1216.0,
+      "center": [
+        669.9,
+        758.4
+      ]
+    },
+    {
+      "id": "hole-38",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 542.0,
+      "center": [
+        719.2,
+        753.0
+      ]
+    },
+    {
+      "id": "hole-39",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1978.0,
+      "center": [
+        774.3,
+        752.8
+      ]
+    },
+    {
+      "id": "hole-40",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1301.0,
+      "center": [
+        345.5,
+        761.5
+      ]
+    },
+    {
+      "id": "hole-41",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1455.0,
+      "center": [
+        213.2,
+        792.8
+      ]
+    },
+    {
+      "id": "hole-42",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2515.0,
+      "center": [
+        830.7,
+        800.2
+      ]
+    },
+    {
+      "id": "hole-43",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 3637.0,
+      "center": [
+        159.7,
+        836.7
+      ]
+    },
+    {
+      "id": "hole-44",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1034.0,
+      "center": [
+        314.9,
+        837.8
+      ]
+    },
+    {
+      "id": "hole-45",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 820.0,
+      "center": [
+        356.0,
+        853.2
+      ]
+    },
+    {
+      "id": "hole-46",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1275.0,
+      "center": [
+        433.2,
+        843.6
+      ]
+    },
+    {
+      "id": "hole-47",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 996.0,
+      "center": [
+        501.3,
+        843.7
+      ]
+    },
+    {
+      "id": "hole-48",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2672.0,
+      "center": [
+        569.0,
+        848.8
+      ]
+    },
+    {
+      "id": "hole-49",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1455.0,
+      "center": [
+        647.6,
+        850.3
+      ]
+    },
+    {
+      "id": "hole-50",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2691.0,
+      "center": [
+        80.8,
+        862.7
+      ]
+    },
+    {
+      "id": "hole-51",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 633.0,
+      "center": [
+        245.0,
+        872.6
+      ]
+    },
+    {
+      "id": "hole-52",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 8787.0,
+      "center": [
+        832.2,
+        880.1
+      ]
+    },
+    {
+      "id": "hole-53",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1624.0,
+      "center": [
+        356.1,
+        917.7
+      ]
+    },
+    {
+      "id": "hole-54",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 8813.0,
+      "center": [
+        680.2,
+        924.6
+      ]
+    },
+    {
+      "id": "hole-55",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 7959.0,
+      "center": [
+        168.2,
+        944.3
+      ]
+    },
+    {
+      "id": "hole-56",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2463.0,
+      "center": [
+        345.8,
+        958.0
+      ]
+    },
+    {
+      "id": "hole-57",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2720.0,
+      "center": [
+        456.8,
+        951.1
+      ]
+    },
+    {
+      "id": "hole-58",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 2567.0,
+      "center": [
+        551.4,
+        946.9
+      ]
+    },
+    {
+      "id": "hole-59",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 3300.0,
+      "center": [
+        857.4,
+        951.4
+      ]
+    },
+    {
+      "id": "hole-60",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 592.0,
+      "center": [
+        390.2,
+        1000.5
+      ]
+    },
+    {
+      "id": "hole-61",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 2482.0,
+      "center": [
+        649.0,
+        1007.7
+      ]
+    },
+    {
+      "id": "hole-62",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 2542.0,
+      "center": [
+        836.3,
+        1018.1
+      ]
+    },
+    {
+      "id": "hole-63",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1427.0,
+      "center": [
+        178.7,
+        1036.7
+      ]
+    },
+    {
+      "id": "hole-64",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 838.0,
+      "center": [
+        385.7,
+        1057.7
+      ]
+    },
+    {
+      "id": "hole-65",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1014.0,
+      "center": [
+        444.6,
+        1046.0
+      ]
+    },
+    {
+      "id": "hole-66",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1724.0,
+      "center": [
+        503.5,
+        1040.9
+      ]
+    },
+    {
+      "id": "hole-67",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 535.0,
+      "center": [
+        709.4,
+        1055.8
+      ]
+    },
+    {
+      "id": "hole-68",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1570.0,
+      "center": [
+        647.7,
+        1076.5
+      ]
+    },
+    {
+      "id": "hole-69",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1517.0,
+      "center": [
+        228.6,
+        1080.5
+      ]
+    },
+    {
+      "id": "hole-70",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1832.0,
+      "center": [
+        775.0,
+        1090.0
+      ]
+    },
+    {
+      "id": "hole-71",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1150.0,
+      "center": [
+        518.9,
+        1100.2
+      ]
+    },
+    {
+      "id": "hole-72",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 2442.0,
+      "center": [
+        293.7,
+        1129.3
+      ]
+    },
+    {
+      "id": "hole-73",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1751.0,
+      "center": [
+        704.5,
+        1146.5
+      ]
+    },
+    {
+      "id": "hole-74",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 2160.0,
+      "center": [
+        346.2,
+        1185.0
+      ]
+    },
+    {
+      "id": "hole-75",
+      "group": "g2",
+      "motif": "m10",
+      "color": null,
+      "area": 1327.0,
+      "center": [
+        644.4,
+        1190.2
+      ]
+    },
+    {
+      "id": "hole-76",
+      "group": "g1",
+      "motif": "m10",
+      "color": null,
+      "area": 1066.0,
+      "center": [
+        587.9,
+        1210.2
+      ]
+    },
+    {
+      "id": "hole-77",
+      "group": "g2",
+      "motif": "m11",
+      "color": null,
+      "area": 622.0,
+      "center": [
+        473.0,
+        1204.4
+      ]
+    },
+    {
+      "id": "hole-78",
+      "group": "g2",
+      "motif": "m12",
+      "color": null,
+      "area": 1336.0,
+      "center": [
+        450.8,
+        1295.6
+      ]
+    },
+    {
+      "id": "hole-79",
+      "group": "g2",
+      "motif": "m12",
+      "color": null,
+      "area": 1083.0,
+      "center": [
+        511.3,
+        1291.3
+      ]
+    },
+    {
+      "id": "hole-80",
+      "group": "g2",
+      "motif": "m12",
+      "color": null,
+      "area": 791.0,
+      "center": [
+        572.1,
+        1294.3
+      ]
+    },
+    {
+      "id": "hole-81",
+      "group": "g1",
+      "motif": "m12",
+      "color": null,
+      "area": 1721.0,
+      "center": [
+        509.2,
+        1347.2
+      ]
+    }
+  ]
+}

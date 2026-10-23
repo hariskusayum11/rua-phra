@@ -20,7 +20,6 @@ const doors = [
   { href: "/craft", icon: ScrollText, label: "จากกระดาษสู่เรือพระ", note: "ขั้นตอนงานช่างตั้งแต่เตรียมวัสดุจนประดับบนเรือ" },
   { href: "/masters", icon: Users, label: "ช่างผู้สืบสาน", note: "คนที่ยังทำงานนี้อยู่ในปากพะยูน" },
   { href: "/learn", icon: BookOpenText, label: "บทเรียน", note: "เรียนตามจังหวะตัวเอง ไม่ต้องสมัครสมาชิก" },
-  { href: "/#procession", icon: Play, label: "วันชักพระ", note: "วิดีโอจากพื้นที่จริง" },
   { href: "/competition", icon: Trophy, label: "ผลการประกวด", note: "เรือพระที่ติดอันดับ ตั้งแต่ปีแรกที่ชิงถ้วยพระราชทาน" },
 ];
 
@@ -105,7 +104,13 @@ export default async function ExhibitionPage() {
       <nav className="shell exhibit-doors" aria-label="เข้าดูส่วนต่าง ๆ ของคลัง">
         <h2>เข้าดูได้เลย</h2>
         <ul>
-          {doors.map(({ href, icon: Icon, label, note }) => (
+          {[
+            ...doors.slice(0, 5),
+            ...(content.processionHref
+              ? [{ href: content.processionHref, icon: Play, label: "วันชักพระ", note: "วิดีโอจากพื้นที่จริง" }]
+              : []),
+            ...doors.slice(5),
+          ].map(({ href, icon: Icon, label, note }) => (
             <li key={href}>
               <Link href={href}>
                 <Icon aria-hidden="true" />

@@ -6,13 +6,20 @@ const imageSelect = { id: true, url: true, alt: true, width: true, height: true,
 
 /** Every course that has lessons, real ones ahead of fixtures. */
 export async function getCourseIndex() {
-  return getDb().course.findMany({
+  const db = getDb();
+  const [courses, illustration] = await Promise.all([db.course.findMany({
     orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
     select: {
       slug: true, title: true, description: true, isDemo: true,
       _count: { select: { lessons: true } },
     },
-  });
+  }), db.processStep.findFirst({
+    where: { isDemo: false, coverMedia: { is: { isDemo: false, url: { not: null } } } },
+    orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+    select: { coverMedia: { select: imageSelect } },
+  })]);
+  // An explicitly labelled illustration from the field archive, not a course cover claim.
+  return courses.map(course => ({ ...course, illustration: illustration?.coverMedia ?? null }));
 }
 
 export async function getCourseDetail(slug: string) {

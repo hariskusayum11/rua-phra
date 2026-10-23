@@ -5,6 +5,7 @@ import "@fontsource/ibm-plex-sans-thai/600.css";
 import "@fontsource/noto-sans-thai/400.css";
 import "@fontsource/noto-sans-thai/500.css";
 import "@fontsource/ibm-plex-sans-thai/700.css";
+import "@fontsource/noto-serif-thai/600.css";
 import "./globals.css";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";

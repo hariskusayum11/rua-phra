@@ -1,186 +1,87 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUpRight, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { MediaFrame } from "@/components/media/media-frame";
 import type { HomeBoat } from "@/lib/services/home";
 
-/**
- * Section 04 — the boat reader.
- *
- * Hotspots are real buttons, reachable and operable from the keyboard. The panel is not
- * modal: it sits next to the image on a wide screen and rises as a sheet on a narrow one,
- * and it follows the buttons in document order so tabbing stays predictable.
- *
- * Every surveyed boat is reachable from here. Showing one and leaving the others to be
- * found elsewhere made the survey work look like it had been done once; the chooser is the
- * only place on the page that says how many boats have actually been read through.
- */
-export function BoatReader({ boats }: { boats: HomeBoat[] }) {
-  const [chosen, setChosen] = useState(0);
+export function BoatReader({ boats, total }: { boats: HomeBoat[]; total: number }) {
+  const [boatIndex, setBoatIndex] = useState(0);
+  const boat = boats[boatIndex] ?? null;
+  function selectBoat(index: number) { setActiveId(null); setBoatIndex(index); }
   const [activeId, setActiveId] = useState<string | null>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const hotspotRefs = useRef(new Map<string, HTMLButtonElement>());
-
-  const close = useCallback(() => {
-    const previous = activeId;
-    setActiveId(null);
-    if (previous) hotspotRefs.current.get(previous)?.focus();
-  }, [activeId]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLButtonElement | null>(null);
+  const active = boat?.sections.find(section => section.id === activeId) ?? null;
 
   useEffect(() => {
-    if (!activeId) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
+    if (!active || !dialogRef.current) return;
+    dialogRef.current.showModal();
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflow;
+      openerRef.current?.focus({ preventScroll: true });
     };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [activeId, close]);
+  }, [active]);
 
-  const boat = boats[chosen] ?? null;
-
-  function choose(index: number) {
-    // The open panel describes a hotspot on the boat being replaced, so it goes with it.
-    setActiveId(null);
-    setChosen(index);
+  function open(id: string, button: HTMLButtonElement) {
+    openerRef.current = button;
+    stageRef.current?.closest("section")?.scrollIntoView({ block: "start", behavior: "instant" });
+    setActiveId(id);
   }
-
-  if (!boat) {
-    return (
-      <section className="home-reader" id="reader" aria-labelledby="reader-title">
-        <div className="shell">
-          <p className="section-index">อ่านเรือพระ</p>
-          <h2 id="reader-title">สำรวจส่วนประกอบเรือพระ</h2>
-          <p className="empty-note">ยังไม่มีเรือที่บันทึกทั้งภาพและจุดสำรวจไว้ครบ จุดอ่านเรือจะเปิดใช้งานเมื่อข้อมูลพร้อม</p>
-        </div>
-      </section>
-    );
-  }
-
-  const active = boat.sections.find((section) => section.id === activeId) ?? null;
-  const activeIndex = active ? boat.sections.indexOf(active) : -1;
 
   return (
-    <section className="home-reader" id="reader" aria-labelledby="reader-title">
-      <div className="shell home-reader-head">
-        <p className="section-index">อ่านเรือพระ</p>
-        <h2 id="reader-title">
-          สำรวจส่วนประกอบเรือพระ
-        </h2>
-        <p className="lead">แตะจุดบนภาพเพื่อดูชื่อส่วนประกอบและภาพระยะใกล้</p>
-      </div>
-
-      {boats.length > 1 && (
-        <div className="shell">
-          {/* A scrolling row rather than a dropdown: the number of boats is the point, and
-              a closed dropdown shows one name and hides the count. */}
-          <div className="home-reader-switch" role="tablist" aria-label="เลือกเรือพระที่จะอ่าน">
-            {boats.map((option, index) => (
-              <button
-                key={option.slug}
-                type="button"
-                role="tab"
-                id={`reader-tab-${option.slug}`}
-                aria-selected={index === chosen}
-                aria-controls="reader-stage"
-                tabIndex={index === chosen ? 0 : -1}
-                onClick={() => choose(index)}
-                onKeyDown={(event) => {
-                  const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-                  if (!step) return;
-                  event.preventDefault();
-                  const next = (index + step + boats.length) % boats.length;
-                  choose(next);
-                  document.getElementById(`reader-tab-${boats[next].slug}`)?.focus();
-                }}
-              >
-                <span>{option.temple.name}</span>
-                <small>พ.ศ. {option.year} · {option.sections.length} จุด</small>
-              </button>
-            ))}
-          </div>
+    <section className="home-reader reader-exhibit on-dark home-section" id="reader" aria-labelledby="reader-title">
+      <div className="shell reader-exhibit-inner">
+        <div className="home-section-heading-row">
+          <div className="home-section-head"><p className="section-index">เรื่องเล่าเรือพระ</p><h2 id="reader-title">เรือหนึ่งลำ หนึ่งเรื่องราว</h2><p>เลือกส่วนประกอบเพื่อดูภาพระยะใกล้ แล้วอ่านรายละเอียดต่อในหน้าเรือ</p></div>
+          <Link className="editorial-link" href="/boats">ดูเรือทั้งหมด{total > 0 ? ` ${total} ลำ` : ""}<ArrowUpRight aria-hidden="true" /></Link>
         </div>
-      )}
-
-      <div className="shell home-reader-stage-wrap">
-        <div className="home-reader-stage" id="reader-stage" role="tabpanel" aria-labelledby={boats.length > 1 ? `reader-tab-${boat.slug}` : undefined}>
-          <MediaFrame
-            key={boat.slug}
-            image={boat.coverMedia}
-            ratio="16/9"
-            sizes="(max-width: 63.99rem) 100vw, 1280px"
-            className="home-reader-image"
-          />
-          <div className="home-reader-hotspots">
-            {boat.sections.map((section, index) => (
-              <button
-                key={section.id}
-                ref={(node) => {
-                  if (node) hotspotRefs.current.set(section.id, node);
-                  else hotspotRefs.current.delete(section.id);
-                }}
-                type="button"
-                className="home-hotspot"
-                style={{ left: `${section.x}%`, top: `${section.y}%`, animationDelay: `${index * 850}ms` }}
-                data-active={section.id === activeId}
-                aria-expanded={section.id === activeId}
-                aria-controls="reader-panel"
-                onClick={() => setActiveId(section.id === activeId ? null : section.id)}
-              >
-                <span className="home-hotspot-dot" aria-hidden="true" />
-                <span className="sr-only">{`จุดที่ ${index + 1}: ${section.name}`}</span>
-                <span className="home-hotspot-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              </button>
-            ))}
+        {boat ? <>
+          <div className="reader-gallery">
+          <MediaFrame image={boat.coverMedia} ratio="fill" sizes="100vw" decorative className="reader-full-background" />
+          {boats.length > 1 && <div className="reader-navigation"><button type="button" aria-label="เรือก่อนหน้า" onClick={() => selectBoat((boatIndex - 1 + boats.length) % boats.length)}><ChevronLeft aria-hidden="true" /></button><span aria-live="polite">{boatIndex + 1} / {boats.length}</span><button type="button" aria-label="เรือถัดไป" onClick={() => selectBoat((boatIndex + 1) % boats.length)}><ChevronRight aria-hidden="true" /></button></div>}
+          <div ref={stageRef} className="home-reader-stage" data-zoomed={!!active}>
+          <div className="reader-zoom-plane" style={{ transformOrigin: active ? `${active.x}% ${active.y}%` : "50% 50%", transform: active ? "scale(1.85)" : "scale(1)" }}>
+          <div className="reader-photo-plane" style={{ aspectRatio: boat.coverMedia?.width && boat.coverMedia?.height ? `${boat.coverMedia.width}/${boat.coverMedia.height}` : "16/9" }}>
+            <MediaFrame image={boat.coverMedia} ratio="fill" sizes="100vw" className="home-reader-image" />
+            <div className="home-reader-hotspots">{boat.sections.map((section, index) => (
+              <div key={section.id} className="home-hotspot-position" style={{ left: `${section.x}%`, top: `${section.y}%` }}>
+                <span className="home-hotspot-marker" aria-hidden="true">{index + 1}</span>
+                <button type="button" className="home-hotspot" data-active={section.id === activeId} aria-label={`จุดที่ ${index + 1}: ${section.name}`} aria-haspopup="dialog" aria-expanded={section.id === activeId} onClick={event => open(section.id, event.currentTarget)}><span>{index + 1}</span></button>
+              </div>
+            ))}</div>
           </div>
-        </div>
-
-        {active && (
-          <div
-            id="reader-panel"
-            ref={panelRef}
-            className="home-reader-panel"
-            role="dialog"
-            aria-label={`รายละเอียด ${active.name}`}
-          >
-            <div className="home-reader-panel-head">
-              <p className="section-index">{String(activeIndex + 1).padStart(2, "0")} / {active.name}</p>
-              <button type="button" className="home-reader-close" onClick={close}>
-                <X aria-hidden="true" />
-                <span className="sr-only">ปิดรายละเอียด</span>
-              </button>
-            </div>
-
-            <MediaFrame
-              image={active.closeupMedia}
-              ratio="16/9"
-              sizes="(max-width: 63.99rem) 100vw, 26rem"
-              emptyLabel="ภาพระยะใกล้อยู่ระหว่างการบันทึก"
-            />
-
-            <p className="home-reader-panel-text">{active.description}</p>
-            {active.meaning && <p className="home-reader-panel-meaning">{active.meaning}</p>}
-
-            {active.patterns.length > 0 && (
-              <p className="home-reader-panel-patterns">
-                <span>ลวดลายที่พบ</span>
-                {active.patterns.map(({ pattern }) => pattern.localName || pattern.name).join(" · ")}
-              </p>
-            )}
-
-            <Link className="editorial-link" href={`/boats/${boat.slug}`}>
-              ดูเรือลำนี้
-              <ArrowUpRight aria-hidden="true" />
-            </Link>
+          </div></div></div>
+          <div className="reader-overlay-info"><div className="home-reader-caption"><h3>{boat.name} · พ.ศ. {boat.year}</h3><Link className="editorial-link" href={`/boats/${boat.slug}`}>ดูรายละเอียดเรือลำนี้<ArrowRight aria-hidden="true" /></Link></div>
+          {boat.summary && <p className="reader-boat-summary">{boat.summary}</p>}
           </div>
-        )}
+        </> : <p className="empty-note">ยังไม่มีเรือที่บันทึกภาพและจุดสำรวจไว้พร้อมแสดง</p>}
       </div>
-
-      <p className="shell home-reader-foot caption">
-        {boat.name} · {boat.temple.name} · พ.ศ. {boat.year}
-        {boat.isDemo ? " · ข้อมูลสาธิต" : ""}
-      </p>
+      {active && boat && <dialog ref={dialogRef} className="home-reader-panel reader-exhibit-panel" aria-labelledby="reader-panel-title"
+        onCancel={event => { event.preventDefault(); setActiveId(null); }}
+        onClose={() => setActiveId(null)}
+        onClick={event => { if (event.target === event.currentTarget) setActiveId(null); }}
+        onKeyDown={event => {
+          if (event.key !== "Tab") return;
+          const controls = event.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex="0"]');
+          const first = controls[0];
+          const last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+          if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+        }}>
+        <div className="home-reader-panel-head"><p className="section-index">ส่วนประกอบเรือพระ</p><button type="button" className="home-reader-close" onClick={() => setActiveId(null)} aria-label="ปิดรายละเอียด" autoFocus><X aria-hidden="true" /></button></div>
+        <MediaFrame image={active.closeupMedia} ratio="16/9" sizes="(max-width: 767px) 100vw, 460px" emptyLabel="ยังไม่มีภาพระยะใกล้ของส่วนนี้" />
+        <h3 id="reader-panel-title">{active.name}</h3>
+        <p className="caption">{active.verification?.status === "VERIFIED" || active.verification?.status === "PUBLISHED" ? "ตรวจสอบแล้ว" : "บันทึกภาคสนาม · รอการตรวจสอบร่วมกับช่าง"}</p>
+        <p className="home-reader-panel-text">{active.description}</p>
+        {active.meaning && <p className="home-reader-panel-text">{active.meaning}</p>}
+        {active.patterns.length > 0 && <div className="home-reader-panel-patterns"><p>ลวดลายที่เกี่ยวข้อง</p>{active.patterns.map(({ pattern }) => <Link key={pattern.slug} href={`/patterns/${pattern.slug}`}>{pattern.localName || pattern.name}<ArrowUpRight aria-hidden="true" /></Link>)}</div>}
+        <Link className="editorial-link" href={`/boats/${boat.slug}`}>ดูรายละเอียดเรือลำนี้<ArrowRight aria-hidden="true" /></Link>
+      </dialog>}
     </section>
   );
 }

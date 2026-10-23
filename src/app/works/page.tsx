@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import "./works-index.css";
 import { connection } from "next/server";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Palette } from "lucide-react";
 import { BackNav } from "@/components/site/back-nav";
-import { PageHeader } from "@/components/site/page-header";
+import { PageCrumbs } from "@/components/site/page-header";
 import { getWorkIndex } from "@/lib/services/collections";
 
 export const metadata: Metadata = {
@@ -23,15 +25,23 @@ export default async function WorksPage() {
   const works = await getWorkIndex();
 
   return (
-    <main id="main-content" className="collection-page" tabIndex={-1}>
-      <PageHeader
-        label="ผลงานคนรุ่นใหม่"
-        lead="ผลงานที่ผู้เรียนออกแบบโดยตีความจากลวดลายเรือพระ แต่ละชิ้นบอกว่าได้แรงบันดาลใจจากลายใด"
-      />
+    <main id="main-content" className="works-index" tabIndex={-1}>
+      <header className="works-hero">
+        <Image src="/photos/works-banner.webp" alt="" fill priority sizes="100vw" />
+        <div className="shell works-hero-copy">
+          <p className="works-eyebrow">✦　ต่อยอดภูมิปัญญา สู่ความคิดสร้างสรรค์</p>
+          <h1>ผลงาน<span>คนรุ่นใหม่</span></h1>
+          <div className="works-gold-rule" aria-hidden="true" />
+          <p>จากแรงบันดาลใจในลวดลายเรือพระปากพะยูน<br />สู่ผลงานสร้างสรรค์ที่เล่าเรื่องในมุมมองใหม่</p>
+        </div>
+        <small className="works-illustration-label">ภาพประกอบแนวคิดการต่อยอดลวดลาย</small>
+      </header>
+      <div className="shell works-intro"><PageCrumbs label="ผลงานคนรุ่นใหม่" /><div><h2>จากลวดลาย สู่แรงบันดาลใจ</h2><p>ผลงานที่ผู้เรียนออกแบบโดยตีความจากลวดลายเรือพระ แต่ละชิ้นบอกว่าได้แรงบันดาลใจจากลายใด</p></div></div>
 
-      <section className="shell" aria-label="ผลงาน">
+      <section className="shell works-library" aria-label="ผลงาน">
         {works.length === 0 ? (
-          <div className="collection-empty">
+          <div className="works-empty">
+            <span className="works-empty-icon"><Palette aria-hidden="true" /></span>
             <h2>ยังไม่มีผลงานที่เผยแพร่</h2>
             <p>
               ผลงานของผู้เรียนจะแสดงที่นี่เมื่อผ่านกิจกรรมการเรียนรู้และได้รับความยินยอมให้เผยแพร่แล้ว
@@ -43,7 +53,7 @@ export default async function WorksPage() {
             </Link>
           </div>
         ) : (
-          <ul className="archive-card-list collection-grid">
+          <ul className="works-cards">
             {works.map((work) => (
               <li key={work.slug}>
                 <article className="collection-work">

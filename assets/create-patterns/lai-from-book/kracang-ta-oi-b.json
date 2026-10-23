@@ -1,0 +1,75 @@
+{
+  "name": "kracang-ta-oi-b",
+  "viewBox": [
+    0,
+    0,
+    1000,
+    990
+  ],
+  "hole_count": 4,
+  "motifs": {
+    "m01": [
+      "hole-01",
+      "hole-02",
+      "hole-03",
+      "hole-04"
+    ]
+  },
+  "groups": {
+    "g2": [
+      "hole-01",
+      "hole-04"
+    ],
+    "g1": [
+      "hole-02",
+      "hole-03"
+    ]
+  },
+  "craftsman_palette": null,
+  "holes": [
+    {
+      "id": "hole-01",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 1745.0,
+      "center": [
+        535.3,
+        522.3
+      ]
+    },
+    {
+      "id": "hole-02",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 483.0,
+      "center": [
+        418.1,
+        637.2
+      ]
+    },
+    {
+      "id": "hole-03",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 55212.0,
+      "center": [
+        520.9,
+        745.0
+      ]
+    },
+    {
+      "id": "hole-04",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 970.0,
+      "center": [
+        688.7,
+        781.4
+      ]
+    }
+  ]
+}

@@ -1,77 +1,22 @@
+﻿import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Reveal } from "@/components/motion/reveal";
+import { ArrowRight, BookOpen, Clapperboard, Lightbulb } from "lucide-react";
 import type { HomeContent } from "@/lib/services/home";
 
-const journey = [
-  "รู้จัก",
-  "เข้าใจเรื่องราว",
-  "รู้จักลวดลาย",
-  "เรียนรู้เครื่องมือ",
-  "ทดลองสร้าง",
-  "สร้างผลงาน",
-];
-
-/**
- * Section 09 — the invitation, placed after the reader already knows what they would be
- * learning. It shows the shape of the journey rather than a wall of course cards.
- */
 export function LearningPath({ course, stepCount }: { course: HomeContent["course"]; stepCount: number }) {
-  const lessonCount = course?.lessonCount ?? 0;
-  // Send the reader to the course only when there is one. Otherwise the recorded process
-  // is the real learning material, and the card says so instead of promising lessons.
-  const href = course ? `/learn/${course.slug}` : "/craft";
-
-  return (
-    <section className="home-learning" id="learning" aria-labelledby="learning-title">
-      <div className="shell home-learning-inner">
-        <div className="home-learning-copy">
-          <Reveal>
-            <p className="section-index">เรียนรู้</p>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 id="learning-title">
-              รู้จักลายกระดาษทีละขั้น
-            </h2>
-          </Reveal>
-          <Reveal delay={140}>
-            <ol className="home-journey">
-              {journey.map((stage, index) => (
-                <li key={stage}>
-                  <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                  {stage}
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-        </div>
-
-        <Reveal className="home-learning-card on-dark" delay={120}>
-          <p className="home-learning-card-kicker">เส้นทางการเรียนรู้</p>
-          {course ? (
-            <>
-              <h3>{course.title}</h3>
-              {course.isDemo && <p className="demo-flag">บทเรียนสาธิต · ใช้ทดลองระบบ ยังไม่ใช่เนื้อหาที่ผ่านการตรวจสอบ</p>}
-              <p className="home-learning-card-text">{course.description}</p>
-              <p className="home-learning-card-count">
-                {lessonCount} บทเรียน · เรียนตามจังหวะของคุณ
-              </p>
-            </>
-          ) : (
-            <>
-              <h3>ลำดับขั้นตอนงานกระดาษ</h3>
-              <p className="home-learning-card-text">
-                ชุดบทเรียนกำลังอยู่ระหว่างการจัดทำ ระหว่างนี้สามารถเรียนรู้จากลำดับขั้นตอนที่บันทึกไว้แล้ว
-              </p>
-              <p className="home-learning-card-count">{stepCount} ขั้นตอน · เรียนตามจังหวะของคุณ</p>
-            </>
-          )}
-          <Link className="button-solid" href={href}>
-            {course?.isDemo ? "ดูบทเรียนสาธิต" : course ? "ดูบทเรียน" : "ดูขั้นตอนงานกระดาษ"}
-            <ArrowRight aria-hidden="true" />
-          </Link>
-        </Reveal>
-      </div>
-    </section>
-  );
+  return <section className="home-learning-journey home-section" id="learning" aria-labelledby="learning-title">
+    <div className="learning-journey-art"><Image src="/photos/home-learning-workshop.webp" alt="ภาพประกอบประตูสู่เวิร์กช็อปเรือพระสีสันสดใส" fill sizes="100vw" /></div>
+    <div className="learning-journey-copy">
+      <p className="section-index">✦ <span>เส้นทางการเรียนรู้</span></p>
+      <h2 id="learning-title">เปิดประตูสู่<br /><span>ห้องเรียนศิลป์เรือพระ</span></h2>
+      <p className="learning-journey-description">เรียนรู้ภูมิปัญญาลวดลายฉลุและการอัดกนกด้วยกระดาษ จากงานช่างเรือพระปากพะยูน สู่แรงบันดาลใจและการต่อยอด เพื่อสืบสานคุณค่าทางวัฒนธรรม</p>
+      <Link className="learning-journey-start" href="/learn">เข้าสู่บทเรียน<span><ArrowRight aria-hidden="true" /></span></Link>
+      <ul className="learning-journey-features" aria-label="รูปแบบการเรียนรู้">
+        <li><BookOpen aria-hidden="true" /><span>บทเรียน<br />เรียนรู้ทีละขั้นตอน</span></li>
+        <li><Clapperboard aria-hidden="true" /><span>สื่อการเรียนรู้<br />เห็นภาพ เข้าใจง่าย</span></li>
+        <li><Lightbulb aria-hidden="true" /><span>ลงมือทำ<br />ต่อยอดงานศิลป์</span></li>
+      </ul>
+      <p className="learning-journey-note">{course ? `${course.lessonCount} บทเรียน${course.isDemo ? "สาธิต · ยังไม่ใช่บทเรียนที่ผ่านการตรวจสอบ" : ""}` : `${stepCount} ขั้นตอนที่บันทึกไว้`}</p>
+    </div>
+  </section>;
 }

@@ -1,0 +1,244 @@
+{
+  "name": "kracang-ta-oi-3",
+  "viewBox": [
+    0,
+    0,
+    1000,
+    1016
+  ],
+  "hole_count": 17,
+  "motifs": {
+    "m01": [
+      "hole-01",
+      "hole-02",
+      "hole-03",
+      "hole-04",
+      "hole-05",
+      "hole-06",
+      "hole-07",
+      "hole-08",
+      "hole-09",
+      "hole-10",
+      "hole-11",
+      "hole-12",
+      "hole-13",
+      "hole-14",
+      "hole-15",
+      "hole-16",
+      "hole-17"
+    ]
+  },
+  "groups": {
+    "g2": [
+      "hole-01",
+      "hole-02",
+      "hole-03",
+      "hole-04",
+      "hole-05",
+      "hole-06",
+      "hole-07",
+      "hole-08",
+      "hole-09",
+      "hole-10",
+      "hole-13",
+      "hole-14",
+      "hole-15",
+      "hole-16",
+      "hole-17"
+    ],
+    "g1": [
+      "hole-11",
+      "hole-12"
+    ]
+  },
+  "craftsman_palette": null,
+  "holes": [
+    {
+      "id": "hole-01",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 16789.6,
+      "center": [
+        450.8,
+        216.2
+      ]
+    },
+    {
+      "id": "hole-02",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 15287.5,
+      "center": [
+        561.7,
+        205.8
+      ]
+    },
+    {
+      "id": "hole-03",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 5980.6,
+      "center": [
+        504.0,
+        293.7
+      ]
+    },
+    {
+      "id": "hole-04",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 1556.2,
+      "center": [
+        533.9,
+        384.1
+      ]
+    },
+    {
+      "id": "hole-05",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 30313.2,
+      "center": [
+        358.3,
+        413.3
+      ]
+    },
+    {
+      "id": "hole-06",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 32168.8,
+      "center": [
+        655.6,
+        431.0
+      ]
+    },
+    {
+      "id": "hole-07",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 8803.5,
+      "center": [
+        567.1,
+        555.3
+      ]
+    },
+    {
+      "id": "hole-08",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 33975.0,
+      "center": [
+        230.0,
+        601.7
+      ]
+    },
+    {
+      "id": "hole-09",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 34831.2,
+      "center": [
+        781.4,
+        618.7
+      ]
+    },
+    {
+      "id": "hole-10",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 4766.7,
+      "center": [
+        658.0,
+        687.3
+      ]
+    },
+    {
+      "id": "hole-11",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 30551.4,
+      "center": [
+        330.4,
+        725.5
+      ]
+    },
+    {
+      "id": "hole-12",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 37729.2,
+      "center": [
+        490.2,
+        774.9
+      ]
+    },
+    {
+      "id": "hole-13",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 4668.1,
+      "center": [
+        724.7,
+        806.8
+      ]
+    },
+    {
+      "id": "hole-14",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 42341.7,
+      "center": [
+        117.1,
+        838.9
+      ]
+    },
+    {
+      "id": "hole-15",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 42020.1,
+      "center": [
+        879.4,
+        847.0
+      ]
+    },
+    {
+      "id": "hole-16",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 69861.1,
+      "center": [
+        500.0,
+        859.5
+      ]
+    },
+    {
+      "id": "hole-17",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 4439.6,
+      "center": [
+        743.4,
+        940.4
+      ]
+    }
+  ]
+}

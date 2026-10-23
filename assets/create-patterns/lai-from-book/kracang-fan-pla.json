@@ -1,0 +1,94 @@
+{
+  "name": "kracang-fan-pla",
+  "viewBox": [
+    0,
+    0,
+    1000,
+    864
+  ],
+  "hole_count": 5,
+  "motifs": {
+    "m01": [
+      "hole-01"
+    ],
+    "m02": [
+      "hole-02"
+    ],
+    "m03": [
+      "hole-03",
+      "hole-04",
+      "hole-05"
+    ]
+  },
+  "groups": {
+    "g1": [
+      "hole-01",
+      "hole-02"
+    ],
+    "g2": [
+      "hole-03"
+    ],
+    "g3": [
+      "hole-04",
+      "hole-05"
+    ]
+  },
+  "craftsman_palette": null,
+  "holes": [
+    {
+      "id": "hole-01",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 560.0,
+      "center": [
+        517.9,
+        431.1
+      ]
+    },
+    {
+      "id": "hole-02",
+      "group": "g1",
+      "motif": "m02",
+      "color": null,
+      "area": 41096.0,
+      "center": [
+        501.8,
+        664.2
+      ]
+    },
+    {
+      "id": "hole-03",
+      "group": "g2",
+      "motif": "m03",
+      "color": null,
+      "area": 861.0,
+      "center": [
+        713.9,
+        784.0
+      ]
+    },
+    {
+      "id": "hole-04",
+      "group": "g3",
+      "motif": "m03",
+      "color": null,
+      "area": 289.0,
+      "center": [
+        776.0,
+        784.0
+      ]
+    },
+    {
+      "id": "hole-05",
+      "group": "g3",
+      "motif": "m03",
+      "color": null,
+      "area": 364.0,
+      "center": [
+        812.5,
+        784.0
+      ]
+    }
+  ]
+}

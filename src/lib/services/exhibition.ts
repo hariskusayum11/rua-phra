@@ -16,11 +16,17 @@ const imageSelect = { url: true, alt: true, width: true, height: true, credit: t
  */
 export async function getExhibitionContent() {
   const db = getDb();
-  const [cover, boats, sections, patterns, steps] = await Promise.all([
+  const [cover, procession, boats, sections, patterns, steps] = await Promise.all([
     db.boat.findFirst({
       where: { isDemo: false, coverMediaId: { not: null } },
       orderBy: { year: "desc" },
       select: { coverMedia: { select: imageSelect } },
+    }),
+    // The procession footage sits on the page of the boat it was filmed with.
+    db.boat.findFirst({
+      where: { isDemo: false, processionMediaId: { not: null } },
+      orderBy: { year: "desc" },
+      select: { slug: true },
     }),
     db.boat.count({ where: { isDemo: false } }),
     db.boatSection.count({ where: { isDemo: false } }),
@@ -30,6 +36,7 @@ export async function getExhibitionContent() {
 
   return {
     cover: cover?.coverMedia ?? null,
+    processionHref: procession ? `/boats/${procession.slug}#procession` : null,
     counts: { boats, sections, patterns, steps },
   };
 }

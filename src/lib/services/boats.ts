@@ -13,6 +13,16 @@ export async function getBoatExplorer(slug: string) {
       isDemo: true,
       temple: { select: { id: true, name: true } },
       coverMedia: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
+      processionMedia: {
+        select: {
+          url: true,
+          alt: true,
+          mimeType: true,
+          durationSeconds: true,
+          credit: true,
+          posterMedia: { select: { url: true } },
+        },
+      },
       masters: { where: { master: { isDemo: false } }, select: { master: { select: { slug: true, name: true } } } },
       sections: {
         orderBy: { position: "asc" },

@@ -9,26 +9,12 @@ import { getDb } from "@/lib/db";
 
 const imageSelect = { url: true, alt: true, width: true, height: true, credit: true, focalX: true, focalY: true } as const;
 
-/** Public showcases contain field records only. Demo lessons are labelled separately. */
-function preferField<T extends { isDemo: boolean }>(records: T[]) {
-  const field = records.filter((record) => !record.isDemo);
-  return field;
-}
-
-/**
- * The craft section frames a macro close-up and the closing section frames the finished
- * boat. Both are the step's second image when the field team has attached one; the 3:2
- * documentation cover is the fallback.
- */
-function preferCloseup<T extends { coverMedia: unknown; media: { media: unknown }[] }>(step: T) {
-  return (step.media[1]?.media ?? step.media[0]?.media ?? step.coverMedia) as T["coverMedia"];
-}
-
 export async function getHomeContent() {
   const db = getDb();
 
-  const [boats, process, patterns, masters, course, works, counts] = await Promise.all([
+  const [boats, process, patterns, course] = await Promise.all([
     db.boat.findMany({
+      where: { isDemo: false },
       orderBy: [{ year: "desc" }, { name: "asc" }],
       select: {
         id: true,
@@ -39,17 +25,7 @@ export async function getHomeContent() {
         summary: true,
         isDemo: true,
         temple: { select: { name: true, community: true } },
-        coverMedia: { select: imageSelect },
-        processionMedia: {
-          select: {
-            url: true,
-            alt: true,
-            mimeType: true,
-            durationSeconds: true,
-            credit: true,
-            posterMedia: { select: imageSelect },
-          },
-        },
+        coverMedia: { where: { isDemo: false }, select: imageSelect },
         sections: {
           where: { isDemo: false },
           orderBy: { position: "asc" },
@@ -61,7 +37,8 @@ export async function getHomeContent() {
             y: true,
             description: true,
             meaning: true,
-            closeupMedia: { select: imageSelect },
+            verification: { select: { status: true } },
+            closeupMedia: { where: { isDemo: false }, select: imageSelect },
             patterns: { where: { pattern: { isDemo: false } }, select: { pattern: { select: { slug: true, name: true, localName: true } } } },
           },
         },
@@ -69,6 +46,7 @@ export async function getHomeContent() {
       },
     }),
     db.knowledgeProcess.findFirst({
+      where: { isDemo: false },
       orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
       select: {
         slug: true,
@@ -76,6 +54,7 @@ export async function getHomeContent() {
         description: true,
         isDemo: true,
         steps: {
+          where: { isDemo: false },
           orderBy: { position: "asc" },
           select: {
             slug: true,
@@ -83,13 +62,14 @@ export async function getHomeContent() {
             description: true,
             importance: true,
             position: true,
-            coverMedia: { select: imageSelect },
+            coverMedia: { where: { isDemo: false }, select: imageSelect },
             media: { where: { media: { isDemo: false } }, orderBy: { position: "asc" }, select: { media: { select: imageSelect } } },
           },
         },
       },
     }),
     db.pattern.findMany({
+      where: { isDemo: false },
       // Recording order, so the first pattern the field team entered anchors the wall.
       orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
       select: {
@@ -100,23 +80,7 @@ export async function getHomeContent() {
         characteristics: true,
         meaning: true,
         isDemo: true,
-        imageMedia: { select: imageSelect },
-        boats: { take: 1, select: { boat: { select: { slug: true, name: true } } } },
-      },
-    }),
-    db.master.findMany({
-      orderBy: [{ practiceSinceYear: "asc" }, { name: "asc" }],
-      select: {
-        slug: true,
-        name: true,
-        biography: true,
-        quote: true,
-        practiceSinceYear: true,
-        isDemo: true,
-        portraitMedia: { select: imageSelect },
-        interviewMedia: { select: { url: true, alt: true, mimeType: true, durationSeconds: true } },
-        expertise: { orderBy: { title: "asc" }, select: { title: true } },
-        _count: { select: { patterns: true, boats: true } },
+        imageMedia: { where: { isDemo: false }, select: imageSelect },
       },
     }),
     db.course.findFirst({
@@ -129,74 +93,48 @@ export async function getHomeContent() {
         lessons: { orderBy: { position: "asc" }, select: { slug: true, title: true, position: true } },
       },
     }),
-    db.studentWork.findMany({
-      where: { published: true, isDemo: false },
-      orderBy: [{ isDemo: "asc" }, { createdAt: "asc" }],
-      take: 6,
-      select: {
-        slug: true,
-        title: true,
-        concept: true,
-        inspiration: true,
-        isDemo: true,
-        user: { select: { name: true } },
-        pattern: { select: { slug: true, name: true, localName: true } },
-        media: { orderBy: { position: "asc" }, take: 1, select: { url: true, alt: true } },
-      },
-    }),
-    Promise.all([db.boat.count(), db.pattern.count(), db.master.count(), db.processStep.count()]),
   ]);
 
-  const [boatCount, patternCount, masterCount, stepCount] = counts;
   const steps = process?.steps ?? [];
-  const rankedBoats = preferField(boats);
-  const rankedPatterns = preferField(patterns);
-  const rankedMasters = preferField(masters);
-
-  /**
-   * The middle of the sequence is where paper stops being material and starts being
-   * pattern, so that step carries the craft section rather than an arbitrary first step.
-   */
-  const craftStep = steps.length > 0 ? steps[Math.floor(steps.length / 2)] : null;
-  const finalStep = steps.at(-1) ?? null;
 
   /**
    * Every boat the reader can actually open: it needs a photograph to place hotspots on and
-   * at least one hotspot to place. The homepage used to take the first of these and show
-   * only that one, which quietly hid the rest of the survey work from anyone who did not
-   * think to go looking in the archive.
+   * at least one hotspot to place. The homepage reads one of them closely and hands the
+   * rest to the boats page, which lists them all.
    */
-  const readerBoats = rankedBoats.filter((boat) => boat.coverMedia?.url && boat.sections.length > 0);
-
-  /** Procession footage belongs to a boat, so it follows whichever boat the page leads with. */
-  const processionBoat = rankedBoats.find((boat) => boat.processionMedia?.url) ?? null;
+  const readerBoats = boats.filter((boat) => boat.coverMedia?.url && boat.sections.length > 0);
+  const heroBoat = boats.find((boat) => boat.coverMedia?.url) ?? null;
+  const craftImage = steps[Math.floor(steps.length / 2)]?.coverMedia ?? steps.find(step => step.coverMedia)?.coverMedia ?? null;
 
   return {
-    boats: rankedBoats,
-    heroBoat: rankedBoats.find((boat) => boat.coverMedia?.url) ?? null,
-    featuredBoats: rankedBoats.filter((boat) => boat.coverMedia?.url),
-    readerBoats,
+    heroBoat,
+    pillarImages: [
+      patterns.find(pattern => pattern.imageMedia)?.imageMedia ?? null,
+      heroBoat?.sections.find(section => section.closeupMedia)?.closeupMedia ?? heroBoat?.coverMedia ?? null,
+      boats.find(boat => boat.slug !== heroBoat?.slug && boat.coverMedia)?.coverMedia ?? heroBoat?.coverMedia ?? null,
+      craftImage,
+    ],
+    galleryImages: [...new Map([
+      ...boats.map(boat => boat.coverMedia),
+      ...steps.flatMap(step => [step.coverMedia, ...step.media.map(item => item.media)]),
+      ...patterns.map(pattern => pattern.imageMedia),
+    ].filter((image): image is NonNullable<typeof image> => !!image?.url).map(image => [image.url, image])).values()].slice(0, 12),
+    learningImage: craftImage,
     readerBoat: readerBoats[0] ?? null,
-    processionBoat,
+    readerBoats,
     process: process ? { slug: process.slug, title: process.title, description: process.description, isDemo: process.isDemo, steps } : null,
-    craftImage: craftStep ? preferCloseup(craftStep) : null,
-    craftStep,
-    closingImage: finalStep ? preferCloseup(finalStep) : (boats.at(-1)?.coverMedia ?? null),
-    patterns: rankedPatterns,
-    master: rankedMasters[0] ?? null,
-    masters: rankedMasters,
+    patterns,
     course: course ? { ...course, lessonCount: course.lessons.length } : null,
-    works,
-    counts: { boats: boatCount, patterns: patternCount, masters: masterCount, steps: stepCount },
+    counts: {
+      boats: boats.length,
+      steps: process && !process.isDemo ? steps.length : 0,
+    },
   };
 }
 
 export type HomeContent = Awaited<ReturnType<typeof getHomeContent>>;
-export type HomeBoat = HomeContent["boats"][number];
+export type HomeBoat = NonNullable<HomeContent["readerBoat"]>;
 export type HomeSection = HomeBoat["sections"][number];
 export type HomePattern = HomeContent["patterns"][number];
 export type HomeStep = NonNullable<HomeContent["process"]>["steps"][number];
-export type HomeWork = HomeContent["works"][number];
-export type HomeMaster = NonNullable<HomeContent["master"]>;
 export type HomeImage = NonNullable<HomeBoat["coverMedia"]>;
-export type HomeProcessionBoat = NonNullable<HomeContent["processionBoat"]>;

@@ -1,0 +1,114 @@
+{
+  "name": "kracang-kho-suea",
+  "viewBox": [
+    0,
+    0,
+    1000,
+    1013
+  ],
+  "hole_count": 7,
+  "motifs": {
+    "m01": [
+      "hole-01",
+      "hole-02",
+      "hole-03",
+      "hole-04",
+      "hole-05",
+      "hole-06",
+      "hole-07"
+    ]
+  },
+  "groups": {
+    "g2": [
+      "hole-01",
+      "hole-02"
+    ],
+    "g1": [
+      "hole-03",
+      "hole-04",
+      "hole-05",
+      "hole-06",
+      "hole-07"
+    ]
+  },
+  "craftsman_palette": null,
+  "holes": [
+    {
+      "id": "hole-01",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 5649.0,
+      "center": [
+        495.7,
+        239.1
+      ]
+    },
+    {
+      "id": "hole-02",
+      "group": "g2",
+      "motif": "m01",
+      "color": null,
+      "area": 2564.0,
+      "center": [
+        584.0,
+        247.4
+      ]
+    },
+    {
+      "id": "hole-03",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 8199.0,
+      "center": [
+        458.0,
+        301.4
+      ]
+    },
+    {
+      "id": "hole-04",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 26390.0,
+      "center": [
+        797.4,
+        417.1
+      ]
+    },
+    {
+      "id": "hole-05",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 26809.0,
+      "center": [
+        202.1,
+        428.1
+      ]
+    },
+    {
+      "id": "hole-06",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 28841.0,
+      "center": [
+        268.1,
+        590.1
+      ]
+    },
+    {
+      "id": "hole-07",
+      "group": "g1",
+      "motif": "m01",
+      "color": null,
+      "area": 27464.0,
+      "center": [
+        750.9,
+        614.2
+      ]
+    }
+  ]
+}

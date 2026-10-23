@@ -1,9 +1,20 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { VerificationNote } from "../src/components/archive/verification-note";
 import { archiveQuery, hotspotCoordinates } from "../src/lib/validations/archive";
 import { mediaUrl } from "../src/lib/services/media";
 import { contrastRatio, palette } from "../src/lib/design/contrast";
+
+test("demo content stays labelled even if its workflow status was verified or published", () => {
+  for (const status of ["DRAFT", "PENDING_REVIEW", "VERIFIED", "PUBLISHED"]) {
+    assert.match(renderToStaticMarkup(createElement(VerificationNote, { isDemo: true, status })), /ข้อมูลสาธิต/);
+  }
+  assert.equal(renderToStaticMarkup(createElement(VerificationNote, { isDemo: false, status: "VERIFIED" })), "");
+  assert.match(renderToStaticMarkup(createElement(VerificationNote, { isDemo: false, status: "PENDING_REVIEW" })), /รอการตรวจสอบ/);
+});
 
 test("archive filters handle malformed input, Thai search and future years", () => {
   assert.deepEqual(archiveQuery.parse({}), { q: "" });

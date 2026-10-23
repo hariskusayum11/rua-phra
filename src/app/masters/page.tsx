@@ -1,71 +1,27 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+﻿import type { Metadata } from "next";
+import Image from "next/image";
 import { connection } from "next/server";
-import { MediaFrame } from "@/components/media/media-frame";
 import { BackNav } from "@/components/site/back-nav";
-import { CollectionStatus, PageHeader } from "@/components/site/page-header";
+import { CollectionStatus, PageCrumbs } from "@/components/site/page-header";
 import { getMasterIndex } from "@/lib/services/collections";
+import { MasterBrowser } from "./master-browser";
+import "./masters-index.css";
 
 export const metadata: Metadata = {
   title: "ช่างผู้สืบสาน",
   description: "ช่างที่ทำงานเรือพระในอำเภอปากพะยูน ซึ่งคลังได้บันทึกงานและวิธีทำไว้",
 };
 
-/**
- * The people the archive has recorded.
- *
- * One artisan at the time of writing. The page says so plainly rather than padding the
- * list: more people will be recorded, and an honest short list is better than a long one
- * made of fixtures.
- */
 export default async function MastersPage() {
   await connection();
   const { items, showingDemo, pending } = await getMasterIndex();
-
-  return (
-    <main id="main-content" className="collection-page" tabIndex={-1}>
-      <PageHeader
-        label="ช่างผู้สืบสาน"
-        lead="ช่างที่คลังได้บันทึกงานและวิธีทำไว้ ประวัติและบทสัมภาษณ์ของช่างแต่ละท่านจะเพิ่มขึ้นเมื่อได้รับอนุญาต"
-      >
-        <CollectionStatus pending={pending} total={items.length} showingDemo={showingDemo} />
-      </PageHeader>
-
-      <section className="shell" aria-label={`ช่าง ${items.length} ท่าน`}>
-        {items.length === 0 ? (
-          <p className="empty-note">ยังไม่มีช่างที่บันทึกไว้ในคลัง</p>
-        ) : (
-          <ul className="archive-card-list collection-grid collection-grid-people">
-            {items.map((master) => (
-              <li key={master.slug}>
-                <Link href={`/masters/${master.slug}`}>
-                  <MediaFrame
-                    image={master.portraitMedia}
-                    ratio="4/5"
-                    sizes="(max-width: 47.99rem) 100vw, 22rem"
-                    emptyLabel="ยังไม่มีภาพที่ได้รับอนุญาตให้เผยแพร่"
-                  />
-                  <span className="archive-card-title">{master.name}</span>
-                  {master.expertise.length > 0 && (
-                    <span className="archive-card-meta">{master.expertise.map((item) => item.title).join(" · ")}</span>
-                  )}
-                  <span className="archive-card-note collection-excerpt">{master.biography}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <div className="shell">
-        <BackNav
-          destinations={[
-            { href: "/", label: "กลับหน้าแรก" },
-            { href: "/craft", label: "จากกระดาษสู่เรือพระ" },
-            { href: "/about", label: "เกี่ยวกับโครงการ" },
-          ]}
-        />
-      </div>
-    </main>
-  );
+  return <main id="main-content" className="masters-index" tabIndex={-1}>
+    <header className="masters-hero">
+      <Image src="/photos/masters-banner.webp" alt="" fill priority sizes="100vw" />
+      <div className="shell masters-hero-copy"><p className="masters-eyebrow">✦　ช่างผู้สืบสาน</p><h1>ช่างผู้<span>สืบสาน</span></h1><div className="masters-gold-rule" aria-hidden="true" /><p>ช่างที่คลังได้บันทึกงานและวิธีทำไว้ ประวัติและบทสัมภาษณ์ของช่างแต่ละท่านจะเพิ่มขึ้นเมื่อได้รับอนุญาต</p></div>
+    </header>
+    <div className="shell masters-intro"><PageCrumbs label="ช่างผู้สืบสาน" /><p>รู้จักผู้สืบสานงานเรือพระปากพะยูน ผ่านประวัติ ผลงาน และเรื่องเล่าที่บันทึกไว้<br />ผู้รักษาภูมิปัญญาท้องถิ่น และถ่ายทอดองค์ความรู้จากรุ่นสู่รุ่น</p></div>
+    <MasterBrowser items={items}><CollectionStatus pending={pending} total={items.length} showingDemo={showingDemo} /></MasterBrowser>
+    <div className="shell"><BackNav destinations={[{href:"/",label:"กลับหน้าแรก"},{href:"/craft",label:"จากกระดาษสู่เรือพระ"},{href:"/about",label:"เกี่ยวกับโครงการ"}]} /></div>
+  </main>;
 }

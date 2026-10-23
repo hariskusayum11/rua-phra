@@ -1,0 +1,85 @@
+{
+ "_note": "ดึงจากภาพหน้าหนังสือ/เอกสารที่ผู้ใช้ส่งมา — ต้องตรวจที่มาและขออนุญาตก่อนเผยแพร่สาธารณะ",
+ "patterns": [
+  {
+   "id": "kracang-fan-pla",
+   "name_th": "ลายกระจังฟันปลา",
+   "category": "กระจัง"
+  },
+  {
+   "id": "kracang-ta-oi-b",
+   "name_th": "ลายกระจังตาอ้อย",
+   "category": "กระจัง"
+  },
+  {
+   "id": "kracang-bai-thet",
+   "name_th": "ลายกระจังใบเทศ",
+   "category": "กระจัง"
+  },
+  {
+   "id": "kracang-kho-suea",
+   "name_th": "ลายกระจังคอเสื้อ",
+   "category": "กระจัง"
+  },
+  {
+   "id": "kracang-patiyan",
+   "name_th": "ลายกระจังปฏิญาณ",
+   "category": "กระจัง"
+  },
+  {
+   "id": "kracang-ruan",
+   "name_th": "ลายกระจังรวน",
+   "category": "กระจัง"
+  },
+  {
+   "id": "prajam-yam",
+   "name_th": "ลายประจำยาม",
+   "category": "ประจำยาม"
+  },
+  {
+   "id": "prajam-yam-v1",
+   "name_th": "ลายประจำยาม (แบบประยุกต์ 1)",
+   "category": "ประจำยาม"
+  },
+  {
+   "id": "prajam-yam-v2",
+   "name_th": "ลายประจำยาม (แบบประยุกต์ 2)",
+   "category": "ประจำยาม"
+  },
+  {
+   "id": "prajam-yam-v3",
+   "name_th": "ลายประจำยาม (แบบประยุกต์ 3)",
+   "category": "ประจำยาม"
+  },
+  {
+   "id": "phum-na-khob",
+   "name_th": "ลายพุ่ม / หน้าขบ",
+   "category": "พุ่ม"
+  },
+  {
+   "id": "phum-b",
+   "name_th": "ลายพุ่ม",
+   "category": "พุ่ม"
+  },
+  {
+   "id": "phum-detail-1",
+   "name_th": "ลายพุ่ม (ลายละเอียด 1)",
+   "category": "พุ่ม"
+  },
+  {
+   "id": "phum-detail-2",
+   "name_th": "ลายพุ่ม (ลายละเอียด 2)",
+   "category": "พุ่ม"
+  },
+  {
+   "id": "kanok-sam-tua",
+   "name_th": "ลายกนกสามตัว",
+   "category": "กนก"
+  },
+  {
+   "id": "kranok-b",
+   "name_th": "ลายกนก",
+   "category": "กนก"
+  }
+ ]
+}

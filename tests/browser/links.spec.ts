@@ -19,7 +19,7 @@ test("no public page links into a 404", async ({ page, request }) => {
     visited.add(url);
     await page.goto(url);
     await page.waitForLoadState("networkidle");
-    const hotspot = page.locator(".home-hotspot, .hotspot").first();
+    const hotspot = page.locator(".home-part-list button, .home-hotspot:visible, .hotspot").first();
     if (await hotspot.count()) { await hotspot.click().catch(() => {}); await page.waitForTimeout(400); }
     const hrefs = await page.locator("a[href]").evaluateAll((nodes) =>
       [...new Set(nodes.map((n) => n.getAttribute("href") ?? ""))].filter((h) => h.startsWith("/") && !h.startsWith("/#")));

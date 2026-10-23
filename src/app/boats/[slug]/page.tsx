@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { BackNav } from "@/components/site/back-nav";
 import { PageCrumbs } from "@/components/site/page-header";
 import { BoatExplorer } from "@/components/boat/boat-explorer";
+import { ProcessionVideo } from "@/components/boat/procession-video";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { getBoatExplorer } from "@/lib/services/boats";
@@ -48,6 +49,7 @@ export default async function BoatDetailPage({ params }: Props) {
         {boat.isDemo && <p className="demo-notice">ข้อมูลสาธิต · ยังไม่ผ่านการตรวจสอบองค์ความรู้</p>}
       </header>
       <BoatExplorer boat={boat} />
+      <ProcessionVideo video={boat.processionMedia} />
       <BackNav
         destinations={[
           { href: "/boats", label: "เรือพระลำอื่น" },

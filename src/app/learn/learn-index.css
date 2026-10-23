@@ -1,0 +1,41 @@
+﻿.learn-landing { background:#fff8ed url('/decor/paper-grain.svg'); color:#382313; padding-bottom:32px; }
+.learning-banner { position:relative; min-height:clamp(440px,43vw,650px); display:flex; align-items:center; }
+.learning-banner > img { object-fit:cover; object-position:center; }
+.learning-banner-copy { position:relative; padding-block:35px 130px; }
+.learning-eyebrow { display:flex; align-items:center; gap:14px; color:#b84e19; font-weight:600; }
+.learning-eyebrow::before,.learning-eyebrow::after { content:""; width:42px; height:1px; background:currentColor; }
+.learning-banner h1 { font-family:"Noto Serif Thai",serif; font-size:clamp(2.5rem,4.5vw,4.7rem); line-height:1.4; margin:12px 0 20px; }
+.learning-banner h1 span { color:#b64b16; }
+.learning-banner .lead { max-width:45%; font-size:clamp(.95rem,1.4vw,1.25rem); line-height:1.8; color:#615b53; }
+.learning-courses { position:relative; margin-top:-24px; }
+.learning-course-list { display:grid; gap:24px; margin:0; padding:0; list-style:none; }
+.learning-course-list > li > a { display:flex; align-items:center; gap:32px; padding:28px 32px; border:1px solid #d97636; outline:1px dashed #e7a565; outline-offset:-6px; border-radius:28px; background:linear-gradient(110deg,#fff5e7,#ffe8d9); box-shadow:0 8px 24px #aa60231a; text-decoration:none; color:inherit; transition:transform .2s,box-shadow .2s; }
+.learning-course-list > li > a:hover { transform:translateY(-3px); box-shadow:0 12px 28px #aa60232b; }
+.learning-course-list > li > a:focus-visible { outline:3px solid #a94a17; outline-offset:4px; }
+.learning-book-icon { flex:none; display:grid; place-items:center; width:100px; height:100px; border-radius:50%; background:linear-gradient(120deg,#e28a2f,#b64712); color:#fff; box-shadow:0 0 0 12px #f3ce8f55; }
+.learning-book-icon svg { width:48px; height:48px; stroke-width:1.5; }
+.learning-course-copy { flex:1; border-left:1px solid #d38148; padding-left:28px; }
+.learning-course-copy h2 { font-size:clamp(1.2rem,2vw,1.8rem); color:#ab4714; margin:0 0 8px; }
+.learning-course-copy p { color:#625950; margin:0 0 12px; line-height:1.7; }
+.learning-course-count { display:inline-block; padding:4px 16px; border:1px solid #c76a33; border-radius:30px; color:#a44716; font-size:.85rem; }
+.learning-start { flex:none; display:flex; flex-direction:column; align-items:center; gap:12px; color:#a44716; font-size:.85rem; }
+.learning-start > svg { width:64px; height:64px; padding:15px; background:#b74d17; border:3px solid white; outline:8px solid #efba8d66; border-radius:50%; color:white; }
+.learning-course-list .demo-notice { margin:10px 20px 0; font-size:.8rem; }
+.learning-courses .upcoming-link { margin-top:28px; }
+@media(max-width:767px) {
+ .learning-banner { min-height:440px; }
+ .learning-banner > img { object-position:58% center; }
+ .learning-banner::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,#fff8ede6,#fff8ed70 65%,transparent); }
+ .learning-banner-copy { z-index:1; padding-block:28px 90px; }
+ .learning-banner h1 { font-size:clamp(2rem,6.5vw,3rem); }
+ .learning-banner .lead { max-width:78%; font-size:.9rem; }
+ .learning-course-list > li > a { flex-wrap:wrap; gap:18px; padding:24px 20px; border-radius:20px; }
+ .learning-book-icon { width:52px; height:52px; box-shadow:0 0 0 6px #f3ce8f55; }
+ .learning-book-icon svg { width:28px; height:28px; }
+ .learning-course-copy { flex:1; min-width:160px; padding-left:14px; }
+ .learning-course-copy p { font-size:.88rem; }
+ .learning-start { flex-direction:row; width:100%; justify-content:flex-end; }
+ .learning-start > svg { width:44px; height:44px; padding:8px; outline-width:4px; }
+}
+@media(prefers-reduced-motion:reduce) { .learning-course-list > li > a { transition:none; } }
+.learning-create-entry{position:relative;margin-block:0 40px;display:flex;align-items:center;justify-content:space-between;gap:28px;padding:28px 32px;border:1px solid #c9ac75;border-radius:22px;background:linear-gradient(120deg,#ecf0df,#fff9ee);box-shadow:0 8px 24px #46372212}.learning-create-entry h2{font-family:"Noto Serif Thai",serif;color:#285344;font-size:32px;margin:8px 0}.learning-create-entry p{font-size:14px;line-height:1.8;max-width:720px;color:#6a705e}.learning-create-entry p:first-child{font-size:12px;color:#9a6c2b}.learning-create-entry a{display:flex;align-items:center;justify-content:center;gap:14px;background:#285344;color:white;text-decoration:none;white-space:nowrap;padding:15px 22px;border-radius:40px;min-height:48px}.learning-create-entry a svg{width:20px}@media(max-width:750px){.learning-create-entry{flex-direction:column;align-items:stretch;padding:24px;margin-bottom:44px}.learning-create-entry h2{font-size:28px}.learning-create-entry a{white-space:normal}}

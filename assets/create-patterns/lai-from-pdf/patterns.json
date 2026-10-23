@@ -1,0 +1,14 @@
+{
+  "_note": "ดึงจากเอกสาร 'ลาย ลวดลายในงานสถาปัตยกรรมไทย' (PowerPoint, 2566) — ภาพต้นฉบับมาจากหนังสือ/ผู้เขียนตามที่อ้างในสไลด์ ต้องขออนุญาตหรือวาดใหม่ก่อนเผยแพร่สาธารณะ",
+  "patterns": [
+    {"id": "kracang-ta-oi-1", "name_th": "ลายกระจังตาอ้อย (แบบที่ 1)", "category": "กระจัง", "source_page": 9},
+    {"id": "kracang-ta-oi-2", "name_th": "ลายกระจังตาอ้อย (แบบที่ 2)", "category": "กระจัง", "source_page": 9},
+    {"id": "kracang-ta-oi-3", "name_th": "ลายกระจังตาอ้อย (แบบที่ 3)", "category": "กระจัง", "source_page": 9},
+    {"id": "kracang-ruan-khwa", "name_th": "ลายกระจังรวนขวา", "category": "กระจังปฏิญาณ", "source_page": 12},
+    {"id": "kracang-tua-klang", "name_th": "ลายกระจังตัวกลาง", "category": "กระจังปฏิญาณ", "source_page": 12},
+    {"id": "phum-khao-bin", "name_th": "ลายพุ่มข้าวบิณฑ์", "category": "พุ่มข้าวบิณฑ์", "source_page": 17, "credit": "พื้นฐานการเขียนลาย, วิภาวี (2553)"},
+    {"id": "kranok", "name_th": "ลายกระหนก", "category": "กระหนก", "source_page": 24, "credit": "ลายเส้นของ รศ.ภิญโญ สุวรรณคีรี"},
+    {"id": "prajam-yam-kampu", "name_th": "ลายประจำยามก้ามปู", "category": "ประจำยาม", "source_page": 15},
+    {"id": "prajam-yam-lukfak", "name_th": "ลายประจำยามลูกฟัก", "category": "ประจำยาม", "source_page": 15}
+  ]
+}

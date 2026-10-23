@@ -9,7 +9,7 @@ export function VerificationNote({
   status?: string | null;
   isDemo: boolean;
 }) {
-  if (status === "VERIFIED" || status === "PUBLISHED") return null;
+  if (!isDemo && (status === "VERIFIED" || status === "PUBLISHED")) return null;
   return (
     <p className="demo-notice">
       {isDemo

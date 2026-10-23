@@ -1,6 +1,8 @@
 import { connection } from "next/server";
 import type { Metadata } from "next";
-import { Trophy } from "lucide-react";
+import Image from "next/image";
+import "./competition-index.css";
+import { CalendarDays, Users, ChevronDown, Trophy } from "lucide-react";
 import { BackNav } from "@/components/site/back-nav";
 import { PageCrumbs } from "@/components/site/page-header";
 import { getCompetitionArchive } from "@/lib/services/competition";
@@ -35,26 +37,33 @@ export default async function CompetitionPage() {
   const span = archive.years.length > 0 ? { from: archive.years[archive.years.length - 1].year, to: archive.years[0].year } : null;
 
   return (
-    <main id="main-content" className="competition-page" tabIndex={-1}>
-      <header className="shell competition-lede">
-        <PageCrumbs label="ผลการประกวด" />
-        <h1>
-          เรือพระที่ติดอันดับ
-          <br />
-          งานลากพระปากพะยูน
-        </h1>
-        {span && (
-          <p className="lead">
-            ตั้งแต่ปีแรกที่มีการชิงถ้วยพระราชทาน พ.ศ. {span.from} ถึง พ.ศ. {span.to}
-            {" — "}
-            จัดประกวด {archive.judgedYears} ปี จากทั้งหมด {archive.years.length} ปีที่บันทึกไว้
-          </p>
-        )}
+    <main id="main-content" className="competition-page competition-gallery" tabIndex={-1}>
+      <header className="competition-hero">
+        <Image src="/photos/competition-banner.webp" alt="" fill priority sizes="100vw" />
+        <div className="shell competition-hero-inner">
+          <PageCrumbs label="ผลการประกวด" />
+          <p className="competition-eyebrow">ศิลปะ · ศรัทธา · ภูมิปัญญาชุมชน</p>
+          <h1>เรือพระที่ติดอันดับ<br /><span>งานลากพระปากพะยูน</span></h1>
+          <div className="competition-flourish" aria-hidden="true">✥</div>
+          <p>เรื่องราวความประณีตของงานช่าง และพลังของชุมชน<br />ผ่านบันทึกผลการประกวดเรือพระปากพะยูน</p>
+          {span && <small>บันทึกผล พ.ศ. {span.from}–{span.to}</small>}
+        </div>
       </header>
+      <section className="shell competition-stats" aria-label="สถิติจากข้อมูลที่บันทึกไว้">
+        <div><span className="competition-stat-icon"><CalendarDays /></span><p><strong>{archive.judgedYears} <small>ปี</small></strong><span>ที่มีการประกวดในบันทึก</span></p></div>
+        <div><span className="competition-stat-icon"><Users /></span><p><strong>{archive.temples.length} <small>วัด</small></strong><span>ที่มีผลติดอันดับในคลัง</span></p></div>
+        <div><span className="competition-stat-icon"><Trophy /></span><p><strong>{archive.temples.reduce((sum, temple) => sum + temple.placings, 0)} <small>รายการ</small></strong><span>ผลติดอันดับที่บันทึกไว้</span></p></div>
+      </section>
+      <div className="shell competition-intro">
+        <div className="competition-flourish" aria-hidden="true">✥</div>
+        <h2>รายชื่อเรือพระที่ติดอันดับ</h2>
+        <p>งานประเพณีลากพระ อำเภอปากพะยูน</p>
+        <small>ย้อนชมผลรายวัดและผลรายปี สืบต่อเรื่องราวศิลปะและความร่วมใจของชุมชน</small>
+      </div>
 
       {archive.temples.length > 0 && (
         <section className="shell competition-block" aria-labelledby="competition-temples">
-          <h2 id="competition-temples">รวมผลรายวัด</h2>
+          <h2 id="competition-temples" className="competition-table-heading"><Trophy aria-hidden="true" /> สรุปผลเรือพระที่ติดอันดับ · รวมรายวัด</h2>
           <p className="competition-note">
             นับเฉพาะปีที่มีการประกวดและมีประกาศผล เรียงตามจำนวนครั้งที่ได้ที่ 1
           </p>
@@ -106,16 +115,16 @@ export default async function CompetitionPage() {
       )}
 
       <section className="shell competition-block" aria-labelledby="competition-years">
-        <h2 id="competition-years">ผลรายปี</h2>
+        <h2 id="competition-years"><CalendarDays aria-hidden="true" /> ผลการประกวดรายปี</h2>
         <ol className="competition-years">
-          {archive.years.map((year) => (
+          {archive.years.map((year, index) => (
             <li key={year.year} className="competition-year" data-held={year.held}>
-              <h3>พ.ศ. {year.year}</h3>
+              <details open={index === 0}><summary><strong>{year.year}</strong><span>ผลการประกวดเรือพระ ประจำปี {year.year}</span><ChevronDown aria-hidden="true" /></summary><div className="competition-year-content">
               {year.held ? (
                 <ol className="competition-places">
                   {year.placings.map((placing) => (
                     <li key={placing.rank} data-rank={placing.rank}>
-                      <span className="competition-rank">{rankLabel(placing.rank)}</span>
+                      <span className="competition-rank"><Trophy aria-hidden="true" />{rankLabel(placing.rank)}</span>
                       <span className="competition-temple">
                         {placing.templeName}
                         <small>{placing.templeCommunity}</small>
@@ -128,6 +137,7 @@ export default async function CompetitionPage() {
                 <p className="competition-nothing">{year.note ?? "ไม่ได้จัดงาน"}</p>
               )}
               {year.held && year.note && <p className="competition-note">{year.note}</p>}
+              </div></details>
             </li>
           ))}
         </ol>

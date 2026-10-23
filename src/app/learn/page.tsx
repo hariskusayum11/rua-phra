@@ -1,9 +1,11 @@
 import { connection } from "next/server";
-import { PageCrumbs } from "@/components/site/page-header";
+import Image from "next/image";
+import "./learn-index.css";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight, BookOpen } from "lucide-react";
 import { getCourseIndex } from "@/lib/services/learning";
+
 
 
 export const metadata: Metadata = {
@@ -26,28 +28,34 @@ export default async function LearnIndexPage() {
   const withLessons = courses.filter((course) => course._count.lessons > 0);
 
   return (
-    <main id="main-content" className="learn-index" tabIndex={-1}>
-      <header className="shell learn-lede">
-        <PageCrumbs label="เรียนรู้" />
-        <h1>เรียนตามจังหวะ<br />ของตัวเอง</h1>
+    <main id="main-content" className="learn-landing" tabIndex={-1}>
+      <header className="learning-banner">
+        <Image src="/photos/learn-header.webp" alt="" fill priority sizes="100vw" />
+        <div className="shell learning-banner-copy">
+        <p className="learning-eyebrow">เรียนรู้</p>
+        <h1>เรียนตามจังหวะ<br /><span>ของตัวเอง</span></h1>
         <p className="lead">
           บทเรียนสร้างจากสิ่งที่บันทึกไว้ในคลังนี้ ทั้งลวดลาย ขั้นตอน และเครื่องมือจริง
           เปิดอ่านได้เลยโดยไม่ต้องสมัครสมาชิก
         </p>
+        </div>
       </header>
 
-      <section className="shell learn-list-wrap" aria-label="ชุดบทเรียน">
+      <section className="shell learning-create-entry" aria-labelledby="learning-create-title">
+        <div><p>ห้องทดลองงานศิลป์ · เกมสร้างลาย</p><h2 id="learning-create-title">ตอกลาย อัดดอก</h2><p>เลือกและจัดวางลาย ตอกช่อง อัดกระดาษสี แล้วลองผลงานบนสินค้า ดาวน์โหลดและแชร์ได้</p></div>
+        <Link href="/create">เริ่มสร้างลายของคุณ <ArrowRight aria-hidden="true" /></Link>
+      </section>
+      <section className="shell learning-courses" aria-label="ชุดบทเรียน">
         {withLessons.length === 0 ? (
           <p className="empty-note">ยังไม่มีชุดบทเรียนที่เผยแพร่ ระหว่างนี้เรียนรู้จากลำดับขั้นตอนได้ที่หน้ากระบวนการงานช่าง</p>
         ) : (
-          <ul className="learn-course-list">
+          <ul className="learning-course-list">
             {withLessons.map((course) => (
               <li key={course.slug}>
                 <Link href={`/learn/${course.slug}`}>
-                  <span className="learn-course-title">{course.title}</span>
-                  <small>{course.description}</small>
-                  <span className="learn-course-count">{course._count.lessons} บทเรียน</span>
-                  <ArrowUpRight aria-hidden="true" />
+                  <span className="learning-book-icon" aria-hidden="true"><BookOpen /></span>
+                  <div className="learning-course-copy"><h2>{course.title}</h2><p>{course.description}</p><span className="learning-course-count">{course._count.lessons} บทเรียน{course.isDemo ? "สาธิต" : ""}</span></div>
+                  <span className="learning-start"><span>{course.isDemo ? "เริ่มบทเรียนสาธิต" : "เริ่มบทเรียน"}</span><ArrowRight aria-hidden="true" /></span>
                 </Link>
                 {course.isDemo && <p className="demo-notice">ข้อมูลสาธิต · สร้างขึ้นเพื่อทดสอบระบบ ยังไม่ใช่บทเรียนจริง</p>}
               </li>

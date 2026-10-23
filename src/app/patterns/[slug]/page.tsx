@@ -1,3 +1,5 @@
+import { PatternTimeline } from "@/components/archive/pattern-timeline";
+import { buildPatternHistory } from "@/lib/pattern-history";
 import type { Metadata } from "next";
 import { PageCrumbs } from "@/components/site/page-header";
 import Link from "next/link";
@@ -55,6 +57,8 @@ export default async function PatternDetailPage({ params }: Props) {
           {pattern.historicalNote && <p>{pattern.historicalNote}</p>}
         </section>
       )}
+
+      <PatternTimeline records={buildPatternHistory([pattern])} />
 
       <section className="shell archive-connections" aria-labelledby="pattern-connections">
         <h2 id="pattern-connections">ลายนี้เชื่อมกับอะไรบ้าง</h2>

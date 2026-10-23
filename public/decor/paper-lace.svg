@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 720" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <title>Decorative pierced-paper line study</title>
+  <desc>Original decorative drawing inspired by photographed paper silhouettes; not a verified named regional pattern.</desc>
+  <defs>
+    <g id="leaf">
+      <path d="M0 144C-51 114-53 72-24 44C-12 32-2 16 0 0C23 30 5 57 21 72C33 61 36 47 33 32C68 82 37 121 0 144Z"/>
+      <path d="M0 130C-29 105-30 81-13 60C-6 51 0 42 1 31C12 59-4 72 8 91C21 84 31 73 35 58C45 85 25 113 0 130Z"/>
+      <path d="M0 116C-12 102-14 88-3 78C-1 89 9 92 15 88C14 101 6 111 0 116Z"/>
+      <path d="M-24 91C-45 87-49 74-45 62C-41 72-33 75-26 72M25 112C48 108 57 91 54 73C50 88 40 91 34 87"/>
+      <path d="M0 145V162M-7 151L0 158L7 151"/>
+      <circle cx="-19" cy="104" r="2"/><circle cx="29" cy="92" r="2"/>
+    </g>
+  </defs>
+  <path d="M202 699C144 622 90 555 121 482C146 422 211 367 217 298C259 345 212 418 238 453C297 389 303 286 274 212C359 319 333 453 281 534C242 594 211 632 202 699Z"/>
+  <path d="M204 666C179 612 156 558 177 511C195 469 228 432 233 396M207 645C234 591 276 552 297 501C314 460 324 410 314 367"/>
+  <path d="M201 700C177 622 181 553 202 507M202 699C230 651 270 618 312 605C283 600 258 609 243 623"/>
+  <path d="M199 680C152 658 110 660 80 685C110 675 132 679 146 692C159 704 179 706 199 700"/>
+  <use href="#leaf" transform="translate(211 35) rotate(12) scale(1.15)"/>
+  <use href="#leaf" transform="translate(129 171) rotate(-36) scale(.92)"/>
+  <use href="#leaf" transform="translate(298 169) rotate(34) scale(.72)"/>
+  <use href="#leaf" transform="translate(79 316) rotate(-48) scale(.82)"/>
+  <use href="#leaf" transform="translate(335 377) rotate(40) scale(.67)"/>
+  <use href="#leaf" transform="translate(70 516) rotate(-57) scale(.68)"/>
+  <path d="M130 359C85 343 62 370 77 393C89 411 115 400 109 384C105 374 91 376 91 385M276 535C319 509 349 529 337 555C327 575 302 567 307 550C310 540 323 540 322 550"/>
+  <path d="M169 267C145 287 134 318 143 341M243 197C259 222 268 253 264 285M100 457C82 477 85 501 99 512M308 583C333 579 353 589 362 605"/>
+  <path d="M147 423L139 437M153 435L145 449M158 449L150 463M281 475L290 463M275 489L284 477M268 504L278 491"/>
+  <circle cx="162" cy="371" r="3"/><circle cx="294" cy="317" r="3"/><circle cx="103" cy="581" r="3"/>
+</svg>

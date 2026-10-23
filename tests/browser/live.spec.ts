@@ -51,8 +51,11 @@ test("every public page answers and nothing is broken on the homepage", async ({
 });
 
 test("the procession video streams from the bucket", async ({ page, request }) => {
-  await page.goto(`${SITE}/#procession`, { waitUntil: "networkidle" });
-  const source = await page.locator(".home-procession-video source").getAttribute("src");
+  await page.goto(`${SITE}/exhibition`, { waitUntil: "networkidle" });
+  const destination = await page.locator('.exhibit-doors a[href$="#procession"]').getAttribute("href");
+  expect(destination).toBeTruthy();
+  await page.goto(`${SITE}${destination}`, { waitUntil: "networkidle" });
+  const source = await page.locator(".boat-procession-video source").getAttribute("src");
   expect(source).toBeTruthy();
   // A range request, because that is what a browser issues when someone presses play. A
   // host that answers 200 to this instead of 206 cannot be scrubbed through.

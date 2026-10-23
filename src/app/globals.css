@@ -2,11 +2,11 @@
 @import "./home.css";
 @import "./archive.css";
 @import "./learn.css";
-@import "./motion.css";
 @import "./exhibition.css";
+@import "./editorial.css";
 
 /* ---------------------------------------------------------------------------
-   Public palette — white, blue and orange.
+   Public palette — cream, mist, indigo and orange.
    Text and action colours are checked in tests/foundation.test.ts.
 --------------------------------------------------------------------------- */
 :root {
@@ -345,12 +345,9 @@ body:has(.home-page) .header-spacer { display: none; }
 .site-menu-group a:hover { color: var(--craft); }
 .site-menu-foot { color: var(--on-dark-muted); font-size: var(--fs-xs); }
 
-/* --------------------------- section wave edges -------------------------- */
-/* The page colour spills into the dark band with a wave edge, and out of it again at the
-   bottom. Painted rather than drawn: the pseudo-element is the neighbouring colour, cut to
-   the wave by a mask, so changing a palette value changes the waves with it. */
+/* One wave transition above the closing section. Dark surfaces elsewhere stay flat. */
 .on-dark { position: relative; }
-.on-dark::before, .on-dark::after {
+.home-closing::before {
   content: ""; position: absolute; inset-inline: 0; z-index: 1;
   height: var(--wave-h);
   background: var(--background);
@@ -358,38 +355,18 @@ body:has(.home-page) .header-spacer { display: none; }
   mask: var(--wave-edge) center / 100% 100% no-repeat;
   pointer-events: none;
 }
-.on-dark::before { top: 0; }
-.on-dark::after { bottom: 0; transform: rotate(180deg); }
-/* The footer provides its own edge with the band artwork, and the hero sits under the
-   header rather than against the page, so neither takes a cut. */
-.site-footer::before, .site-footer::after, .home-hero::before, .home-hero::after { content: none; }
-
+.home-closing::before { top: 0; }
 /* -------------------------------- footer -------------------------------- */
-/* The seam colour the two band images were faded to. Anything between them is this, so
-   the join is invisible however tall the footer grows. */
 .site-footer {
-  --footer-seam: #0040a1;
+  --footer-seam: var(--deep);
   position: relative;
-  padding-block: 0 0;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--rule-dark);
   background: var(--footer-seam);
   color: var(--on-dark);
 }
 .site-footer-band, .site-footer-foot {
-  width: 100%;
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: cover;
-}
-/* Aspect ratios are the images' own, so each band keeps its proportions at every width
-   instead of being squashed by a fixed height. */
-.site-footer-band {
-  aspect-ratio: 1983 / 360;
-  background-image: url("/decor/footer-top.webp");
-}
-.site-footer-foot {
-  aspect-ratio: 1983 / 228;
-  background-image: url("/decor/footer-bottom.webp");
-  background-position: center top;
+  display: none;
 }
 .site-footer > .shell { padding-block: clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.25rem); }
 
@@ -467,6 +444,13 @@ body:has(.home-page) .header-spacer { display: none; }
 
 /* ------------------- boat detail, craft and admin pages ------------------- */
 .boat-page { min-height: 70svh; padding-block: clamp(2.5rem, 7vw, 6rem); }
+.boat-procession { width: min(100% - (var(--gutter) * 2), var(--max-w)); margin: clamp(3.5rem, 8vw, 6rem) auto 0; }
+.boat-procession h2 { margin-top: .75rem; max-width: 24ch; }
+.boat-procession .lead { margin-top: 1rem; }
+.boat-procession figure { margin: clamp(1.5rem, 4vw, 2.5rem) 0 0; }
+.boat-procession-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: var(--radius); background: var(--dark); object-fit: cover; }
+.boat-procession-caption { display: grid; gap: .3rem; margin-top: .9rem; }
+.boat-procession > .caption { display: block; margin-top: 1rem; }
 .boat-intro, .explorer { width: min(100% - 3rem, 76rem); margin-inline: auto; }
 .boat-intro { max-width: 58rem; margin-left: max(1.5rem, calc((100% - 76rem) / 2)); }
 .boat-intro > p:not(.eyebrow, .demo-notice) { max-width: 48rem; color: var(--muted); }
@@ -922,3 +906,32 @@ body:has(.login-page) > .site-header, body:has(.login-page) > .site-footer, body
 .admin-back-link:hover { color:#17634f; }
 .admin-back-link svg { width:1rem; height:1rem; }
 @media (max-width:600px) { .admin-back-link { width:100%; justify-content:center; margin-right:0; } }
+/* Compact footer with a balanced partner logo strip. */
+.site-footer { padding-block:0; }
+.site-footer-culture { width:100%; height:clamp(64px,9vw,140px); background:url('/decor/footer-culture.webp') center bottom / auto 100% repeat-x; opacity:.8; pointer-events:none; }
+.site-footer > .shell { padding-block:26px 20px; }
+.site-footer-grid { grid-template-columns:1fr 1.4fr 1.1fr; gap:24px; padding-bottom:16px; }
+.site-footer-brand p { font-size:.85rem; margin-top:6px; }
+.site-footer nav { grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:16px; }
+.site-footer nav p { grid-column:1/-1; margin:0 0 4px; }
+.site-footer nav a { min-height:34px; font-size:.85rem; }
+.site-footer-partners { padding-top:14px; gap:8px; }
+.site-footer-partners-label { margin:0; }
+.site-footer-partners ul { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:10px; }
+.site-footer-partners li { display:flex; align-items:center; justify-content:center; width:min(100%,120px); aspect-ratio:1; padding:12px; background:#fff; border-radius:50%; min-width:0; justify-self:center; overflow:hidden; }
+.site-footer-partners img { display:block; width:100%; height:100%; object-fit:contain; }
+.site-footer-legal { margin-top:14px; padding-top:12px; gap:4px; font-size:.72rem; }
+.site-footer-legal p { margin:0; max-width:none; }
+@media(max-width:767px) {
+ .site-footer-grid { grid-template-columns:1fr 1fr; gap:14px; }
+ .site-footer-brand { grid-column:1/-1; }
+ .site-footer nav { grid-template-columns:1fr; }
+ .site-footer nav a { min-height:36px; }
+ .site-footer-partners ul { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+ .site-footer-partners li { width:min(100%,96px); padding:10px; }
+}
+/* Cultural silhouette sits behind content instead of adding another footer band. */
+.site-footer-culture { position:absolute; inset:auto 0 0; height:clamp(90px,12vw,180px); opacity:.09; z-index:0; }
+.site-footer > .shell { position:relative; z-index:1; }
+.site-footer-partners { position:relative; }
+.site-footer-partners .site-footer-culture { inset:auto 0 100%; height:clamp(72px,8vw,112px); background-size:auto 100%; opacity:.12; }

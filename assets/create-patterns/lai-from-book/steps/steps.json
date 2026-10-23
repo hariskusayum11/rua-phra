@@ -1,0 +1,91 @@
+[
+ {
+  "id": "kanok-sam-tua",
+  "name": "ลายกนกสามตัว",
+  "images": [
+   "steps/kanok-sam-tua-1.png",
+   "steps/kanok-sam-tua-2.png",
+   "steps/kanok-sam-tua-3.png",
+   "steps/kanok-sam-tua-4.png",
+   "steps/kanok-sam-tua-5.png",
+   "steps/kanok-sam-tua-6.png"
+  ],
+  "notes": [
+   "ขั้นที่ 1 · ตีตารางกรอบสี่เหลี่ยม",
+   "ขั้นที่ 2 · ร่างโครงกนกตัวแรก (ตัวแม่)",
+   "ขั้นที่ 3 · แบ่งโครงเป็นสามตัว",
+   "ขั้นที่ 4 · ร่างรายละเอียดภายในแต่ละตัว",
+   "ขั้นที่ 5 · เขียนหยักและเปลว",
+   "ขั้นที่ 6 · ลายที่เสร็จสมบูรณ์"
+  ]
+ },
+ {
+  "id": "phum",
+  "name": "ลายพุ่ม (7 ขั้น)",
+  "images": [
+   "steps/phum-na-khob-1.png",
+   "steps/phum-1.png",
+   "steps/phum-2.png",
+   "steps/phum-na-khob-2.png",
+   "steps/phum-3.png",
+   "steps/phum-na-khob-3.png",
+   "steps/phum-4.png",
+   "steps/phum-5.png",
+   "steps/phum-6.png",
+   "steps/phum-7.png"
+  ],
+  "notes": [
+   "ขั้นที่ 1",
+   "ขั้นที่ 2",
+   "ขั้นที่ 3",
+   "ขั้นที่ 4",
+   "ขั้นที่ 5",
+   "ขั้นที่ 6",
+   "ลายที่เสร็จสมบูรณ์"
+  ]
+ },
+ {
+  "id": "phum-na-khob",
+  "name": "ลายพุ่ม / หน้าขบ",
+  "images": [
+   "steps/phum-na-khob-1.png",
+   "steps/phum-na-khob-2.png",
+   "steps/phum-na-khob-3.png"
+  ],
+  "notes": [
+   "ขั้นที่ 1 · ตีกรอบ เส้นแกน และโครงทรง",
+   "ขั้นที่ 2 · เขียนตัวลาย",
+   "ขั้นที่ 3 · ลายที่เสร็จสมบูรณ์"
+  ]
+ },
+ {
+  "id": "kranok",
+  "name": "ลายกนก (3 ขั้น)",
+  "images": [
+   "steps/kranok-1.png",
+   "steps/kranok-2.png",
+   "steps/kranok-3.png"
+  ],
+  "notes": [
+   "ขั้นที่ 1 · ตีตารางและแนวสามเหลี่ยมชายธง",
+   "ขั้นที่ 2 · ร่างโครงกนก",
+   "ขั้นที่ 3 · ลายที่เสร็จสมบูรณ์"
+  ]
+ },
+ {
+  "id": "prajam-yam",
+  "name": "ลายประจำยาม",
+  "images": [
+   "steps/prajam-yam-1.png",
+   "steps/prajam-yam-2.png",
+   "steps/prajam-yam-3.png",
+   "steps/prajam-yam-4.png"
+  ],
+  "notes": [
+   "ขั้นที่ 1 · ตีกรอบสี่เหลี่ยมจัตุรัสและแบ่งครึ่ง",
+   "ขั้นที่ 2 · เขียนวงกลมเกสรตรงกลางและเส้นทแยง",
+   "ขั้นที่ 3 · ร่างกลีบสี่กลีบ",
+   "ลายที่เสร็จสมบูรณ์"
+  ]
+ }
+]
